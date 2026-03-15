@@ -10,15 +10,14 @@
 1. [¿Qué es un Paradigma de Programación?](#qué-es-un-paradigma-de-programación)
 2. [El Paradigma Estructurado](#el-paradigma-estructurado)
 3. [Acoplamiento y Cohesión](#acoplamiento)
-4. [Código Limpio](#codigo-limpio)
-5. [Principios SOLID](#principios-solid)
-6. [¿Qué es lo ideal?](#qué-es-lo-ideal)
-7. [El Paradigma Orientado a Objetos](#el-paradigma-orientado-a-objetos)
-8. [Los Cuatro Pilares del Modelo de Objetos](#elementos-del-modelo-de-objetos)
-9. [Excepciones](#excepciones)
-10. [Testing de Clases con pytest](#testing-de-clases-con-pytest)
-11. [Checklist: Antes de Entregar](#checklist-antes-de-entregar)
-12. [Fuentes](#fuentes)
+4. [¿Qué es lo ideal?](#qué-es-lo-ideal)
+5. [El Paradigma Orientado a Objetos](#el-paradigma-orientado-a-objetos)
+6. [Los Cuatro Pilares del Modelo de Objetos](#elementos-del-modelo-de-objetos)
+7. [Principios SOLID](#principios-solid)
+8. [Excepciones](#excepciones)
+9. [Testing de Clases con pytest](#testing-de-clases-con-pytest)
+10. [Checklist: Antes de Entregar](#checklist-antes-de-entregar)
+11. [Fuentes](#fuentes)
 
 ---
 
@@ -35,6 +34,8 @@ Python es multiparadigma: soporta el paradigma estructurado, el orientado a obje
 ---
 
 ## El Paradigma Estructurado
+
+En la materia Informática General, usamos Python para desarrollar nuestros progamas aplicando el paradigma estructurado. Vamos a definirlo para entener que es lo que hicimos hasta ahora y luego como se diferencia del paradigma orientado a objetos.
 
 La programación estructurada es un paradigma orientado a mejorar la claridad, calidad y tiempo de desarrollo de un programa, recurriendo únicamente a funciones y a tres estructuras de control básicas: secuencia, selección (`if` y `switch`) e iteración (bucles `for` y `while`).
 
@@ -88,7 +89,13 @@ def procesar_pedido(usuario, items, descuento):
 
 ---
 
-## Acoplamiento
+## Acoplamiento y Cohesión
+
+Antes de entrar de lleno en el paradigma orientado a objetos, es fundamental entender dos conceptos que van a guiar todas tus decisiones de diseño: **acoplamiento** y **cohesión**. No son exclusivos de la POO — aplican a cualquier código — pero en cuanto empezás a diseñar clases, se vuelven el criterio más práctico para evaluar si tu diseño es bueno o no.
+
+¿Por qué estudiarlos ahora, antes de ver clases en detalle? Porque el paradigma estructurado ya te enseña a escribir funciones, y con funciones también podés tener alto o bajo acoplamiento, alta o baja cohesión. Entender el problema en un contexto que ya conocés te va a hacer mucho más fácil aplicarlo después al diseño orientado a objetos. En la práctica, la mayoría de los problemas de diseño que vemos en los trabajos prácticos se reducen a uno de estos dos conceptos mal aplicados.
+
+### Acoplamiento
 
 El acoplamiento es el grado en que las clases de un programa dependen unas de otras. Si para hacer cambios en una clase es necesario hacer cambios en otra, existe acoplamiento entre ambas.
 
@@ -127,7 +134,7 @@ class OrderProcessorV2:
 # Ahora es fácil cambiar el gestor de archivos sin tocar OrderProcessorV2
 ```
 
-## Cohesión
+### Cohesión
 
 Cohesión es lo contrario a acoplamiento. Algo está cohesionado si tiene sentido y una dirección común.
 
@@ -157,234 +164,6 @@ class ReportGenerator:
 ```
 
 Un código altamente cohesionado tiende a ser más autocontenido, con menos dependencias y más fácil de mantener.
-
----
-
-## Codigo Limpio
-
-### El código limpio es obvio para otros programadores
-Los nombres de variables pobremente elegidos, clases y métodos extensos y números mágicos hacen del código algo desprolijo y difícil de comprender.
-
-### El código limpio no tiene líneas duplicadas
-Cada vez que hacés un cambio en código duplicado tenés que repetirlo en cada copia. Esto induce a errores y dificulta la mantenibilidad.
-
-### El código limpio tiene la menor cantidad de clases
-Menos código facilita el mantenimiento y reduce la cantidad de bugs. El diseño debe ser el mínimo para el propósito.
-
-### El código limpio pasa todos los tests
-Hay que probar nuestro código y asegurarse de que cada entrega satisface todos los tests.
-
----
-
-## Principios SOLID
-
-### S — Single Responsibility Principle (Principio de Responsabilidad Única)
-
-Una clase debe tener una, y solo una, razón para cambiar.
-
-Si tenés una clase `Usuario` que gestiona datos del usuario, guarda en base de datos y además envía emails de bienvenida, está haciendo demasiado. Separar responsabilidades: `Usuario` (datos), `UsuarioRepository` (base de datos), `EmailService` (envíos).
-
-```python
-# ❌ Viola SRP: la clase hace demasiado
-class Invoice:
-    def calculate_total(self): ...
-    def print_invoice(self): ...    # responsabilidad de presentación
-    def save_to_db(self): ...       # responsabilidad de persistencia
-
-# ✅ Respeta SRP: cada clase tiene una razón para cambiar
-class Invoice:
-    def calculate_total(self) -> float: ...
-
-class InvoicePrinter:
-    def print(self, invoice: Invoice) -> None: ...
-
-class InvoiceRepository:
-    def save(self, invoice: Invoice) -> None: ...
-```
-
-### O — Open/Closed Principle (Principio de Abierto/Cerrado)
-
-Las clases deben estar abiertas para su extensión, pero cerradas para su modificación.
-
-Si querés agregar una nueva funcionalidad, no deberías tener que entrar a modificar el código que ya funciona y arriesgarte a romperlo. Usá polimorfismo: añadí nuevas clases en lugar de agregar `if/else` infinitos.
-
-```python
-# ❌ Viola OCP: hay que modificar la clase para agregar un nuevo formato
-class ReportExporter:
-    def export(self, report, format: str):
-        if format == "pdf":
-            ...
-        elif format == "csv":
-            ...
-        # Cada nuevo formato requiere modificar esta clase
-
-# ✅ Respeta OCP: se extiende sin modificar
-from abc import ABC, abstractmethod
-
-class ReportExporter(ABC):
-    @abstractmethod
-    def export(self, report) -> None: ...
-
-class PDFExporter(ReportExporter):
-    def export(self, report) -> None: ...
-
-class CSVExporter(ReportExporter):
-    def export(self, report) -> None: ...
-```
-
-### L — Liskov Substitution Principle (Principio de Sustitución de Liskov)
-
-Las clases derivadas deben poder sustituirse por sus clases base sin alterar el comportamiento correcto del programa.
-
-Si tenés una clase `Pato` y una hija `PatoDeHule`, y el programa explota porque `PatoDeHule` no puede volar, estás violando este principio. Asegurate de que la herencia tenga sentido semántico y funcional.
-
-```python
-# ❌ Viola LSP: PatoDeHule no respeta el contrato de la clase base
-class Animal:
-    def volar(self) -> str:
-        return "Volando..."
-
-class Pato(Animal):
-    def volar(self) -> str:
-        return "El pato vuela"
-
-class PatoDeHule(Animal):
-    def volar(self) -> str:
-        raise NotImplementedError("¡Un pato de hule no puede volar!")
-        # ❌ Quien use Animal espera poder llamar volar() sin excepciones
-
-
-# ✅ Respeta LSP: la jerarquía refleja capacidades reales
-class Animal:
-    """Clase base: solo comportamiento común a todos los animales."""
-
-    def __init__(self, nombre: str) -> None:
-        self.nombre = nombre
-
-    def respirar(self) -> str:
-        return f"{self.nombre} respira"
-
-
-class AnimalVolador(Animal):
-    """Extensión para animales que pueden volar."""
-
-    def volar(self) -> str:
-        return f"{self.nombre} vuela"
-
-
-class Pato(AnimalVolador):
-    def volar(self) -> str:
-        return f"{self.nombre} vuela con sus alas"
-
-
-class PatoDeHule(Animal):
-    """No hereda de AnimalVolador porque no puede volar. ✅"""
-
-    def chillar(self) -> str:
-        return f"{self.nombre}: ¡Squeak!"
-
-
-# Ahora podemos substituir Animal por cualquier subclase sin sorpresas
-animales: list[Animal] = [Pato("Donald"), PatoDeHule("Rubber")]
-for a in animales:
-    print(a.respirar())  # ✅ funciona para todos
-```
-
-### I — Interface Segregation Principle (Principio de Segregación de Interfaz)
-
-Ninguna clase debería verse forzada a depender de métodos que no utiliza.
-
-Aunque Python no tiene "interfaces" explícitas, este principio es vital cuando diseñamos Clases Base Abstractas (ABCs) o definimos Protocolos. El objetivo es evitar crear una clase base gigante que obligue a sus hijas a implementar métodos que no tienen sentido para ellas.
-
-```python
-from abc import ABC, abstractmethod
-
-# ❌ Viola ISP: una ABC enorme que fuerza a Robot a implementar
-#    métodos que no tiene sentido para él
-class Trabajador(ABC):
-    @abstractmethod
-    def trabajar(self) -> None: ...
-
-    @abstractmethod
-    def comer(self) -> None: ...
-
-    @abstractmethod
-    def dormir(self) -> None: ...
-
-
-class Robot(Trabajador):
-    def trabajar(self) -> None:
-        print("Robot trabajando")
-
-    def comer(self) -> None:
-        raise NotImplementedError("Los robots no comen")  # ❌ forzado
-
-    def dormir(self) -> None:
-        raise NotImplementedError("Los robots no duermen")  # ❌ forzado
-
-
-# ✅ Respeta ISP: interfaces pequeñas y específicas
-class Trabajable(ABC):
-    @abstractmethod
-    def trabajar(self) -> None: ...
-
-
-class Comedor(ABC):
-    @abstractmethod
-    def comer(self) -> None: ...
-
-
-class Dormidor(ABC):
-    @abstractmethod
-    def dormir(self) -> None: ...
-
-
-class Humano(Trabajable, Comedor, Dormidor):
-    """Implementa todo porque un humano hace todo."""
-
-    def trabajar(self) -> None:
-        print("Humano trabajando")
-
-    def comer(self) -> None:
-        print("Humano comiendo")
-
-    def dormir(self) -> None:
-        print("Humano durmiendo")
-
-
-class Robot(Trabajable):
-    """Solo implementa lo que necesita. ✅"""
-
-    def trabajar(self) -> None:
-        print("Robot trabajando")
-```
-
-### D — Dependency Inversion Principle (Principio de Inversión de Dependencias)
-
-Los módulos de alto nivel no deben depender de módulos de bajo nivel. Ambos deben depender de abstracciones.
-
-```python
-# ❌ Viola DIP: depende de implementación concreta
-class Notification:
-    def __init__(self):
-        self.email = EmailSender()  # dependencia de bajo nivel
-
-    def send(self, msg: str):
-        self.email.send(msg)
-
-
-# ✅ Respeta DIP: depende de abstracción
-class MessageSender(ABC):
-    @abstractmethod
-    def send(self, message: str) -> None: ...
-
-class Notification:
-    def __init__(self, sender: MessageSender) -> None:
-        self.sender = sender  # inyección de dependencia
-
-    def send(self, message: str) -> None:
-        self.sender.send(message)
-```
 
 ---
 
@@ -707,6 +486,218 @@ auto = Auto("Toyota", 4)
 
 print(moto.describir())   # herencia: Moto es un Vehículo
 print(auto.arrancar())    # composición: Auto tiene un Motor
+```
+
+---
+
+## Principios SOLID
+
+### S — Single Responsibility Principle (Principio de Responsabilidad Única)
+
+Una clase debe tener una, y solo una, razón para cambiar.
+
+Si tenés una clase `Usuario` que gestiona datos del usuario, guarda en base de datos y además envía emails de bienvenida, está haciendo demasiado. Separar responsabilidades: `Usuario` (datos), `UsuarioRepository` (base de datos), `EmailService` (envíos).
+
+```python
+# ❌ Viola SRP: la clase hace demasiado
+class Invoice:
+    def calculate_total(self): ...
+    def print_invoice(self): ...    # responsabilidad de presentación
+    def save_to_db(self): ...       # responsabilidad de persistencia
+
+# ✅ Respeta SRP: cada clase tiene una razón para cambiar
+class Invoice:
+    def calculate_total(self) -> float: ...
+
+class InvoicePrinter:
+    def print(self, invoice: Invoice) -> None: ...
+
+class InvoiceRepository:
+    def save(self, invoice: Invoice) -> None: ...
+```
+
+### O — Open/Closed Principle (Principio de Abierto/Cerrado)
+
+Las clases deben estar abiertas para su extensión, pero cerradas para su modificación.
+
+Si querés agregar una nueva funcionalidad, no deberías tener que entrar a modificar el código que ya funciona y arriesgarte a romperlo. Usá polimorfismo: añadí nuevas clases en lugar de agregar `if/else` infinitos.
+
+```python
+# ❌ Viola OCP: hay que modificar la clase para agregar un nuevo formato
+class ReportExporter:
+    def export(self, report, format: str):
+        if format == "pdf":
+            ...
+        elif format == "csv":
+            ...
+        # Cada nuevo formato requiere modificar esta clase
+
+# ✅ Respeta OCP: se extiende sin modificar
+from abc import ABC, abstractmethod
+
+class ReportExporter(ABC):
+    @abstractmethod
+    def export(self, report) -> None: ...
+
+class PDFExporter(ReportExporter):
+    def export(self, report) -> None: ...
+
+class CSVExporter(ReportExporter):
+    def export(self, report) -> None: ...
+```
+
+### L — Liskov Substitution Principle (Principio de Sustitución de Liskov)
+
+Las clases derivadas deben poder sustituirse por sus clases base sin alterar el comportamiento correcto del programa.
+
+Si tenés una clase `Pato` y una hija `PatoDeHule`, y el programa explota porque `PatoDeHule` no puede volar, estás violando este principio. Asegurate de que la herencia tenga sentido semántico y funcional.
+
+```python
+# ❌ Viola LSP: PatoDeHule no respeta el contrato de la clase base
+class Animal:
+    def volar(self) -> str:
+        return "Volando..."
+
+class Pato(Animal):
+    def volar(self) -> str:
+        return "El pato vuela"
+
+class PatoDeHule(Animal):
+    def volar(self) -> str:
+        raise NotImplementedError("¡Un pato de hule no puede volar!")
+        # ❌ Quien use Animal espera poder llamar volar() sin excepciones
+
+
+# ✅ Respeta LSP: la jerarquía refleja capacidades reales
+class Animal:
+    """Clase base: solo comportamiento común a todos los animales."""
+
+    def __init__(self, nombre: str) -> None:
+        self.nombre = nombre
+
+    def respirar(self) -> str:
+        return f"{self.nombre} respira"
+
+
+class AnimalVolador(Animal):
+    """Extensión para animales que pueden volar."""
+
+    def volar(self) -> str:
+        return f"{self.nombre} vuela"
+
+
+class Pato(AnimalVolador):
+    def volar(self) -> str:
+        return f"{self.nombre} vuela con sus alas"
+
+
+class PatoDeHule(Animal):
+    """No hereda de AnimalVolador porque no puede volar. ✅"""
+
+    def chillar(self) -> str:
+        return f"{self.nombre}: ¡Squeak!"
+
+
+# Ahora podemos substituir Animal por cualquier subclase sin sorpresas
+animales: list[Animal] = [Pato("Donald"), PatoDeHule("Rubber")]
+for a in animales:
+    print(a.respirar())  # ✅ funciona para todos
+```
+
+### I — Interface Segregation Principle (Principio de Segregación de Interfaz)
+
+Ninguna clase debería verse forzada a depender de métodos que no utiliza.
+
+Aunque Python no tiene "interfaces" explícitas, este principio es vital cuando diseñamos Clases Base Abstractas (ABCs) o definimos Protocolos. El objetivo es evitar crear una clase base gigante que obligue a sus hijas a implementar métodos que no tienen sentido para ellas.
+
+```python
+from abc import ABC, abstractmethod
+
+# ❌ Viola ISP: una ABC enorme que fuerza a Robot a implementar
+#    métodos que no tiene sentido para él
+class Trabajador(ABC):
+    @abstractmethod
+    def trabajar(self) -> None: ...
+
+    @abstractmethod
+    def comer(self) -> None: ...
+
+    @abstractmethod
+    def dormir(self) -> None: ...
+
+
+class Robot(Trabajador):
+    def trabajar(self) -> None:
+        print("Robot trabajando")
+
+    def comer(self) -> None:
+        raise NotImplementedError("Los robots no comen")  # ❌ forzado
+
+    def dormir(self) -> None:
+        raise NotImplementedError("Los robots no duermen")  # ❌ forzado
+
+
+# ✅ Respeta ISP: interfaces pequeñas y específicas
+class Trabajable(ABC):
+    @abstractmethod
+    def trabajar(self) -> None: ...
+
+
+class Comedor(ABC):
+    @abstractmethod
+    def comer(self) -> None: ...
+
+
+class Dormidor(ABC):
+    @abstractmethod
+    def dormir(self) -> None: ...
+
+
+class Humano(Trabajable, Comedor, Dormidor):
+    """Implementa todo porque un humano hace todo."""
+
+    def trabajar(self) -> None:
+        print("Humano trabajando")
+
+    def comer(self) -> None:
+        print("Humano comiendo")
+
+    def dormir(self) -> None:
+        print("Humano durmiendo")
+
+
+class Robot(Trabajable):
+    """Solo implementa lo que necesita. ✅"""
+
+    def trabajar(self) -> None:
+        print("Robot trabajando")
+```
+
+### D — Dependency Inversion Principle (Principio de Inversión de Dependencias)
+
+Los módulos de alto nivel no deben depender de módulos de bajo nivel. Ambos deben depender de abstracciones.
+
+```python
+# ❌ Viola DIP: depende de implementación concreta
+class Notification:
+    def __init__(self):
+        self.email = EmailSender()  # dependencia de bajo nivel
+
+    def send(self, msg: str):
+        self.email.send(msg)
+
+
+# ✅ Respeta DIP: depende de abstracción
+class MessageSender(ABC):
+    @abstractmethod
+    def send(self, message: str) -> None: ...
+
+class Notification:
+    def __init__(self, sender: MessageSender) -> None:
+        self.sender = sender  # inyección de dependencia
+
+    def send(self, message: str) -> None:
+        self.sender.send(message)
 ```
 
 ---
@@ -1188,6 +1179,15 @@ class TestProcesadorPedido:
 ## Checklist: Antes de Entregar
 
 Un buen diseño orientado a objetos no es solo que el código funcione — es que sea mantenible, legible y correcto por diseño. Usá esta lista como guía antes de entregar cualquier trabajo práctico.
+
+### Código Limpio
+
+Antes de revisar ítem por ítem, vale la pena recordar los criterios generales de código limpio que aplican a todo el trabajo:
+
+- **Es obvio para otros programadores.** Los nombres de variables pobremente elegidos, clases y métodos extensos, y números mágicos hacen del código algo desprolijo y difícil de comprender.
+- **No tiene líneas duplicadas.** Cada vez que hacés un cambio en código duplicado tenés que repetirlo en cada copia. Esto induce a errores y dificulta la mantenibilidad.
+- **Tiene la menor cantidad de clases necesarias.** Menos código facilita el mantenimiento y reduce la cantidad de bugs. El diseño debe ser el mínimo para el propósito.
+- **Pasa todos los tests.** Hay que probar nuestro código y asegurarse de que cada entrega satisface todos los tests.
 
 ### Diseño y Responsabilidad
 
