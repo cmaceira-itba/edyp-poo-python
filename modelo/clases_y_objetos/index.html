@@ -12,13 +12,13 @@
         <meta name="author" content="Cátedra EDyP — ITBA">
       
       
-        <link rel="canonical" href="https://cmaceira-itba.github.io/edyp-poo-python/modelo/orientado_a_objetos/">
+        <link rel="canonical" href="https://cmaceira-itba.github.io/edyp-poo-python/modelo/clases_y_objetos/">
       
       
-        <link rel="prev" href="../../introduccion/cambio_de_mentalidad/">
+        <link rel="prev" href="../orientado_a_objetos/">
       
       
-        <link rel="next" href="../clases_y_objetos/">
+        <link rel="next" href="../elementos/">
       
       
         
@@ -29,7 +29,7 @@
     
     
       
-        <title>El Paradigma Orientado a Objetos - POO en Python — ITBA</title>
+        <title>Clases y Objetos - POO en Python — ITBA</title>
       
     
     
@@ -80,7 +80,7 @@
     <div data-md-component="skip">
       
         
-        <a href="#el-paradigma-orientado-a-objetos" class="md-skip">
+        <a href="#clases-y-objetos" class="md-skip">
           Saltar a contenido
         </a>
       
@@ -114,7 +114,7 @@
         <div class="md-header__topic" data-md-component="header-topic">
           <span class="md-ellipsis">
             
-              El Paradigma Orientado a Objetos
+              Clases y Objetos
             
           </span>
         </div>
@@ -270,7 +270,7 @@
     
     
       <li class="md-tabs__item md-tabs__item--active">
-        <a href="./" class="md-tabs__link">
+        <a href="../orientado_a_objetos/" class="md-tabs__link">
           
   
   
@@ -642,6 +642,34 @@
                 
   
   
+  
+  
+    <li class="md-nav__item">
+      <a href="../orientado_a_objetos/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    El Paradigma Orientado a Objetos
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
     
   
   
@@ -661,7 +689,7 @@
   <span class="md-ellipsis">
     
   
-    El Paradigma Orientado a Objetos
+    Clases y Objetos
   
 
     
@@ -679,7 +707,7 @@
   <span class="md-ellipsis">
     
   
-    El Paradigma Orientado a Objetos
+    Clases y Objetos
   
 
     
@@ -705,10 +733,10 @@
     <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
       
         <li class="md-nav__item">
-  <a href="#programacion-orientada-a-objetos" class="md-nav__link">
+  <a href="#la-clase-el-molde-no-la-cosa" class="md-nav__link">
     <span class="md-ellipsis">
       
-        Programación Orientada a Objetos
+        La clase: el molde, no la cosa
       
     </span>
   </a>
@@ -716,10 +744,10 @@
 </li>
       
         <li class="md-nav__item">
-  <a href="#analisis-orientado-a-objetos-aoo" class="md-nav__link">
+  <a href="#el-objeto-la-instancia-concreta" class="md-nav__link">
     <span class="md-ellipsis">
       
-        Análisis Orientado a Objetos (AOO)
+        El objeto: la instancia concreta
       
     </span>
   </a>
@@ -727,49 +755,10 @@
 </li>
       
         <li class="md-nav__item">
-  <a href="#tecnica-practica-user-story-mapping" class="md-nav__link">
+  <a href="#el-constructor-__init__" class="md-nav__link">
     <span class="md-ellipsis">
       
-        Técnica práctica: User Story Mapping
-      
-    </span>
-  </a>
-  
-    <nav class="md-nav" aria-label="Técnica práctica: User Story Mapping">
-      <ul class="md-nav__list">
-        
-          <li class="md-nav__item">
-  <a href="#pasos-para-construir-un-user-story-map" class="md-nav__link">
-    <span class="md-ellipsis">
-      
-        Pasos para construir un User Story Map
-      
-    </span>
-  </a>
-  
-</li>
-        
-          <li class="md-nav__item">
-  <a href="#por-que-usar-esta-tecnica" class="md-nav__link">
-    <span class="md-ellipsis">
-      
-        ¿Por qué usar esta técnica?
-      
-    </span>
-  </a>
-  
-</li>
-        
-      </ul>
-    </nav>
-  
-</li>
-      
-        <li class="md-nav__item">
-  <a href="#diseno-orientado-a-objetos-doo" class="md-nav__link">
-    <span class="md-ellipsis">
-      
-        Diseño Orientado a Objetos (DOO)
+        El constructor: __init__
       
     </span>
   </a>
@@ -777,63 +766,46 @@
 </li>
       
         <li class="md-nav__item">
-  <a href="#diagramas-de-clase-uml" class="md-nav__link">
+  <a href="#self-la-referencia-al-objeto-actual" class="md-nav__link">
     <span class="md-ellipsis">
       
-        Diagramas de Clase UML
-      
-    </span>
-  </a>
-  
-    <nav class="md-nav" aria-label="Diagramas de Clase UML">
-      <ul class="md-nav__list">
-        
-          <li class="md-nav__item">
-  <a href="#notacion-basica-de-una-clase" class="md-nav__link">
-    <span class="md-ellipsis">
-      
-        Notación básica de una clase
+        self: la referencia al objeto actual
       
     </span>
   </a>
   
 </li>
-        
-          <li class="md-nav__item">
-  <a href="#relaciones-entre-clases" class="md-nav__link">
+      
+        <li class="md-nav__item">
+  <a href="#atributos-de-instancia-el-estado-de-cada-objeto" class="md-nav__link">
     <span class="md-ellipsis">
       
-        Relaciones entre clases
+        Atributos de instancia: el estado de cada objeto
       
     </span>
   </a>
   
 </li>
-        
-          <li class="md-nav__item">
-  <a href="#ejemplo-completo-sistema-de-pedidos" class="md-nav__link">
+      
+        <li class="md-nav__item">
+  <a href="#identidad-estado-y-comportamiento" class="md-nav__link">
     <span class="md-ellipsis">
       
-        Ejemplo completo: sistema de pedidos
+        Identidad, estado y comportamiento
       
     </span>
   </a>
   
 </li>
-        
-          <li class="md-nav__item">
-  <a href="#herramientas-recomendadas" class="md-nav__link">
+      
+        <li class="md-nav__item">
+  <a href="#las-instancias-son-independientes-entre-si" class="md-nav__link">
     <span class="md-ellipsis">
       
-        Herramientas recomendadas
+        Las instancias son independientes entre sí
       
     </span>
   </a>
-  
-</li>
-        
-      </ul>
-    </nav>
   
 </li>
       
@@ -841,34 +813,6 @@
   
 </nav>
       
-    </li>
-  
-
-              
-            
-              
-                
-  
-  
-  
-  
-    <li class="md-nav__item">
-      <a href="../clases_y_objetos/" class="md-nav__link">
-        
-  
-  
-  <span class="md-ellipsis">
-    
-  
-    Clases y Objetos
-  
-
-    
-  </span>
-  
-  
-
-      </a>
     </li>
   
 
@@ -1537,236 +1481,135 @@
   
 
 
-<h1 id="el-paradigma-orientado-a-objetos">El Paradigma Orientado a Objetos</h1>
-<h2 id="programacion-orientada-a-objetos">Programación Orientada a Objetos</h2>
-<p>Grady Booch, uno de los referentes del campo, la define como <em>"una forma de programación en la cual los programas son organizados como una colección de objetos que cooperan, cada uno de los cuales es una instancia de alguna clase, y las clases son miembros de una jerarquía de clases relacionadas por relaciones de herencia."</em></p>
-<p>Respecto al paradigma estructurado, el cambio fundamental no está en el lenguaje ni en la herramienta: está en el foco. En lugar de pensar en <strong>verbos</strong> (funciones, acciones), se piensa en <strong>sustantivos</strong> (objetos, entidades). En lugar de preguntarse <em>"¿qué pasos necesito para resolver esto?"</em>, la pregunta pasa a ser <em>"¿qué entidades existen en este dominio y cómo se relacionan entre sí?"</em></p>
-<p>En la práctica, este desplazamiento conceptual es el mayor desafío del curso. Escribir código procedural produce resultados rápido; diseñar orientado a objetos produce código que escala, que es mantenible y que otros pueden entender sin leer cada línea.</p>
-<table>
-<thead>
-<tr>
-<th></th>
-<th>Paradigma Estructurado</th>
-<th>Paradigma OOP</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td>Unidad fundamental</td>
-<td>Función/Procedimiento</td>
-<td>Objeto</td>
-</tr>
-<tr>
-<td>Dato y comportamiento</td>
-<td>Separados</td>
-<td>Unidos en la misma entidad</td>
-</tr>
-<tr>
-<td>Reuso</td>
-<td>Copy-paste, funciones genéricas</td>
-<td>Herencia, Composición</td>
-</tr>
-<tr>
-<td>Complejidad</td>
-<td>Crece con el tamaño del programa</td>
-<td>Se gestiona con encapsulación</td>
-</tr>
-</tbody>
-</table>
-<h2 id="analisis-orientado-a-objetos-aoo">Análisis Orientado a Objetos (AOO)</h2>
-<p>A diferencia del análisis estructurado —que parte de los procesos—, el análisis orientado a objetos examina los requisitos desde la perspectiva de las clases y los objetos que aparecen en el vocabulario del dominio. Consiste en comprender el problema en términos de objetos.</p>
-<p>Esos objetos representan entidades físicas o abstractas del mundo real relevantes para el dominio. El objetivo es identificar los objetos, sus atributos, comportamientos y relaciones, sin enfocarse aún en cómo serán implementados.</p>
-<h2 id="tecnica-practica-user-story-mapping">Técnica práctica: User Story Mapping</h2>
-<p>El AOO puede sonar abstracto al principio: ¿cómo identificar qué objetos modelar en un sistema que todavía no existe? Una técnica accesible para empezar es el <strong>User Story Mapping</strong>, creada por Jeff Patton. No requiere conocimientos técnicos previos y es útil precisamente porque obliga a pensar desde el usuario, no desde el código.</p>
-<p>Un <strong>user story</strong> (historia de usuario) describe una funcionalidad desde la perspectiva de quien la usa, con el formato:</p>
-<blockquote>
-<p><em>"Como [tipo de usuario], quiero [acción], para [objetivo o beneficio]."</em></p>
-</blockquote>
-<p>Por ejemplo: <em>"Como cliente, quiero agregar productos al carrito, para poder comprarlos juntos."</em></p>
-<p>A partir de esas historias, el <strong>User Story Mapping</strong> las organiza en un mapa bidimensional:</p>
-<ul>
-<li><strong>Eje horizontal (izquierda a derecha):</strong> el flujo de uso del sistema, ordenado como lo haría un usuario real. Primero busca productos, después los agrega al carrito, después paga, etc.</li>
-<li><strong>Eje vertical (arriba a abajo):</strong> el nivel de detalle y prioridad. Las historias más importantes van arriba; las variantes y casos especiales, abajo.</li>
-</ul>
-<h3 id="pasos-para-construir-un-user-story-map">Pasos para construir un User Story Map</h3>
-<ol>
-<li><strong>Identificar a los actores:</strong> ¿Quiénes usan el sistema? (cliente, administrador, vendedor…). Cada actor tiene sus propias necesidades.</li>
-<li><strong>Describir las actividades principales:</strong> ¿Qué tareas grandes hace cada actor? Por ejemplo: <em>buscar</em>, <em>comprar</em>, <em>gestionar stock</em>. Estas van en la fila superior del mapa.</li>
-<li><strong>Desglosar en historias concretas:</strong> Para cada actividad, escribir las acciones específicas que la componen. <em>"Buscar por categoría"</em>, <em>"filtrar por precio"</em>, <em>"ver detalle del producto"</em> son historias que componen la actividad <em>buscar</em>.</li>
-<li><strong>Priorizar:</strong> Marcar cuáles historias forman el flujo mínimo que necesitás para que el sistema funcione (el llamado <em>walking skeleton</em>). Esto define qué construir primero.</li>
-<li><strong>Identificar los objetos:</strong> Revisá todas las historias y subrayá los <strong>sustantivos</strong> (cliente, carrito, producto, pedido). Esos son los candidatos a clases de tu modelo.</li>
-</ol>
-<h3 id="por-que-usar-esta-tecnica">¿Por qué usar esta técnica?</h3>
-<p>Su valor en este contexto no radica en ser la técnica definitiva de análisis —en proyectos reales se usa de forma mucho más rigurosa—, sino en que brinda una vía concreta para pasar de <em>"tengo un problema"</em> a <em>"tengo una lista de objetos candidatos"</em> sin necesitar experiencia previa en diseño de software. En la práctica, hacer este ejercicio antes de escribir cualquier clase evita el error más común: modelar objetos que nadie usa o, peor, omitir los que realmente importan.</p>
-<h2 id="diseno-orientado-a-objetos-doo">Diseño Orientado a Objetos (DOO)</h2>
-<p>Una vez completado el AOO, el diseño orientado a objetos toma ese modelo de análisis y lo transforma en un modelo detallado de implementación. Para ello abarca el proceso de descomposición orientada a objetos y define una notación para representar los modelos lógicos y físicos del sistema en diseño.</p>
-<p><img alt="La pirámide del diseño orientado a objetos: desde el diseño de subsistemas hasta las responsabilidades de cada clase" src="../../img/poo_diagrama.png" /></p>
-<h2 id="diagramas-de-clase-uml">Diagramas de Clase UML</h2>
-<p>El <strong>Lenguaje de Modelado Unificado</strong> (UML, <em>Unified Modeling Language</em>) es el estándar de la industria para representar visualmente el diseño de un sistema orientado a objetos. Dentro de UML, el <strong>diagrama de clases</strong> es el artefacto más usado en el DOO: permite comunicar la estructura del sistema —clases, atributos, métodos y relaciones— antes de escribir una sola línea de código.</p>
-<blockquote>
-<p>En la práctica, no necesitás diagramar absolutamente todo. Un diagrama liviano con las entidades principales y sus relaciones alcanza para validar el diseño con el equipo, detectar problemas de acoplamiento y servir de documentación viva.</p>
-</blockquote>
-<h3 id="notacion-basica-de-una-clase">Notación básica de una clase</h3>
-<p>Cada clase se representa como un rectángulo dividido en tres compartimentos:</p>
-<div class="language-text highlight"><pre><span></span><code><span id="__span-0-1"><a id="__codelineno-0-1" name="__codelineno-0-1" href="#__codelineno-0-1"></a>┌──────────────────────┐
-</span><span id="__span-0-2"><a id="__codelineno-0-2" name="__codelineno-0-2" href="#__codelineno-0-2"></a>│      NombreClase     │  ← nombre de la clase (en negrita o CamelCase)
-</span><span id="__span-0-3"><a id="__codelineno-0-3" name="__codelineno-0-3" href="#__codelineno-0-3"></a>├──────────────────────┤
-</span><span id="__span-0-4"><a id="__codelineno-0-4" name="__codelineno-0-4" href="#__codelineno-0-4"></a>│ - atributo: tipo     │  ← atributos con visibilidad y tipo
-</span><span id="__span-0-5"><a id="__codelineno-0-5" name="__codelineno-0-5" href="#__codelineno-0-5"></a>│ # otro: tipo         │
-</span><span id="__span-0-6"><a id="__codelineno-0-6" name="__codelineno-0-6" href="#__codelineno-0-6"></a>├──────────────────────┤
-</span><span id="__span-0-7"><a id="__codelineno-0-7" name="__codelineno-0-7" href="#__codelineno-0-7"></a>│ + metodo(): tipo     │  ← métodos con visibilidad, parámetros y retorno
-</span><span id="__span-0-8"><a id="__codelineno-0-8" name="__codelineno-0-8" href="#__codelineno-0-8"></a>│ - _helper(): None    │
-</span><span id="__span-0-9"><a id="__codelineno-0-9" name="__codelineno-0-9" href="#__codelineno-0-9"></a>└──────────────────────┘
+<h1 id="clases-y-objetos">Clases y Objetos</h1>
+<p>La distinción entre clase y objeto es la primera y más fundamental de toda la POO. Confundirlos es el error conceptual más común en los primeros pasos.</p>
+<h2 id="la-clase-el-molde-no-la-cosa">La clase: el molde, no la cosa</h2>
+<p>Una <strong>clase</strong> es una plantilla o molde que describe cómo serán los objetos que se creen a partir de ella. Define qué datos van a tener (atributos) y qué comportamiento van a exhibir (métodos). Por sí sola, una clase no ocupa espacio de datos útil ni ejecuta nada: es solo la <em>descripción</em>.</p>
+<p>La analogía clásica es la del plano de arquitectura: el plano de una casa no es una casa. Es la descripción de cómo construir una. Podés construir diez casas idénticas a partir del mismo plano, y cada una va a ser independiente de las demás.</p>
+<p>En Python, una clase se define con la palabra reservada <code>class</code> seguida del nombre en <strong>PascalCase</strong> (también llamado CamelCase: cada palabra empieza con mayúscula):</p>
+<div class="language-python highlight"><pre><span></span><code><span id="__span-0-1"><a id="__codelineno-0-1" name="__codelineno-0-1" href="#__codelineno-0-1"></a><span class="k">class</span><span class="w"> </span><span class="nc">Producto</span><span class="p">:</span>
+</span><span id="__span-0-2"><a id="__codelineno-0-2" name="__codelineno-0-2" href="#__codelineno-0-2"></a>    <span class="k">pass</span>  <span class="c1"># clase vacía por ahora</span>
 </span></code></pre></div>
-<p>Los <strong>modificadores de visibilidad</strong> indican el nivel de acceso:</p>
-<table>
-<thead>
-<tr>
-<th>Símbolo</th>
-<th>Visibilidad</th>
-<th>Equivalente en Python</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td><code>+</code></td>
-<td>Público</td>
-<td>Sin prefijo: <code>self.nombre</code></td>
-</tr>
-<tr>
-<td><code>#</code></td>
-<td>Protegido</td>
-<td>Un guión bajo: <code>self._nombre</code></td>
-</tr>
-<tr>
-<td><code>-</code></td>
-<td>Privado</td>
-<td>Dos guiones bajos: <code>self.__nombre</code></td>
-</tr>
-</tbody>
-</table>
-<h3 id="relaciones-entre-clases">Relaciones entre clases</h3>
-<p>Las relaciones capturan cómo se vinculan las clases. En un diagrama liviano usás principalmente estas cuatro:</p>
-<table>
-<thead>
-<tr>
-<th>Relación</th>
-<th>Símbolo</th>
-<th>Semántica</th>
-<th>Ejemplo</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td><strong>Asociación</strong></td>
-<td><code>A ──── B</code></td>
-<td>A usa o referencia a B</td>
-<td><code>Pedido</code> usa <code>Cliente</code></td>
-</tr>
-<tr>
-<td><strong>Composición</strong></td>
-<td><code>A ◆──── B</code></td>
-<td>A contiene B; B no existe sin A</td>
-<td><code>Auto</code> contiene <code>Motor</code></td>
-</tr>
-<tr>
-<td><strong>Agregación</strong></td>
-<td><code>A ◇──── B</code></td>
-<td>A agrupa B; B puede existir solo</td>
-<td><code>Inventario</code> agrupa <code>Producto</code></td>
-</tr>
-<tr>
-<td><strong>Herencia</strong></td>
-<td><code>A ──▷ B</code></td>
-<td>A es un tipo de B</td>
-<td><code>Moto</code> es un <code>Vehículo</code></td>
-</tr>
-</tbody>
-</table>
-<blockquote>
-<p>La diferencia entre composición y agregación suele generar dudas. La regla práctica: si destruís el contenedor y el contenido pierde sentido por sí solo, es composición; si puede existir independientemente, es agregación. En la mayoría de los diseños que hacemos en la materia, la distinción no es crítica — lo que importa es que quede claro que una clase <em>contiene</em> a otra.</p>
-</blockquote>
-<h3 id="ejemplo-completo-sistema-de-pedidos">Ejemplo completo: sistema de pedidos</h3>
-<p>El siguiente diagrama modela las clases del ejemplo de acoplamiento visto antes:</p>
-<div class="language-text highlight"><pre><span></span><code><span id="__span-1-1"><a id="__codelineno-1-1" name="__codelineno-1-1" href="#__codelineno-1-1"></a>         ┌─────────────────────────┐
-</span><span id="__span-1-2"><a id="__codelineno-1-2" name="__codelineno-1-2" href="#__codelineno-1-2"></a>         │        Cliente          │
-</span><span id="__span-1-3"><a id="__codelineno-1-3" name="__codelineno-1-3" href="#__codelineno-1-3"></a>         ├─────────────────────────┤
-</span><span id="__span-1-4"><a id="__codelineno-1-4" name="__codelineno-1-4" href="#__codelineno-1-4"></a>         │ - nombre: str           │
-</span><span id="__span-1-5"><a id="__codelineno-1-5" name="__codelineno-1-5" href="#__codelineno-1-5"></a>         │ - email: str            │
-</span><span id="__span-1-6"><a id="__codelineno-1-6" name="__codelineno-1-6" href="#__codelineno-1-6"></a>         ├─────────────────────────┤
-</span><span id="__span-1-7"><a id="__codelineno-1-7" name="__codelineno-1-7" href="#__codelineno-1-7"></a>         │ + get_nombre(): str     │
-</span><span id="__span-1-8"><a id="__codelineno-1-8" name="__codelineno-1-8" href="#__codelineno-1-8"></a>         └────────────┬────────────┘
-</span><span id="__span-1-9"><a id="__codelineno-1-9" name="__codelineno-1-9" href="#__codelineno-1-9"></a>                      │ 1
-</span><span id="__span-1-10"><a id="__codelineno-1-10" name="__codelineno-1-10" href="#__codelineno-1-10"></a>                      │ asociación
-</span><span id="__span-1-11"><a id="__codelineno-1-11" name="__codelineno-1-11" href="#__codelineno-1-11"></a>                      │ *
-</span><span id="__span-1-12"><a id="__codelineno-1-12" name="__codelineno-1-12" href="#__codelineno-1-12"></a>         ┌────────────▼────────────┐         ┌─────────────────────────┐
-</span><span id="__span-1-13"><a id="__codelineno-1-13" name="__codelineno-1-13" href="#__codelineno-1-13"></a>         │         Pedido          │ ◆─────── │        Producto         │
-</span><span id="__span-1-14"><a id="__codelineno-1-14" name="__codelineno-1-14" href="#__codelineno-1-14"></a>         ├─────────────────────────┤  1    *  ├─────────────────────────┤
-</span><span id="__span-1-15"><a id="__codelineno-1-15" name="__codelineno-1-15" href="#__codelineno-1-15"></a>         │ - id: int               │          │ - nombre: str           │
-</span><span id="__span-1-16"><a id="__codelineno-1-16" name="__codelineno-1-16" href="#__codelineno-1-16"></a>         │ - items: list[Producto] │          │ - precio: float         │
-</span><span id="__span-1-17"><a id="__codelineno-1-17" name="__codelineno-1-17" href="#__codelineno-1-17"></a>         ├─────────────────────────┤          │ - stock: int            │
-</span><span id="__span-1-18"><a id="__codelineno-1-18" name="__codelineno-1-18" href="#__codelineno-1-18"></a>         │ + agregar(p: Producto)  │          ├─────────────────────────┤
-</span><span id="__span-1-19"><a id="__codelineno-1-19" name="__codelineno-1-19" href="#__codelineno-1-19"></a>         │ + calcular_total(): float│         │ + vender(cant: int)     │
-</span><span id="__span-1-20"><a id="__codelineno-1-20" name="__codelineno-1-20" href="#__codelineno-1-20"></a>         └─────────────────────────┘          └─────────────────────────┘
+<h2 id="el-objeto-la-instancia-concreta">El objeto: la instancia concreta</h2>
+<p>Un <strong>objeto</strong> es una instancia concreta de una clase, creada en tiempo de ejecución. Mientras la clase existe en el código fuente, el objeto existe en la memoria de la computadora mientras el programa se ejecuta.</p>
+<p>Se crea invocando la clase como si fuera una función, con el operador <code>()</code>:</p>
+<div class="language-python highlight"><pre><span></span><code><span id="__span-1-1"><a id="__codelineno-1-1" name="__codelineno-1-1" href="#__codelineno-1-1"></a><span class="n">producto_a</span> <span class="o">=</span> <span class="n">Producto</span><span class="p">()</span>  <span class="c1"># se crea una instancia de Producto</span>
+</span><span id="__span-1-2"><a id="__codelineno-1-2" name="__codelineno-1-2" href="#__codelineno-1-2"></a><span class="n">producto_b</span> <span class="o">=</span> <span class="n">Producto</span><span class="p">()</span>  <span class="c1"># una instancia diferente, independiente</span>
 </span></code></pre></div>
-<p>Las multiplicidades (<code>1</code>, <code>*</code>, <code>0..1</code>) sobre las líneas indican cuántas instancias participan en cada lado de la relación:</p>
-<table>
-<thead>
-<tr>
-<th>Multiplicidad</th>
-<th>Significado</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td><code>1</code></td>
-<td>Exactamente uno</td>
-</tr>
-<tr>
-<td><code>*</code> o <code>0..*</code></td>
-<td>Cero o más</td>
-</tr>
-<tr>
-<td><code>1..*</code></td>
-<td>Uno o más</td>
-</tr>
-<tr>
-<td><code>0..1</code></td>
-<td>Opcional (cero o uno)</td>
-</tr>
-</tbody>
-</table>
-<h3 id="herramientas-recomendadas">Herramientas recomendadas</h3>
-<p>Para diagramar sin salir del flujo de trabajo, estas opciones son las más prácticas:</p>
+<p><code>producto_a</code> y <code>producto_b</code> son dos objetos distintos, cada uno con su propia identidad en memoria.</p>
+<h2 id="el-constructor-__init__">El constructor: <code>__init__</code></h2>
+<p>El método <code>__init__</code> es el <strong>constructor</strong> de la clase. Python lo llama automáticamente cada vez que se crea un nuevo objeto. Su propósito es inicializar el estado del objeto: asignar valores a los atributos que va a tener.</p>
+<div class="language-python highlight"><pre><span></span><code><span id="__span-2-1"><a id="__codelineno-2-1" name="__codelineno-2-1" href="#__codelineno-2-1"></a><span class="k">class</span><span class="w"> </span><span class="nc">Producto</span><span class="p">:</span>
+</span><span id="__span-2-2"><a id="__codelineno-2-2" name="__codelineno-2-2" href="#__codelineno-2-2"></a><span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+</span><span id="__span-2-3"><a id="__codelineno-2-3" name="__codelineno-2-3" href="#__codelineno-2-3"></a><span class="sd">    Producto con nombre y precio.</span>
+</span><span id="__span-2-4"><a id="__codelineno-2-4" name="__codelineno-2-4" href="#__codelineno-2-4"></a>
+</span><span id="__span-2-5"><a id="__codelineno-2-5" name="__codelineno-2-5" href="#__codelineno-2-5"></a><span class="sd">    Args:</span>
+</span><span id="__span-2-6"><a id="__codelineno-2-6" name="__codelineno-2-6" href="#__codelineno-2-6"></a><span class="sd">        nombre: Nombre del producto.</span>
+</span><span id="__span-2-7"><a id="__codelineno-2-7" name="__codelineno-2-7" href="#__codelineno-2-7"></a><span class="sd">        precio: Precio unitario (debe ser positivo).</span>
+</span><span id="__span-2-8"><a id="__codelineno-2-8" name="__codelineno-2-8" href="#__codelineno-2-8"></a><span class="sd">    &quot;&quot;&quot;</span>
+</span><span id="__span-2-9"><a id="__codelineno-2-9" name="__codelineno-2-9" href="#__codelineno-2-9"></a>
+</span><span id="__span-2-10"><a id="__codelineno-2-10" name="__codelineno-2-10" href="#__codelineno-2-10"></a>    <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">nombre</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">precio</span><span class="p">:</span> <span class="nb">float</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+</span><span id="__span-2-11"><a id="__codelineno-2-11" name="__codelineno-2-11" href="#__codelineno-2-11"></a>        <span class="bp">self</span><span class="o">.</span><span class="n">nombre</span> <span class="o">=</span> <span class="n">nombre</span>
+</span><span id="__span-2-12"><a id="__codelineno-2-12" name="__codelineno-2-12" href="#__codelineno-2-12"></a>        <span class="bp">self</span><span class="o">.</span><span class="n">precio</span> <span class="o">=</span> <span class="n">precio</span>
+</span></code></pre></div>
+<p>Cuando escribís <code>Producto("Laptop", 1500.0)</code>, Python crea un objeto vacío y llama a <code>__init__</code> pasando ese objeto como primer argumento (que dentro del método se llama <code>self</code>).</p>
+<h2 id="self-la-referencia-al-objeto-actual"><code>self</code>: la referencia al objeto actual</h2>
+<p><code>self</code> es el primer parámetro de cualquier método de instancia y representa al objeto sobre el que se está operando. Python lo pasa automáticamente: cuando llamás <code>producto.describir()</code>, Python llama internamente a <code>Producto.describir(producto)</code>.</p>
+<p>No es una palabra reservada (podría llamarse diferente), pero es una convención tan universal que nunca deberías cambiarla.</p>
+<div class="language-python highlight"><pre><span></span><code><span id="__span-3-1"><a id="__codelineno-3-1" name="__codelineno-3-1" href="#__codelineno-3-1"></a><span class="k">class</span><span class="w"> </span><span class="nc">Producto</span><span class="p">:</span>
+</span><span id="__span-3-2"><a id="__codelineno-3-2" name="__codelineno-3-2" href="#__codelineno-3-2"></a><span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+</span><span id="__span-3-3"><a id="__codelineno-3-3" name="__codelineno-3-3" href="#__codelineno-3-3"></a><span class="sd">    Producto con nombre, precio y método de descripción.</span>
+</span><span id="__span-3-4"><a id="__codelineno-3-4" name="__codelineno-3-4" href="#__codelineno-3-4"></a>
+</span><span id="__span-3-5"><a id="__codelineno-3-5" name="__codelineno-3-5" href="#__codelineno-3-5"></a><span class="sd">    Args:</span>
+</span><span id="__span-3-6"><a id="__codelineno-3-6" name="__codelineno-3-6" href="#__codelineno-3-6"></a><span class="sd">        nombre: Nombre del producto.</span>
+</span><span id="__span-3-7"><a id="__codelineno-3-7" name="__codelineno-3-7" href="#__codelineno-3-7"></a><span class="sd">        precio: Precio unitario.</span>
+</span><span id="__span-3-8"><a id="__codelineno-3-8" name="__codelineno-3-8" href="#__codelineno-3-8"></a><span class="sd">    &quot;&quot;&quot;</span>
+</span><span id="__span-3-9"><a id="__codelineno-3-9" name="__codelineno-3-9" href="#__codelineno-3-9"></a>
+</span><span id="__span-3-10"><a id="__codelineno-3-10" name="__codelineno-3-10" href="#__codelineno-3-10"></a>    <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">nombre</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">precio</span><span class="p">:</span> <span class="nb">float</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+</span><span id="__span-3-11"><a id="__codelineno-3-11" name="__codelineno-3-11" href="#__codelineno-3-11"></a>        <span class="bp">self</span><span class="o">.</span><span class="n">nombre</span> <span class="o">=</span> <span class="n">nombre</span>   <span class="c1"># atributo de instancia</span>
+</span><span id="__span-3-12"><a id="__codelineno-3-12" name="__codelineno-3-12" href="#__codelineno-3-12"></a>        <span class="bp">self</span><span class="o">.</span><span class="n">precio</span> <span class="o">=</span> <span class="n">precio</span>   <span class="c1"># atributo de instancia</span>
+</span><span id="__span-3-13"><a id="__codelineno-3-13" name="__codelineno-3-13" href="#__codelineno-3-13"></a>
+</span><span id="__span-3-14"><a id="__codelineno-3-14" name="__codelineno-3-14" href="#__codelineno-3-14"></a>    <span class="k">def</span><span class="w"> </span><span class="nf">describir</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
+</span><span id="__span-3-15"><a id="__codelineno-3-15" name="__codelineno-3-15" href="#__codelineno-3-15"></a><span class="w">        </span><span class="sd">&quot;&quot;&quot;Retorna una descripción legible del producto.&quot;&quot;&quot;</span>
+</span><span id="__span-3-16"><a id="__codelineno-3-16" name="__codelineno-3-16" href="#__codelineno-3-16"></a>        <span class="k">return</span> <span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">nombre</span><span class="si">}</span><span class="s2">: $</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">precio</span><span class="si">:</span><span class="s2">.2f</span><span class="si">}</span><span class="s2">&quot;</span>
+</span></code></pre></div>
+<h2 id="atributos-de-instancia-el-estado-de-cada-objeto">Atributos de instancia: el estado de cada objeto</h2>
+<p>Los <strong>atributos de instancia</strong> son variables que pertenecen a cada objeto individualmente. Se crean asignándolos a través de <code>self</code> en <code>__init__</code>. Cada objeto tiene su propio espacio de memoria para estos atributos: modificar el atributo de un objeto no afecta al otro.</p>
+<h2 id="identidad-estado-y-comportamiento">Identidad, estado y comportamiento</h2>
+<p>Todo objeto tiene tres dimensiones:</p>
 <ul>
-<li><strong><a href="https://mermaid.js.org/">Mermaid</a></strong>: se escribe como código dentro de Markdown y renderiza automáticamente en GitHub, Notion y VS Code. Ideal para mantener el diagrama junto al código.</li>
-<li><strong><a href="https://app.diagrams.net/">draw.io / diagrams.net</a></strong>: editor visual gratuito, exporta a PNG/SVG. Útil para diagramas más elaborados.</li>
-<li><strong><a href="https://plantuml.com/">PlantUML</a></strong>: sintaxis textual, muy expresiva, integrable con pipelines de documentación.</li>
+<li><strong>Identidad</strong>: lo que lo hace único en memoria (su dirección). En Python, <code>id(objeto)</code> la retorna.</li>
+<li><strong>Estado</strong>: los valores actuales de sus atributos.</li>
+<li><strong>Comportamiento</strong>: las operaciones que puede realizar (sus métodos).</li>
 </ul>
-<p>El mismo diagrama del ejemplo anterior en sintaxis Mermaid se vería así:</p>
-<pre class="mermaid"><code>classDiagram
-    class Cliente {
-        - nombre: str
-        - email: str
-        + get_nombre() str
-    }
-
-    class Pedido {
-        - id: int
-        - items: list
-        + agregar(p: Producto)
-        + calcular_total() float
-    }
-
-    class Producto {
-        - nombre: str
-        - precio: float
-        - stock: int
-        + vender(cant: int)
-    }
-
-    Cliente "1" --&gt; "*" Pedido : realiza
-    Pedido "1" *-- "*" Producto : contiene</code></pre>
+<div class="language-python highlight"><pre><span></span><code><span id="__span-4-1"><a id="__codelineno-4-1" name="__codelineno-4-1" href="#__codelineno-4-1"></a><span class="k">class</span><span class="w"> </span><span class="nc">Producto</span><span class="p">:</span>
+</span><span id="__span-4-2"><a id="__codelineno-4-2" name="__codelineno-4-2" href="#__codelineno-4-2"></a><span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+</span><span id="__span-4-3"><a id="__codelineno-4-3" name="__codelineno-4-3" href="#__codelineno-4-3"></a><span class="sd">    Producto con nombre, precio y método de descripción.</span>
+</span><span id="__span-4-4"><a id="__codelineno-4-4" name="__codelineno-4-4" href="#__codelineno-4-4"></a>
+</span><span id="__span-4-5"><a id="__codelineno-4-5" name="__codelineno-4-5" href="#__codelineno-4-5"></a><span class="sd">    Args:</span>
+</span><span id="__span-4-6"><a id="__codelineno-4-6" name="__codelineno-4-6" href="#__codelineno-4-6"></a><span class="sd">        nombre: Nombre del producto.</span>
+</span><span id="__span-4-7"><a id="__codelineno-4-7" name="__codelineno-4-7" href="#__codelineno-4-7"></a><span class="sd">        precio: Precio unitario.</span>
+</span><span id="__span-4-8"><a id="__codelineno-4-8" name="__codelineno-4-8" href="#__codelineno-4-8"></a><span class="sd">    &quot;&quot;&quot;</span>
+</span><span id="__span-4-9"><a id="__codelineno-4-9" name="__codelineno-4-9" href="#__codelineno-4-9"></a>
+</span><span id="__span-4-10"><a id="__codelineno-4-10" name="__codelineno-4-10" href="#__codelineno-4-10"></a>    <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">nombre</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">precio</span><span class="p">:</span> <span class="nb">float</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+</span><span id="__span-4-11"><a id="__codelineno-4-11" name="__codelineno-4-11" href="#__codelineno-4-11"></a>        <span class="bp">self</span><span class="o">.</span><span class="n">nombre</span> <span class="o">=</span> <span class="n">nombre</span>
+</span><span id="__span-4-12"><a id="__codelineno-4-12" name="__codelineno-4-12" href="#__codelineno-4-12"></a>        <span class="bp">self</span><span class="o">.</span><span class="n">precio</span> <span class="o">=</span> <span class="n">precio</span>
+</span><span id="__span-4-13"><a id="__codelineno-4-13" name="__codelineno-4-13" href="#__codelineno-4-13"></a>
+</span><span id="__span-4-14"><a id="__codelineno-4-14" name="__codelineno-4-14" href="#__codelineno-4-14"></a>    <span class="k">def</span><span class="w"> </span><span class="nf">describir</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
+</span><span id="__span-4-15"><a id="__codelineno-4-15" name="__codelineno-4-15" href="#__codelineno-4-15"></a><span class="w">        </span><span class="sd">&quot;&quot;&quot;Retorna una descripción legible del producto.&quot;&quot;&quot;</span>
+</span><span id="__span-4-16"><a id="__codelineno-4-16" name="__codelineno-4-16" href="#__codelineno-4-16"></a>        <span class="k">return</span> <span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">nombre</span><span class="si">}</span><span class="s2">: $</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">precio</span><span class="si">:</span><span class="s2">.2f</span><span class="si">}</span><span class="s2">&quot;</span>
+</span><span id="__span-4-17"><a id="__codelineno-4-17" name="__codelineno-4-17" href="#__codelineno-4-17"></a>
+</span><span id="__span-4-18"><a id="__codelineno-4-18" name="__codelineno-4-18" href="#__codelineno-4-18"></a>    <span class="k">def</span><span class="w"> </span><span class="nf">aplicar_descuento</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">porcentaje</span><span class="p">:</span> <span class="nb">float</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+</span><span id="__span-4-19"><a id="__codelineno-4-19" name="__codelineno-4-19" href="#__codelineno-4-19"></a><span class="w">        </span><span class="sd">&quot;&quot;&quot;Aplica un descuento al precio del producto.</span>
+</span><span id="__span-4-20"><a id="__codelineno-4-20" name="__codelineno-4-20" href="#__codelineno-4-20"></a>
+</span><span id="__span-4-21"><a id="__codelineno-4-21" name="__codelineno-4-21" href="#__codelineno-4-21"></a><span class="sd">        Args:</span>
+</span><span id="__span-4-22"><a id="__codelineno-4-22" name="__codelineno-4-22" href="#__codelineno-4-22"></a><span class="sd">            porcentaje: Porcentaje de descuento (0-100).</span>
+</span><span id="__span-4-23"><a id="__codelineno-4-23" name="__codelineno-4-23" href="#__codelineno-4-23"></a><span class="sd">        &quot;&quot;&quot;</span>
+</span><span id="__span-4-24"><a id="__codelineno-4-24" name="__codelineno-4-24" href="#__codelineno-4-24"></a>        <span class="k">if</span> <span class="ow">not</span> <span class="mi">0</span> <span class="o">&lt;</span> <span class="n">porcentaje</span> <span class="o">&lt;=</span> <span class="mi">100</span><span class="p">:</span>
+</span><span id="__span-4-25"><a id="__codelineno-4-25" name="__codelineno-4-25" href="#__codelineno-4-25"></a>            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;El porcentaje debe estar entre 0 y 100&quot;</span><span class="p">)</span>
+</span><span id="__span-4-26"><a id="__codelineno-4-26" name="__codelineno-4-26" href="#__codelineno-4-26"></a>        <span class="bp">self</span><span class="o">.</span><span class="n">precio</span> <span class="o">*=</span> <span class="p">(</span><span class="mi">1</span> <span class="o">-</span> <span class="n">porcentaje</span> <span class="o">/</span> <span class="mi">100</span><span class="p">)</span>
+</span><span id="__span-4-27"><a id="__codelineno-4-27" name="__codelineno-4-27" href="#__codelineno-4-27"></a>
+</span><span id="__span-4-28"><a id="__codelineno-4-28" name="__codelineno-4-28" href="#__codelineno-4-28"></a>    <span class="k">def</span><span class="w"> </span><span class="fm">__repr__</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
+</span><span id="__span-4-29"><a id="__codelineno-4-29" name="__codelineno-4-29" href="#__codelineno-4-29"></a>        <span class="k">return</span> <span class="sa">f</span><span class="s2">&quot;Producto(</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">nombre</span><span class="si">!r}</span><span class="s2">, $</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">precio</span><span class="si">:</span><span class="s2">.2f</span><span class="si">}</span><span class="s2">)&quot;</span>
+</span><span id="__span-4-30"><a id="__codelineno-4-30" name="__codelineno-4-30" href="#__codelineno-4-30"></a>
+</span><span id="__span-4-31"><a id="__codelineno-4-31" name="__codelineno-4-31" href="#__codelineno-4-31"></a>
+</span><span id="__span-4-32"><a id="__codelineno-4-32" name="__codelineno-4-32" href="#__codelineno-4-32"></a><span class="c1"># Instanciación: se crean dos objetos independientes</span>
+</span><span id="__span-4-33"><a id="__codelineno-4-33" name="__codelineno-4-33" href="#__codelineno-4-33"></a><span class="n">laptop</span> <span class="o">=</span> <span class="n">Producto</span><span class="p">(</span><span class="s2">&quot;Laptop&quot;</span><span class="p">,</span> <span class="mf">1500.0</span><span class="p">)</span>
+</span><span id="__span-4-34"><a id="__codelineno-4-34" name="__codelineno-4-34" href="#__codelineno-4-34"></a><span class="n">mouse</span> <span class="o">=</span> <span class="n">Producto</span><span class="p">(</span><span class="s2">&quot;Mouse&quot;</span><span class="p">,</span> <span class="mf">45.0</span><span class="p">)</span>
+</span><span id="__span-4-35"><a id="__codelineno-4-35" name="__codelineno-4-35" href="#__codelineno-4-35"></a>
+</span><span id="__span-4-36"><a id="__codelineno-4-36" name="__codelineno-4-36" href="#__codelineno-4-36"></a><span class="c1"># Identidad: son distintos objetos en memoria</span>
+</span><span id="__span-4-37"><a id="__codelineno-4-37" name="__codelineno-4-37" href="#__codelineno-4-37"></a><span class="nb">print</span><span class="p">(</span><span class="nb">id</span><span class="p">(</span><span class="n">laptop</span><span class="p">)</span> <span class="o">==</span> <span class="nb">id</span><span class="p">(</span><span class="n">mouse</span><span class="p">))</span>   <span class="c1"># False</span>
+</span><span id="__span-4-38"><a id="__codelineno-4-38" name="__codelineno-4-38" href="#__codelineno-4-38"></a>
+</span><span id="__span-4-39"><a id="__codelineno-4-39" name="__codelineno-4-39" href="#__codelineno-4-39"></a><span class="c1"># Estado: cada objeto tiene su propio estado</span>
+</span><span id="__span-4-40"><a id="__codelineno-4-40" name="__codelineno-4-40" href="#__codelineno-4-40"></a><span class="nb">print</span><span class="p">(</span><span class="n">laptop</span><span class="o">.</span><span class="n">describir</span><span class="p">())</span>  <span class="c1"># Laptop: $1500.00</span>
+</span><span id="__span-4-41"><a id="__codelineno-4-41" name="__codelineno-4-41" href="#__codelineno-4-41"></a><span class="nb">print</span><span class="p">(</span><span class="n">mouse</span><span class="o">.</span><span class="n">describir</span><span class="p">())</span>   <span class="c1"># Mouse: $45.00</span>
+</span><span id="__span-4-42"><a id="__codelineno-4-42" name="__codelineno-4-42" href="#__codelineno-4-42"></a>
+</span><span id="__span-4-43"><a id="__codelineno-4-43" name="__codelineno-4-43" href="#__codelineno-4-43"></a><span class="c1"># Independencia: modificar uno no afecta al otro</span>
+</span><span id="__span-4-44"><a id="__codelineno-4-44" name="__codelineno-4-44" href="#__codelineno-4-44"></a><span class="n">laptop</span><span class="o">.</span><span class="n">aplicar_descuento</span><span class="p">(</span><span class="mi">10</span><span class="p">)</span>
+</span><span id="__span-4-45"><a id="__codelineno-4-45" name="__codelineno-4-45" href="#__codelineno-4-45"></a><span class="nb">print</span><span class="p">(</span><span class="n">laptop</span><span class="o">.</span><span class="n">precio</span><span class="p">)</span>  <span class="c1"># 1350.0</span>
+</span><span id="__span-4-46"><a id="__codelineno-4-46" name="__codelineno-4-46" href="#__codelineno-4-46"></a><span class="nb">print</span><span class="p">(</span><span class="n">mouse</span><span class="o">.</span><span class="n">precio</span><span class="p">)</span>   <span class="c1"># 45.0  ← sin cambios</span>
+</span></code></pre></div>
+<h2 id="las-instancias-son-independientes-entre-si">Las instancias son independientes entre sí</h2>
+<p>Este punto merece énfasis: cada objeto es su propio mundo. Crear cien instancias de <code>Producto</code> produce cien objetos independientes. El estado de uno no interfiere con el de los demás.</p>
+<div class="language-python highlight"><pre><span></span><code><span id="__span-5-1"><a id="__codelineno-5-1" name="__codelineno-5-1" href="#__codelineno-5-1"></a><span class="c1"># Tres productos, tres estados independientes</span>
+</span><span id="__span-5-2"><a id="__codelineno-5-2" name="__codelineno-5-2" href="#__codelineno-5-2"></a><span class="n">productos</span> <span class="o">=</span> <span class="p">[</span>
+</span><span id="__span-5-3"><a id="__codelineno-5-3" name="__codelineno-5-3" href="#__codelineno-5-3"></a>    <span class="n">Producto</span><span class="p">(</span><span class="s2">&quot;Teclado&quot;</span><span class="p">,</span> <span class="mf">80.0</span><span class="p">),</span>
+</span><span id="__span-5-4"><a id="__codelineno-5-4" name="__codelineno-5-4" href="#__codelineno-5-4"></a>    <span class="n">Producto</span><span class="p">(</span><span class="s2">&quot;Monitor&quot;</span><span class="p">,</span> <span class="mf">400.0</span><span class="p">),</span>
+</span><span id="__span-5-5"><a id="__codelineno-5-5" name="__codelineno-5-5" href="#__codelineno-5-5"></a>    <span class="n">Producto</span><span class="p">(</span><span class="s2">&quot;Webcam&quot;</span><span class="p">,</span> <span class="mf">60.0</span><span class="p">),</span>
+</span><span id="__span-5-6"><a id="__codelineno-5-6" name="__codelineno-5-6" href="#__codelineno-5-6"></a><span class="p">]</span>
+</span><span id="__span-5-7"><a id="__codelineno-5-7" name="__codelineno-5-7" href="#__codelineno-5-7"></a>
+</span><span id="__span-5-8"><a id="__codelineno-5-8" name="__codelineno-5-8" href="#__codelineno-5-8"></a><span class="c1"># Aplicar descuento solo al primero</span>
+</span><span id="__span-5-9"><a id="__codelineno-5-9" name="__codelineno-5-9" href="#__codelineno-5-9"></a><span class="n">productos</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">aplicar_descuento</span><span class="p">(</span><span class="mi">20</span><span class="p">)</span>
+</span><span id="__span-5-10"><a id="__codelineno-5-10" name="__codelineno-5-10" href="#__codelineno-5-10"></a>
+</span><span id="__span-5-11"><a id="__codelineno-5-11" name="__codelineno-5-11" href="#__codelineno-5-11"></a><span class="k">for</span> <span class="n">p</span> <span class="ow">in</span> <span class="n">productos</span><span class="p">:</span>
+</span><span id="__span-5-12"><a id="__codelineno-5-12" name="__codelineno-5-12" href="#__codelineno-5-12"></a>    <span class="nb">print</span><span class="p">(</span><span class="n">p</span><span class="p">)</span>
+</span><span id="__span-5-13"><a id="__codelineno-5-13" name="__codelineno-5-13" href="#__codelineno-5-13"></a><span class="c1"># Producto(&#39;Teclado&#39;, $64.00)   ← modificado</span>
+</span><span id="__span-5-14"><a id="__codelineno-5-14" name="__codelineno-5-14" href="#__codelineno-5-14"></a><span class="c1"># Producto(&#39;Monitor&#39;, $400.00)  ← sin cambios</span>
+</span><span id="__span-5-15"><a id="__codelineno-5-15" name="__codelineno-5-15" href="#__codelineno-5-15"></a><span class="c1"># Producto(&#39;Webcam&#39;, $60.00)    ← sin cambios</span>
+</span></code></pre></div>
+<blockquote>
+<p><strong>En la práctica:</strong> un error clásico de quienes empiezan es usar atributos de <em>clase</em> (definidos directamente en el cuerpo de la clase, fuera de <code>__init__</code>) pensando que son atributos de instancia. Los atributos de clase son compartidos por <em>todas</em> las instancias, lo cual raramente es lo que se quiere. Siempre asigná el estado inicial del objeto dentro de <code>__init__</code> usando <code>self</code>.</p>
+</blockquote>
 <hr />
 
 
@@ -1803,7 +1646,7 @@
       <nav class="md-footer__inner md-grid" aria-label="Pie" >
         
           
-          <a href="../../introduccion/cambio_de_mentalidad/" class="md-footer__link md-footer__link--prev" aria-label="Anterior: El Cambio de Mentalidad">
+          <a href="../orientado_a_objetos/" class="md-footer__link md-footer__link--prev" aria-label="Anterior: El Paradigma Orientado a Objetos">
             <div class="md-footer__button md-icon">
               
               <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M20 11v2H8l5.5 5.5-1.42 1.42L4.16 12l7.92-7.92L13.5 5.5 8 11z"/></svg>
@@ -1813,20 +1656,20 @@
                 Anterior
               </span>
               <div class="md-ellipsis">
-                El Cambio de Mentalidad
+                El Paradigma Orientado a Objetos
               </div>
             </div>
           </a>
         
         
           
-          <a href="../clases_y_objetos/" class="md-footer__link md-footer__link--next" aria-label="Siguiente: Clases y Objetos">
+          <a href="../elementos/" class="md-footer__link md-footer__link--next" aria-label="Siguiente: Elementos del Modelo">
             <div class="md-footer__title">
               <span class="md-footer__direction">
                 Siguiente
               </span>
               <div class="md-ellipsis">
-                Clases y Objetos
+                Elementos del Modelo
               </div>
             </div>
             <div class="md-footer__button md-icon">
