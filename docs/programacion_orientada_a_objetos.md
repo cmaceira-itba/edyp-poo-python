@@ -151,7 +151,7 @@ Un código altamente cohesionado tiende a ser más autocontenido, con menos depe
 
 ---
 
-## ¿Qué es lo ideal?
+### ¿Qué es lo ideal?
 
 Teniendo en cuenta todo lo expuesto, hay que buscar el balance que garantiza mayor simplicidad y coherencia. La tendencia que deberíamos buscar es movernos siempre hacia **bajo acoplamiento y alta cohesión**.
 
