@@ -639,6 +639,23 @@
     </span>
   </a>
   
+    <nav class="md-nav" aria-label="Encapsulamiento">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#convenciones-en-python" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Convenciones en Python
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
 </li>
         
           <li class="md-nav__item">
@@ -1103,15 +1120,19 @@ Prerequisitos: conocimientos básicos de Python (variables, funciones, estructur
 <h3 id="que-es-lo-ideal">¿Qué es lo ideal?</h3>
 <p>Teniendo en cuenta todo lo expuesto, hay que buscar el balance que garantiza mayor simplicidad y coherencia. La tendencia que deberíamos buscar es movernos siempre hacia <strong>bajo acoplamiento y alta cohesión</strong>.</p>
 <p><img alt="Cuadrante de acoplamiento y cohesión: el objetivo es bajo acoplamiento y alta cohesión" src="../img/acoplamiento_cohesion_cuadrante.png" /></p>
-<p>Un bajo acoplamiento nos garantiza:
-- Mejorar la mantenibilidad de los módulos del software, facilitar los cambios sin tener que revisar todos los módulos dependientes.
-- Mejorar la reutilización de las unidades del software.
-- Facilitar las pruebas de cada módulo, al ser más independientes.</p>
-<p>Por otro lado, una alta cohesión nos permite:
-- Tener un código más entendible, legible y coherente.
-- Mejorar la reutilización, al tener todo lo relacionado con una cosa, en esa cosa.
-- Mejorar el mantenimiento del software, ya que todo está perfectamente localizado.
-- Facilitar las pruebas de caja negra.</p>
+<p>Un bajo acoplamiento nos garantiza:</p>
+<ul>
+<li>Mejorar la mantenibilidad de los módulos del software, facilitar los cambios sin tener que revisar todos los módulos dependientes.</li>
+<li>Mejorar la reutilización de las unidades del software.</li>
+<li>Facilitar las pruebas de cada módulo, al ser más independientes.</li>
+</ul>
+<p>Por otro lado, una alta cohesión nos permite:</p>
+<ul>
+<li>Tener un código más entendible, legible y coherente.</li>
+<li>Mejorar la reutilización, al tener todo lo relacionado con una cosa, en esa cosa.</li>
+<li>Mejorar el mantenimiento del software, ya que todo está perfectamente localizado.</li>
+<li>Facilitar las pruebas de caja negra.</li>
+</ul>
 <hr />
 <h2 id="el-paradigma-orientado-a-objetos">El Paradigma Orientado a Objetos</h2>
 <h3 id="programacion-orientada-a-objetos">Programación Orientada a Objetos</h3>
@@ -1231,7 +1252,7 @@ Prerequisitos: conocimientos básicos de Python (variables, funciones, estructur
 <p>El encapsulamiento es el mecanismo que permite proteger los datos internos de un objeto y controlar cómo se accede o modifica su estado. La idea central es que el estado interno de un objeto no debería ser accesible directamente desde afuera: el objeto es el único responsable de mantener su propia consistencia.</p>
 <p>La abstracción y el encapsulamiento son conceptos complementarios. La abstracción define <em>qué</em> puede hacer un objeto (su contrato externo); el encapsulamiento protege <em>cómo</em> lo hace (su implementación interna).</p>
 <p><img alt="El encapsulamiento oculta los detalles de implementación de un objeto" src="../img/encapsulamiento.png" /></p>
-<p><strong>Convenciones en Python</strong></p>
+<h4 id="convenciones-en-python">Convenciones en Python</h4>
 <p>Python no tiene modificadores de acceso como <code>private</code> o <code>protected</code>, pero tiene convenciones que todos los desarrolladores respetan:</p>
 <table>
 <thead>
@@ -1357,9 +1378,11 @@ Prerequisitos: conocimientos básicos de Python (variables, funciones, estructur
 </span></code></pre></div>
 <h3 id="jerarquia">Jerarquía</h3>
 <p>La abstracción es buena, pero en cualquier sistema real aparecen decenas de abstracciones que necesitan relacionarse entre sí. La jerarquía es la forma en que organizamos esas relaciones de manera que el sistema siga siendo comprensible.</p>
-<p>Las dos jerarquías fundamentales en POO son:
-- <strong>Estructura de clases</strong> (jerarquía "es-un"): una subclase <em>es un</em> tipo específico de su clase padre. Se implementa con <strong>herencia</strong>.
-- <strong>Estructura de objetos</strong> (jerarquía "tiene-un"): un objeto <em>contiene</em> o <em>usa</em> a otro. Se implementa con <strong>composición</strong>.</p>
+<p>Las dos jerarquías fundamentales en POO son:</p>
+<ul>
+<li><strong>Estructura de clases</strong> (jerarquía "es-un"): una subclase <em>es un</em> tipo específico de su clase padre. Se implementa con <strong>herencia</strong>.</li>
+<li><strong>Estructura de objetos</strong> (jerarquía "tiene-un"): un objeto <em>contiene</em> o <em>usa</em> a otro. Se implementa con <strong>composición</strong>.</li>
+</ul>
 <p>Elegir mal entre estas dos relaciones es uno de los errores más comunes en el diseño orientado a objetos. La regla es directa: si podés decir con naturalidad que A <em>es un</em> B, usá herencia. Si la relación es A <em>tiene un</em> B o A <em>usa un</em> B, usá composición. En la práctica, el abuso de herencia genera jerarquías rígidas y difíciles de cambiar — la composición suele ser la opción más flexible.</p>
 <div class="language-python highlight"><pre><span></span><code><span id="__span-7-1"><a id="__codelineno-7-1" name="__codelineno-7-1" href="#__codelineno-7-1"></a><span class="c1"># ── Jerarquía &quot;es-un&quot; (herencia) ────────────────────────────────────────────</span>
 </span><span id="__span-7-2"><a id="__codelineno-7-2" name="__codelineno-7-2" href="#__codelineno-7-2"></a>
@@ -1732,10 +1755,12 @@ Prerequisitos: conocimientos básicos de Python (variables, funciones, estructur
 </span></code></pre></div>
 <h3 id="excepciones-personalizadas">Excepciones Personalizadas</h3>
 <p>Las excepciones built-in son suficientes para errores de programación: un <code>TypeError</code> o <code>ValueError</code> son claros. Pero para <strong>reglas de negocio</strong> propias de tu dominio, lo correcto es definir excepciones propias.</p>
-<p><strong>¿Por qué crear excepciones propias?</strong>
-- <strong>Semántica</strong>: <code>StockInsuficienteError</code> comunica el problema sin necesidad de leer el mensaje.
-- <strong>Captura selectiva</strong>: quien llama puede hacer <code>except StockInsuficienteError</code> para manejar ese caso específico.
-- <strong>Información adicional</strong>: podés agregar atributos con el contexto relevante.</p>
+<p><strong>¿Por qué crear excepciones propias?</strong></p>
+<ul>
+<li><strong>Semántica</strong>: <code>StockInsuficienteError</code> comunica el problema sin necesidad de leer el mensaje.</li>
+<li><strong>Captura selectiva</strong>: quien llama puede hacer <code>except StockInsuficienteError</code> para manejar ese caso específico.</li>
+<li><strong>Información adicional</strong>: podés agregar atributos con el contexto relevante.</li>
+</ul>
 <p><strong>Patrón recomendado:</strong> definí una excepción base por módulo o dominio, y excepciones específicas que hereden de ella:</p>
 <div class="language-text highlight"><pre><span></span><code><span id="__span-16-1"><a id="__codelineno-16-1" name="__codelineno-16-1" href="#__codelineno-16-1"></a>Exception
 </span><span id="__span-16-2"><a id="__codelineno-16-2" name="__codelineno-16-2" href="#__codelineno-16-2"></a> └── InventarioError                ← excepción base del dominio
@@ -1815,10 +1840,12 @@ Prerequisitos: conocimientos básicos de Python (variables, funciones, estructur
 <p>Un programa sin tests es un programa que no sabés si funciona. En POO, los tests tienen un rol especial: <strong>verifican el contrato público de una clase</strong>. Si cambiás la implementación interna sin romper los tests, sabés que el comportamiento externo se preservó.</p>
 <h3 id="que-es-un-test-unitario">¿Qué es un test unitario?</h3>
 <p>Un <strong>test unitario</strong> testea <strong>una sola unidad</strong> de código en aislamiento. En POO, la unidad es una clase. El objetivo es verificar que sus métodos se comportan correctamente dado un estado inicial y unos inputs determinados.</p>
-<p>Lo que <strong>no</strong> hace un test unitario:
-- No testea cómo dos clases interactúan entre sí (eso es un test de integración).
-- No testea la base de datos, la red ni el sistema de archivos.
-- No testea lógica de otras clases relacionadas.</p>
+<p>Lo que <strong>no</strong> hace un test unitario:</p>
+<ul>
+<li>No testea cómo dos clases interactúan entre sí (eso es un test de integración).</li>
+<li>No testea la base de datos, la red ni el sistema de archivos.</li>
+<li>No testea lógica de otras clases relacionadas.</li>
+</ul>
 <p>Si tu clase <code>Inventario</code> usa una clase <code>Producto</code>, en el test de <code>Inventario</code> vas a <strong>simular</strong> el comportamiento de <code>Producto</code> con un <em>mock</em>, sin usar la clase real.</p>
 <h3 id="pytest-el-framework-estandar">pytest: El Framework Estándar</h3>
 <p><code>pytest</code> es el framework de testing más usado en el ecosistema Python. Es más conciso que <code>unittest</code> y tiene un sistema de descubrimiento automático de tests.</p>
@@ -1956,10 +1983,12 @@ Prerequisitos: conocimientos básicos de Python (variables, funciones, estructur
 </span></code></pre></div>
 <h3 id="mocking-aislar-la-clase-bajo-test">Mocking: Aislar la Clase Bajo Test</h3>
 <p>Cuando una clase depende de otra, no querés que los tests de la primera fallen por culpa de la segunda. La solución es <strong>mockear</strong> la dependencia: reemplazarla con un objeto simulado.</p>
-<p><strong>¿Cuándo mockear?</strong>
-- Cuando tu clase usa otra clase de dominio (para aislar la unidad bajo test).
-- Cuando la dependencia conecta con recursos externos: bases de datos, APIs, sistema de archivos.
-- Cuando necesitás simular condiciones difíciles de reproducir (ej: una API que devuelve error 500).</p>
+<p><strong>¿Cuándo mockear?</strong></p>
+<ul>
+<li>Cuando tu clase usa otra clase de dominio (para aislar la unidad bajo test).</li>
+<li>Cuando la dependencia conecta con recursos externos: bases de datos, APIs, sistema de archivos.</li>
+<li>Cuando necesitás simular condiciones difíciles de reproducir (ej: una API que devuelve error 500).</li>
+</ul>
 <table>
 <thead>
 <tr>
@@ -2118,11 +2147,11 @@ Prerequisitos: conocimientos básicos de Python (variables, funciones, estructur
 <ul>
 <li>Booch, G. <em>Object Oriented Analysis and Design with Applications</em>, 3<sup>rd</sup> Edition.</li>
 <li>Martin, R. C. <em>Clean Code: A Handbook of Agile Software Craftsmanship</em>.</li>
-<li>https://profile.es/blog/que-son-los-paradigmas-de-programacion/</li>
-<li>https://es.wikipedia.org/wiki/Programaci%C3%B3n_estructurada</li>
-<li>https://www.disrupciontecnologica.com/acoplamiento-y-cohesion/</li>
-<li>https://refactoring.guru/refactoring/what-is-refactoring</li>
-<li>https://www.geeksforgeeks.org/software-engineering/object-oriented-analysis-and-design/</li>
+<li><a href="https://profile.es/blog/que-son-los-paradigmas-de-programacion/">https://profile.es/blog/que-son-los-paradigmas-de-programacion/</a></li>
+<li><a href="https://es.wikipedia.org/wiki/Programaci%C3%B3n_estructurada">https://es.wikipedia.org/wiki/Programaci%C3%B3n_estructurada</a></li>
+<li><a href="https://www.disrupciontecnologica.com/acoplamiento-y-cohesion/">https://www.disrupciontecnologica.com/acoplamiento-y-cohesion/</a></li>
+<li><a href="https://refactoring.guru/refactoring/what-is-refactoring">https://refactoring.guru/refactoring/what-is-refactoring</a></li>
+<li><a href="https://www.geeksforgeeks.org/software-engineering/object-oriented-analysis-and-design/">https://www.geeksforgeeks.org/software-engineering/object-oriented-analysis-and-design/</a></li>
 </ul>
 
 
