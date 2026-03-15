@@ -1,0 +1,9 @@
+[project]
+name = "edyp-poo-python"
+version = "0.1.0"
+description = "Material de referencia para POO en Python — ITBA EDyP"
+readme = "README.md"
+requires-python = ">=3.12"
+dependencies = [
+    "pytest>=9.0.2",
+]
