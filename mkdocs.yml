@@ -85,10 +85,10 @@ plugins:
 
 nav:
   - Inicio: index.md
-  - Paradigmas:
-      - Introducción y Paradigma Estructurado: paradigmas/introduccion.md
-      - El Paradigma Orientado a Objetos: paradigmas/orientado_a_objetos.md
+  - Introducción:
+      - IG y el Paradigma Estructurado: paradigmas/introduccion.md
   - Modelo de Objetos:
+      - El Paradigma Orientado a Objetos: modelo/orientado_a_objetos.md
       - Elementos del Modelo: modelo/elementos.md
       - Principios SOLID: modelo/solid.md
   - Prácticas:
