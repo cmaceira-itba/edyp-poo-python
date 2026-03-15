@@ -1,0 +1,91 @@
+site_name: POO en Python — ITBA
+site_description: Material de referencia para la materia Estructuras de Datos y Programación
+site_author: Cátedra EDyP — ITBA
+site_url: https://comunicarlos.github.io/edyp-poo-python/
+
+repo_name: comunicarlos/edyp-poo-python
+repo_url: https://github.com/comunicarlos/edyp-poo-python
+
+docs_dir: docs
+theme:
+  name: material
+  language: es
+  palette:
+    # Modo claro
+    - scheme: default
+      primary: indigo
+      accent: indigo
+      toggle:
+        icon: material/brightness-7
+        name: Cambiar a modo oscuro
+    # Modo oscuro
+    - scheme: slate
+      primary: indigo
+      accent: indigo
+      toggle:
+        icon: material/brightness-4
+        name: Cambiar a modo claro
+  features:
+    - navigation.tabs           # Tabs superiores para secciones macro
+    - navigation.sections       # Agrupa ítems en el sidebar
+    - navigation.expand         # Expande secciones por defecto
+    - navigation.top            # Botón "volver arriba"
+    - search.suggest            # Autocompletado en búsqueda
+    - search.highlight          # Resalta términos buscados
+    - content.code.copy         # Botón para copiar snippets
+    - content.code.annotate     # Soporte para anotaciones en código
+
+markdown_extensions:
+  # Bloques de código con resaltado de sintaxis (Pygments)
+  - pymdownx.highlight:
+      anchor_linenums: true
+      line_spans: __span
+      pygments_lang_class: true
+  - pymdownx.inlinehilite
+  - pymdownx.superfences:
+      custom_fences:
+        - name: mermaid
+          class: mermaid
+          format: !!python/name:pymdownx.superfences.fence_code_format
+
+  # Admonitions: notas, advertencias, ejercicios, etc.
+  - admonition
+  - pymdownx.details            # Admonitions colapsables (??? note)
+
+  # Tipografía y formato
+  - pymdownx.smartsymbols
+  - pymdownx.tabbed:
+      alternate_style: true     # Tabs de contenido dentro de una página
+  - pymdownx.tasklist:
+      custom_checkbox: true     # Checklists estilo GitHub
+
+  # Tablas y listas de definición
+  - tables
+  - def_list
+
+  # Soporte para HTML embebido y atributos Markdown
+  - attr_list
+  - md_in_html
+
+  # Metadata y footnotes
+  - meta
+  - footnotes
+
+  # Emojis e íconos de Material
+  - pymdownx.emoji:
+      emoji_index: !!python/name:material.extensions.emoji.twemoji
+      emoji_generator: !!python/name:material.extensions.emoji.to_svg
+
+plugins:
+  - search:
+      lang: es
+
+nav:
+  - Inicio: index.md
+  - Apuntes:
+      - Programación Orientada a Objetos: programacion_orientada_a_objetos.md
+
+extra:
+  social:
+    - icon: fontawesome/brands/github
+      link: https://github.com/comunicarlos/edyp-poo-python

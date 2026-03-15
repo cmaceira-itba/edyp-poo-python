@@ -24,10 +24,8 @@ El material principal está en [`programacion_orientada_a_objetos.md`](programac
 
 ```
 .
-├── docs/                                  # Fuentes del sitio MkDocs
-│   ├── index.md                           # Página de inicio (este README)
-│   ├── programacion_orientada_a_objetos.md # Material principal
-│   └── img/                               # Imágenes del material
+├── programacion_orientada_a_objetos.md   # Material principal (Markdown plano)
+├── programacion_orientada_a_objetos.ipynb # Archivo histórico — no se edita
 ├── examples/                              # Snippets ejecutables por capítulo
 │   ├── 01_paradigma_estructurado.py
 │   ├── 02_acoplamiento_cohesion.py
@@ -37,8 +35,7 @@ El material principal está en [`programacion_orientada_a_objetos.md`](programac
 │   ├── 06_modularidad_jerarquia.py
 │   ├── 07_excepciones.py
 │   └── 08_testing_pytest.py
-├── mkdocs.yml                             # Configuración de MkDocs
-├── .github/workflows/deploy.yml           # GitHub Action para gh-pages
+├── img/                                   # Imágenes del material
 ├── pyproject.toml                         # Dependencias del proyecto (uv)
 ├── uv.lock                                # Lockfile generado por uv
 └── CLAUDE.md                              # Instrucciones para el agente IA
