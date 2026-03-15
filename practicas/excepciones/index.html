@@ -870,13 +870,13 @@
 
 
 <h1 id="excepciones">Excepciones</h1>
-<p>Las excepciones son el mecanismo que usa Python para manejar situaciones anómalas durante la ejecución. En el paradigma orientado a objetos, las excepciones son <strong>objetos</strong>: instancias de clases que forman una jerarquía de herencia.</p>
-<p>Lejos de ser un recurso de "último momento", el manejo de excepciones es parte integral del <strong>diseño</strong>. Bertrand Meyer lo formalizó en el concepto de <em>Design by Contract</em>: cada método tiene precondiciones (qué espera recibir) y postcondiciones (qué garantiza producir). Las excepciones son el instrumento para comunicar que ese contrato fue violado.</p>
+<p>Python maneja las situaciones anómalas durante la ejecución mediante excepciones. En el paradigma orientado a objetos, estas son <strong>objetos</strong>: instancias de clases que forman una jerarquía de herencia.</p>
+<p>Lejos de ser un recurso de "último momento", el manejo de excepciones es parte integral del <strong>diseño</strong>. Bertrand Meyer formalizó esta idea en el concepto de <em>Design by Contract</em>: cada método tiene precondiciones (qué espera recibir) y postcondiciones (qué garantiza producir); las excepciones son el instrumento para comunicar que ese contrato fue violado.</p>
 <blockquote>
-<p><strong>En la práctica:</strong> en proyectos reales, las excepciones mal diseñadas son una fuente constante de bugs difíciles de rastrear. Una excepción genérica como <code>Exception("algo salió mal")</code> no le dice nada a quien la captura. Una excepción bien diseñada como <code>StockInsuficienteError</code> es autodocumentada y le permite a quien llama tomar decisiones informadas.</p>
+<p><strong>En la práctica:</strong> en proyectos reales, las excepciones mal diseñadas son una fuente constante de bugs difíciles de rastrear. Una excepción genérica como <code>Exception("algo salió mal")</code> nada le dice a quien la captura; en cambio, una como <code>StockInsuficienteError</code> es autodocumentada y le permite a quien llama tomar decisiones informadas.</p>
 </blockquote>
 <h2 id="excepciones-built-in-principales">Excepciones Built-in Principales</h2>
-<p>Python incluye una jerarquía de excepciones. Todas heredan de <code>BaseException</code>, pero en código de aplicación trabajás casi siempre con subclases de <code>Exception</code>:</p>
+<p>Python incluye una jerarquía de excepciones integrada. Todas heredan de <code>BaseException</code>, aunque en código de aplicación trabajás casi siempre con subclases de <code>Exception</code>:</p>
 <div class="language-text highlight"><pre><span></span><code><span id="__span-0-1"><a id="__codelineno-0-1" name="__codelineno-0-1" href="#__codelineno-0-1"></a>BaseException
 </span><span id="__span-0-2"><a id="__codelineno-0-2" name="__codelineno-0-2" href="#__codelineno-0-2"></a> ├── SystemExit           → sys.exit() lo lanza, no lo capturés
 </span><span id="__span-0-3"><a id="__codelineno-0-3" name="__codelineno-0-3" href="#__codelineno-0-3"></a> ├── KeyboardInterrupt    → Ctrl+C, tampoco lo capturés
@@ -936,7 +936,7 @@
 </span><span id="__span-1-9"><a id="__codelineno-1-9" name="__codelineno-1-9" href="#__codelineno-1-9"></a><span class="k">finally</span><span class="p">:</span>
 </span><span id="__span-1-10"><a id="__codelineno-1-10" name="__codelineno-1-10" href="#__codelineno-1-10"></a>    <span class="c1"># se ejecuta siempre, con o sin excepción (ideal para liberar recursos)</span>
 </span></code></pre></div>
-<p>El bloque <code>else</code> es útil para separar "la operación exitosa" del bloque <code>try</code>, dejando este último solo para el manejo de errores. El bloque <code>finally</code> es ideal para cerrar archivos, conexiones a bases de datos, etc.</p>
+<p>El bloque <code>else</code> separa con claridad "la operación exitosa" del bloque <code>try</code>, que queda reservado exclusivamente para el manejo de errores. Por su parte, <code>finally</code> es ideal para liberar recursos: cerrar archivos, conexiones a bases de datos, etc.</p>
 <h2 id="uso-de-excepciones-built-in-en-una-clase-de-dominio">Uso de excepciones built-in en una clase de dominio</h2>
 <div class="language-python highlight"><pre><span></span><code><span id="__span-2-1"><a id="__codelineno-2-1" name="__codelineno-2-1" href="#__codelineno-2-1"></a><span class="k">class</span><span class="w"> </span><span class="nc">CuentaBancaria</span><span class="p">:</span>
 </span><span id="__span-2-2"><a id="__codelineno-2-2" name="__codelineno-2-2" href="#__codelineno-2-2"></a><span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
@@ -997,7 +997,7 @@
 </span><span id="__span-2-57"><a id="__codelineno-2-57" name="__codelineno-2-57" href="#__codelineno-2-57"></a>    <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Operación registrada.&quot;</span><span class="p">)</span>                                 <span class="c1"># siempre se ejecuta</span>
 </span></code></pre></div>
 <h2 id="excepciones-personalizadas">Excepciones Personalizadas</h2>
-<p>Las excepciones built-in son suficientes para errores de programación: un <code>TypeError</code> o <code>ValueError</code> son claros. Pero para <strong>reglas de negocio</strong> propias de tu dominio, lo correcto es definir excepciones propias.</p>
+<p>Para errores de programación —un <code>TypeError</code> o un <code>ValueError</code>— las excepciones built-in son suficientes. Cuando se trata de <strong>reglas de negocio</strong> propias del dominio, sin embargo, lo correcto es definir excepciones propias.</p>
 <p><strong>¿Por qué crear excepciones propias?</strong></p>
 <ul>
 <li><strong>Semántica</strong>: <code>StockInsuficienteError</code> comunica el problema sin necesidad de leer el mensaje.</li>

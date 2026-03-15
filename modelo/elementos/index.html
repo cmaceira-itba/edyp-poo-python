@@ -895,10 +895,10 @@
 <li>Jerarquía</li>
 </ol>
 <h2 id="abstraccion">Abstracción</h2>
-<p>La abstracción es la capacidad de identificar las características esenciales de un objeto e ignorar los detalles irrelevantes para el contexto. Según Booch, <em>"una abstracción denota las características esenciales de un objeto que lo distinguen de todos los demás tipos de objetos y, por lo tanto, proporcionan límites conceptuales claramente definidos en relación con la perspectiva del observador."</em></p>
+<p>Identificar las características esenciales de un objeto e ignorar los detalles irrelevantes para el contexto es, precisamente, la definición de abstracción. Según Booch, <em>"una abstracción denota las características esenciales de un objeto que lo distinguen de todos los demás tipos de objetos y, por lo tanto, proporcionan límites conceptuales claramente definidos en relación con la perspectiva del observador."</em></p>
 <p><img alt="La abstracción se centra en las características esenciales de un objeto según la perspectiva del observador" src="../../img/abstraccion.png" /></p>
-<p>Un ejemplo cotidiano: cuando manejás un auto, usás el volante, el acelerador y los frenos sin necesitar saber nada sobre cómo funciona el motor internamente. El auto te expone una interfaz simple y oculta la complejidad del mecanismo. En POO hacemos exactamente lo mismo con las clases: exponemos lo necesario y ocultamos lo demás.</p>
-<p>En Python, la abstracción formal se implementa con clases abstractas del módulo <code>abc</code>. Una clase abstracta define <em>qué</em> operaciones debe ofrecer un objeto, sin especificar <em>cómo</em> las implementa cada subclase concreta.</p>
+<p>Para ilustrar esto, pensá en cómo manejás un auto: usás el volante, el acelerador y los frenos sin necesitar saber nada sobre cómo funciona el motor internamente. El auto expone una interfaz simple y oculta la complejidad del mecanismo. En POO hacemos exactamente lo mismo con las clases: exponemos lo necesario y ocultamos lo demás.</p>
+<p>Llevado al código Python, la abstracción formal se implementa con clases abstractas del módulo <code>abc</code>. Una clase abstracta define <em>qué</em> operaciones debe ofrecer un objeto, sin especificar <em>cómo</em> las implementa cada subclase concreta.</p>
 <div class="language-python highlight"><pre><span></span><code><span id="__span-0-1"><a id="__codelineno-0-1" name="__codelineno-0-1" href="#__codelineno-0-1"></a><span class="kn">from</span><span class="w"> </span><span class="nn">abc</span><span class="w"> </span><span class="kn">import</span> <span class="n">ABC</span><span class="p">,</span> <span class="n">abstractmethod</span>
 </span><span id="__span-0-2"><a id="__codelineno-0-2" name="__codelineno-0-2" href="#__codelineno-0-2"></a>
 </span><span id="__span-0-3"><a id="__codelineno-0-3" name="__codelineno-0-3" href="#__codelineno-0-3"></a><span class="k">class</span><span class="w"> </span><span class="nc">Figura</span><span class="p">(</span><span class="n">ABC</span><span class="p">):</span>
@@ -949,11 +949,11 @@
 </span><span id="__span-0-48"><a id="__codelineno-0-48" name="__codelineno-0-48" href="#__codelineno-0-48"></a>    <span class="nb">print</span><span class="p">(</span><span class="n">figura</span><span class="o">.</span><span class="n">describir</span><span class="p">())</span>
 </span></code></pre></div>
 <h2 id="encapsulamiento">Encapsulamiento</h2>
-<p>El encapsulamiento es el mecanismo que permite proteger los datos internos de un objeto y controlar cómo se accede o modifica su estado. La idea central es que el estado interno de un objeto no debería ser accesible directamente desde afuera: el objeto es el único responsable de mantener su propia consistencia.</p>
-<p>La abstracción y el encapsulamiento son conceptos complementarios. La abstracción define <em>qué</em> puede hacer un objeto (su contrato externo); el encapsulamiento protege <em>cómo</em> lo hace (su implementación interna).</p>
+<p>Proteger los datos internos de un objeto y controlar cómo se accede o modifica su estado es la función del encapsulamiento. La idea central es que el estado interno no debería ser accesible directamente desde afuera: cada objeto es el único responsable de mantener su propia consistencia.</p>
+<p>Ambos conceptos son complementarios pero no equivalentes. Mientras la abstracción define <em>qué</em> puede hacer un objeto (su contrato externo), el encapsulamiento protege <em>cómo</em> lo hace (su implementación interna).</p>
 <p><img alt="El encapsulamiento oculta los detalles de implementación de un objeto" src="../../img/encapsulamiento.png" /></p>
 <h3 id="convenciones-en-python">Convenciones en Python</h3>
-<p>Python no tiene modificadores de acceso como <code>private</code> o <code>protected</code>, pero tiene convenciones que todos los desarrolladores respetan:</p>
+<p>A diferencia de lenguajes como Java o C++, Python no tiene modificadores de acceso explícitos como <code>private</code> o <code>protected</code>. En cambio, sigue convenciones que todos los desarrolladores respetan:</p>
 <table>
 <thead>
 <tr>
@@ -1019,10 +1019,10 @@
 </span><span id="__span-1-36"><a id="__codelineno-1-36" name="__codelineno-1-36" href="#__codelineno-1-36"></a><span class="c1"># cuenta.__saldo = 999999  # ❌ no funciona (name mangling)</span>
 </span></code></pre></div>
 <h2 id="modularidad">Modularidad</h2>
-<p>El desarrollador debe equilibrar dos preocupaciones técnicas contrapuestas: el deseo de encapsular abstracciones y la necesidad de que ciertas abstracciones sean visibles para otros módulos.</p>
+<p>Todo diseño orientado a objetos enfrenta una tensión inherente: el deseo de encapsular abstracciones versus la necesidad de que ciertas abstracciones sean visibles para otros módulos. La modularidad resuelve esa tensión al descomponer el sistema en un conjunto de módulos <strong>cohesivos</strong> y <strong>débilmente acoplados</strong>.</p>
 <p><img alt="La modularidad empaqueta abstracciones en unidades discretas e independientes" src="../../img/modularidad.png" /></p>
-<p>La modularidad es la propiedad de un sistema que se ha descompuesto en un conjunto de módulos <strong>cohesivos</strong> y <strong>débilmente acoplados</strong>. En Python, cada archivo <code>.py</code> es un módulo. Los principios de abstracción, encapsulación y modularidad son sinérgicos.</p>
-<p>El siguiente ejemplo muestra tres clases que en un sistema real vivirían en archivos separados (<code>productos.py</code>, <code>inventario.py</code>, <code>reporte.py</code>). Cada módulo tiene una única responsabilidad y sus dependencias son mínimas:</p>
+<p>En Python, cada archivo <code>.py</code> es naturalmente un módulo. Dado que abstracción, encapsulación y modularidad son principios sinérgicos, la modularidad opera como el contenedor que los organiza y delimita.</p>
+<p>A continuación, el ejemplo muestra tres clases que en un sistema real vivirían en archivos separados (<code>productos.py</code>, <code>inventario.py</code>, <code>reporte.py</code>). Cada módulo tiene una única responsabilidad y sus dependencias son mínimas:</p>
 <div class="language-python highlight"><pre><span></span><code><span id="__span-2-1"><a id="__codelineno-2-1" name="__codelineno-2-1" href="#__codelineno-2-1"></a><span class="c1"># --- módulo: productos.py ---</span>
 </span><span id="__span-2-2"><a id="__codelineno-2-2" name="__codelineno-2-2" href="#__codelineno-2-2"></a><span class="k">class</span><span class="w"> </span><span class="nc">Producto</span><span class="p">:</span>
 </span><span id="__span-2-3"><a id="__codelineno-2-3" name="__codelineno-2-3" href="#__codelineno-2-3"></a><span class="w">    </span><span class="sd">&quot;&quot;&quot;Encapsula los datos y reglas de negocio de un producto.&quot;&quot;&quot;</span>
@@ -1077,7 +1077,7 @@
 </span><span id="__span-2-52"><a id="__codelineno-2-52" name="__codelineno-2-52" href="#__codelineno-2-52"></a><span class="nb">print</span><span class="p">(</span><span class="n">reporte</span><span class="o">.</span><span class="n">generar</span><span class="p">(</span><span class="n">inv</span><span class="p">))</span>
 </span></code></pre></div>
 <h2 id="jerarquia">Jerarquía</h2>
-<p>La abstracción es buena, pero en cualquier sistema real aparecen decenas de abstracciones que necesitan relacionarse entre sí. La jerarquía es la forma en que organizamos esas relaciones de manera que el sistema siga siendo comprensible.</p>
+<p>Cualquier sistema real involucra decenas de abstracciones que necesitan relacionarse entre sí. La jerarquía es la forma de organizar esas relaciones de manera que el sistema siga siendo comprensible.</p>
 <p>Las dos jerarquías fundamentales en POO son:</p>
 <ul>
 <li><strong>Estructura de clases</strong> (jerarquía "es-un"): una subclase <em>es un</em> tipo específico de su clase padre. Se implementa con <strong>herencia</strong>.</li>

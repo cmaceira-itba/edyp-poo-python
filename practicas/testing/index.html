@@ -872,7 +872,7 @@
 <h1 id="testing-de-clases-con-pytest">Testing de Clases con pytest</h1>
 <p>Un programa sin tests es un programa que no sabés si funciona. En POO, los tests tienen un rol especial: <strong>verifican el contrato público de una clase</strong>. Si cambiás la implementación interna sin romper los tests, sabés que el comportamiento externo se preservó.</p>
 <h2 id="que-es-un-test-unitario">¿Qué es un test unitario?</h2>
-<p>Un <strong>test unitario</strong> testea <strong>una sola unidad</strong> de código en aislamiento. En POO, la unidad es una clase. El objetivo es verificar que sus métodos se comportan correctamente dado un estado inicial y unos inputs determinados.</p>
+<p>Un <strong>test unitario</strong> verifica <strong>una sola unidad</strong> de código en aislamiento — en POO, esa unidad es una clase. El objetivo es confirmar que sus métodos se comportan correctamente dado un estado inicial y unos inputs determinados.</p>
 <p>Lo que <strong>no</strong> hace un test unitario:</p>
 <ul>
 <li>No testea cómo dos clases interactúan entre sí (eso es un test de integración).</li>
@@ -881,7 +881,7 @@
 </ul>
 <p>Si tu clase <code>Inventario</code> usa una clase <code>Producto</code>, en el test de <code>Inventario</code> vas a <strong>simular</strong> el comportamiento de <code>Producto</code> con un <em>mock</em>, sin usar la clase real.</p>
 <h2 id="pytest-el-framework-estandar">pytest: El Framework Estándar</h2>
-<p><code>pytest</code> es el framework de testing más usado en el ecosistema Python. Es más conciso que <code>unittest</code> y tiene un sistema de descubrimiento automático de tests.</p>
+<p><code>pytest</code> es el framework de testing más usado en el ecosistema Python: más conciso que <code>unittest</code> y con descubrimiento automático de tests.</p>
 <p><strong>Instalación:</strong></p>
 <div class="language-bash highlight"><pre><span></span><code><span id="__span-0-1"><a id="__codelineno-0-1" name="__codelineno-0-1" href="#__codelineno-0-1"></a>pip<span class="w"> </span>install<span class="w"> </span>pytest<span class="w"> </span>pytest-mock
 </span></code></pre></div>
@@ -894,11 +894,7 @@
 </span><span id="__span-1-6"><a id="__codelineno-1-6" name="__codelineno-1-6" href="#__codelineno-1-6"></a>    ├── test_cuenta_bancaria.py
 </span><span id="__span-1-7"><a id="__codelineno-1-7" name="__codelineno-1-7" href="#__codelineno-1-7"></a>    └── test_producto.py
 </span></code></pre></div>
-<ul>
-<li>Los archivos de test deben llamarse <code>test_*.py</code> o <code>*_test.py</code>.</li>
-<li>Las funciones (o métodos de clase) de test deben llamarse <code>test_*</code>.</li>
-<li>pytest los descubre y ejecuta automáticamente.</li>
-</ul>
+<p>Los archivos de test deben llamarse <code>test_*.py</code> o <code>*_test.py</code>, y las funciones (o métodos de clase) deben comenzar con <code>test_</code>. Dada esa convención, pytest los descubre y ejecuta automáticamente.</p>
 <p><strong>Cómo correr los tests:</strong></p>
 <div class="language-bash highlight"><pre><span></span><code><span id="__span-2-1"><a id="__codelineno-2-1" name="__codelineno-2-1" href="#__codelineno-2-1"></a><span class="c1"># Correr todos los tests del proyecto</span>
 </span><span id="__span-2-2"><a id="__codelineno-2-2" name="__codelineno-2-2" href="#__codelineno-2-2"></a>pytest
@@ -913,7 +909,7 @@
 </span><span id="__span-2-11"><a id="__codelineno-2-11" name="__codelineno-2-11" href="#__codelineno-2-11"></a>pytest<span class="w"> </span>-v<span class="w"> </span>--tb<span class="o">=</span>short
 </span></code></pre></div>
 <p><strong>Assertions en pytest:</strong></p>
-<p>pytest usa el <code>assert</code> nativo de Python. Cuando una aserción falla, pytest muestra exactamente qué valores tenía cada lado:</p>
+<p>pytest usa el <code>assert</code> nativo de Python; cuando una aserción falla, muestra exactamente qué valores tenía cada lado:</p>
 <div class="language-python highlight"><pre><span></span><code><span id="__span-3-1"><a id="__codelineno-3-1" name="__codelineno-3-1" href="#__codelineno-3-1"></a><span class="k">assert</span> <span class="n">cuenta</span><span class="o">.</span><span class="n">saldo</span> <span class="o">==</span> <span class="mi">1500</span>    <span class="c1"># si falla: AssertionError: assert 1200 == 1500</span>
 </span><span id="__span-3-2"><a id="__codelineno-3-2" name="__codelineno-3-2" href="#__codelineno-3-2"></a><span class="k">assert</span> <span class="n">resultado</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span>
 </span><span id="__span-3-3"><a id="__codelineno-3-3" name="__codelineno-3-3" href="#__codelineno-3-3"></a><span class="k">assert</span> <span class="s2">&quot;error&quot;</span> <span class="ow">in</span> <span class="n">mensaje</span><span class="o">.</span><span class="n">lower</span><span class="p">()</span>
@@ -1053,7 +1049,7 @@
 </tbody>
 </table>
 <blockquote>
-<p><strong>Nota sobre <code>spec=</code></strong>: usar <code>MagicMock(spec=MiClase)</code> hace que el mock solo permita llamar a los métodos que <code>MiClase</code> realmente tiene. Esto evita que los mocks "aprueben" código que llama a métodos con nombres incorrectos.</p>
+<p><strong>Nota sobre <code>spec=</code></strong>: usar <code>MagicMock(spec=MiClase)</code> restringe el mock a los métodos que <code>MiClase</code> realmente tiene. Así se evita que los mocks "aprueben" código que llama a métodos con nombres incorrectos.</p>
 </blockquote>
 <div class="language-python highlight"><pre><span></span><code><span id="__span-5-1"><a id="__codelineno-5-1" name="__codelineno-5-1" href="#__codelineno-5-1"></a><span class="c1"># src/gateway_pago.py</span>
 </span><span id="__span-5-2"><a id="__codelineno-5-2" name="__codelineno-5-2" href="#__codelineno-5-2"></a><span class="k">class</span><span class="w"> </span><span class="nc">GatewayPago</span><span class="p">:</span>

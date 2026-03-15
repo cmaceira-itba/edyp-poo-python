@@ -917,18 +917,18 @@
 <h1 id="paradigmas-de-programacion">Paradigmas de Programación</h1>
 <h2 id="que-es-un-paradigma-de-programacion">¿Qué es un paradigma de programación?</h2>
 <p>Un paradigma de programación es una manera de organizar y estructurar el código para resolver problemas. Define qué abstracciones tenés disponibles, cómo pensás el diseño y qué estilo de soluciones producís. No es solo una cuestión de sintaxis: es una forma de razonar sobre los problemas.</p>
-<p>En la práctica, cuando los alumnos llegan a esta materia ya programan de forma estructurada sin saberlo. Cada vez que escribiste una función en Python para resolver un problema, estabas usando el paradigma estructurado. El objetivo de esta materia es agregar una nueva forma de pensar a esa base que ya tenés.</p>
-<p>Python es multiparadigma: soporta el paradigma estructurado, el orientado a objetos y el funcional en el mismo lenguaje. Eso es una ventaja enorme — podés elegir el paradigma que mejor se adapta al problema que estás resolviendo, y en proyectos reales solemos combinarlos.</p>
+<p>Quienes llegan a esta materia ya programan de forma estructurada sin saberlo. Cada vez que escribiste una función en Python para resolver un problema, estabas aplicando el paradigma estructurado. El objetivo es agregar una nueva forma de pensar a esa base que ya tenés.</p>
+<p>Python es multiparadigma: soporta el estructurado, el orientado a objetos y el funcional dentro del mismo lenguaje. Esa flexibilidad es una ventaja concreta — podés elegir el paradigma que mejor se adapta al problema y, en proyectos reales, solemos combinarlos.</p>
 <blockquote>
 <p><strong>Prerequisitos:</strong> Esta guía asume que ya sabés Python básico — variables, funciones, <code>if</code>, <code>for</code> y estructuras de datos como listas y diccionarios. No se requiere experiencia previa con POO.</p>
 </blockquote>
 <hr />
 <h2 id="el-paradigma-estructurado">El Paradigma Estructurado</h2>
-<p>En la materia Informática General, usamos Python para desarrollar nuestros progamas aplicando el paradigma estructurado. Vamos a definirlo para entener que es lo que hicimos hasta ahora y luego como se diferencia del paradigma orientado a objetos.</p>
-<p>La programación estructurada es un paradigma orientado a mejorar la claridad, calidad y tiempo de desarrollo de un programa, recurriendo únicamente a funciones y a tres estructuras de control básicas: secuencia, selección (<code>if</code> y <code>switch</code>) e iteración (bucles <code>for</code> y <code>while</code>).</p>
+<p>En la materia Informática General, usamos Python para desarrollar nuestros programas aplicando el paradigma estructurado. Conviene definirlo para entender qué hicimos hasta ahora y, a partir de eso, contrastar con el paradigma orientado a objetos.</p>
+<p>La programación estructurada busca mejorar la claridad, calidad y tiempo de desarrollo de un programa, recurriendo únicamente a funciones y a tres estructuras de control básicas: secuencia, selección (<code>if</code> y <code>switch</code>) e iteración (bucles <code>for</code> y <code>while</code>).</p>
 <p><img alt="Estructuras de control fundamentales: secuencia, selección e iteración" src="../../img/espagueti.png" /></p>
-<p>Se considera innecesario y contraproducente el uso de la transferencia incondicional (<code>break</code> y <code>continue</code> abusivos); esta instrucción suele acabar generando el llamado código espagueti, mucho más difícil de seguir y mantener.</p>
-<p>En la programación estructurada, los bloques fundamentales de construcción son <strong>algoritmos</strong> que definimos en funciones:</p>
+<p>Dentro de este modelo, se considera innecesario y contraproducente el uso de transferencias incondicionales (<code>break</code> y <code>continue</code> abusivos); este tipo de instrucciones tiende a generar el llamado código espagueti, mucho más difícil de seguir y mantener.</p>
+<p>El bloque fundamental de construcción son <strong>algoritmos</strong> encapsulados en funciones:</p>
 <div class="language-python highlight"><pre><span></span><code><span id="__span-0-1"><a id="__codelineno-0-1" name="__codelineno-0-1" href="#__codelineno-0-1"></a><span class="k">def</span><span class="w"> </span><span class="nf">factorial</span><span class="p">(</span><span class="n">n</span><span class="p">:</span> <span class="nb">int</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">int</span> <span class="o">|</span> <span class="nb">str</span><span class="p">:</span>
 </span><span id="__span-0-2"><a id="__codelineno-0-2" name="__codelineno-0-2" href="#__codelineno-0-2"></a>    <span class="k">if</span> <span class="n">n</span> <span class="o">&lt;</span> <span class="mi">0</span><span class="p">:</span>
 </span><span id="__span-0-3"><a id="__codelineno-0-3" name="__codelineno-0-3" href="#__codelineno-0-3"></a>        <span class="k">return</span> <span class="s2">&quot;El factorial no está definido para números negativos.&quot;</span>
@@ -946,7 +946,7 @@
 </span><span id="__span-0-15"><a id="__codelineno-0-15" name="__codelineno-0-15" href="#__codelineno-0-15"></a><span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;El factorial de -3 es: </span><span class="si">{</span><span class="n">factorial</span><span class="p">(</span><span class="o">-</span><span class="mi">3</span><span class="p">)</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
 </span></code></pre></div>
 <h3 id="codigo-espagueti">Código Espagueti</h3>
-<p>Es un término peyorativo para los programas que tienen una estructura de control de flujo compleja e incomprensible. Su nombre deriva del hecho de que este tipo de código parece asemejarse a un plato de espaguetis: un montón de hilos intrincados y anudados.</p>
+<p>Término peyorativo para los programas con una estructura de control de flujo compleja e incomprensible. Su nombre alude a la similitud visual con un plato de fideos: una masa de hilos intrincados y anudados sin dirección aparente.</p>
 <div class="language-python highlight"><pre><span></span><code><span id="__span-1-1"><a id="__codelineno-1-1" name="__codelineno-1-1" href="#__codelineno-1-1"></a><span class="c1"># ❌ Ejemplo de código espagueti: validación con flags anidados</span>
 </span><span id="__span-1-2"><a id="__codelineno-1-2" name="__codelineno-1-2" href="#__codelineno-1-2"></a><span class="k">def</span><span class="w"> </span><span class="nf">procesar_pedido</span><span class="p">(</span><span class="n">usuario</span><span class="p">,</span> <span class="n">items</span><span class="p">,</span> <span class="n">descuento</span><span class="p">):</span>
 </span><span id="__span-1-3"><a id="__codelineno-1-3" name="__codelineno-1-3" href="#__codelineno-1-3"></a>    <span class="n">ok</span> <span class="o">=</span> <span class="kc">False</span>
@@ -970,8 +970,8 @@
 <p>Antes de entrar de lleno en el paradigma orientado a objetos, es fundamental entender dos conceptos que van a guiar todas tus decisiones de diseño: <strong>acoplamiento</strong> y <strong>cohesión</strong>. No son exclusivos de la POO — aplican a cualquier código — pero en cuanto empezás a diseñar clases, se vuelven el criterio más práctico para evaluar si tu diseño es bueno o no.</p>
 <p>¿Por qué estudiarlos ahora, antes de ver clases en detalle? Porque el paradigma estructurado ya te enseña a escribir funciones, y con funciones también podés tener alto o bajo acoplamiento, alta o baja cohesión. Entender el problema en un contexto que ya conocés te va a hacer mucho más fácil aplicarlo después al diseño orientado a objetos. En la práctica, la mayoría de los problemas de diseño que vemos en los trabajos prácticos se reducen a uno de estos dos conceptos mal aplicados.</p>
 <h3 id="acoplamiento">Acoplamiento</h3>
-<p>El acoplamiento es el grado en que las clases de un programa dependen unas de otras. Si para hacer cambios en una clase es necesario hacer cambios en otra, existe acoplamiento entre ambas.</p>
-<p>En POO, si una clase <code>X</code> usa una clase <code>Y</code>, se dice que <code>X</code> depende de <code>Y</code>: no puede realizar su trabajo sin <code>Y</code>. El acoplamiento es direccional: puede haber acoplamiento de <code>X</code> con <code>Y</code> sin que exista en sentido inverso.</p>
+<p>Grado en que los módulos de un programa dependen entre sí. Si para hacer cambios en una clase es necesario modificar otra, existe acoplamiento entre ambas.</p>
+<p>En POO, cuando una clase <code>X</code> usa una clase <code>Y</code>, se dice que <code>X</code> depende de <code>Y</code>: no puede realizar su trabajo sin ella. Cabe notar que el acoplamiento es direccional — puede existir dependencia de <code>X</code> hacia <code>Y</code> sin que se dé en sentido inverso.</p>
 <div class="language-python highlight"><pre><span></span><code><span id="__span-2-1"><a id="__codelineno-2-1" name="__codelineno-2-1" href="#__codelineno-2-1"></a><span class="c1"># ❌ ALTO ACOPLAMIENTO: OrderProcessor crea y controla FileManager</span>
 </span><span id="__span-2-2"><a id="__codelineno-2-2" name="__codelineno-2-2" href="#__codelineno-2-2"></a>
 </span><span id="__span-2-3"><a id="__codelineno-2-3" name="__codelineno-2-3" href="#__codelineno-2-3"></a><span class="k">class</span><span class="w"> </span><span class="nc">FileManager</span><span class="p">:</span>
@@ -1004,9 +1004,8 @@
 </span><span id="__span-2-30"><a id="__codelineno-2-30" name="__codelineno-2-30" href="#__codelineno-2-30"></a><span class="c1"># Ahora es fácil cambiar el gestor de archivos sin tocar OrderProcessorV2</span>
 </span></code></pre></div>
 <h3 id="cohesion">Cohesión</h3>
-<p>Cohesión es lo contrario a acoplamiento. Algo está cohesionado si tiene sentido y una dirección común.</p>
-<p>En ingeniería del software, algo tiene <strong>alta cohesión</strong> si tiene un alcance definido, límites claros y contenido delimitado y perfectamente ubicado.</p>
-<p>En POO, una clase tendrá alta cohesión si sus métodos están relacionados entre sí, tienen contenido claro y temática común. Todo bien encerrado dentro de la clase y perfectamente delimitado.</p>
+<p>Mientras el acoplamiento mide la dependencia <em>entre</em> módulos, la cohesión mide qué tan relacionados están los elementos <em>dentro</em> de un módulo. Algo tiene <strong>alta cohesión</strong> si su alcance está bien definido, sus límites son claros y su contenido responde a una única responsabilidad.</p>
+<p>En POO, una clase tendrá alta cohesión si sus métodos están relacionados entre sí, tienen contenido claro y temática común — todo perfectamente delimitado dentro de la clase.</p>
 <div class="language-python highlight"><pre><span></span><code><span id="__span-3-1"><a id="__codelineno-3-1" name="__codelineno-3-1" href="#__codelineno-3-1"></a><span class="c1"># ❌ BAJA COHESIÓN: UserManager hace demasiado</span>
 </span><span id="__span-3-2"><a id="__codelineno-3-2" name="__codelineno-3-2" href="#__codelineno-3-2"></a><span class="k">class</span><span class="w"> </span><span class="nc">UserManager</span><span class="p">:</span>
 </span><span id="__span-3-3"><a id="__codelineno-3-3" name="__codelineno-3-3" href="#__codelineno-3-3"></a>    <span class="k">def</span><span class="w"> </span><span class="nf">create_user</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">name</span><span class="p">:</span> <span class="nb">str</span><span class="p">):</span> <span class="o">...</span>
@@ -1026,22 +1025,22 @@
 </span><span id="__span-3-17"><a id="__codelineno-3-17" name="__codelineno-3-17" href="#__codelineno-3-17"></a><span class="k">class</span><span class="w"> </span><span class="nc">ReportGenerator</span><span class="p">:</span>
 </span><span id="__span-3-18"><a id="__codelineno-3-18" name="__codelineno-3-18" href="#__codelineno-3-18"></a>    <span class="k">def</span><span class="w"> </span><span class="nf">generate_user_report</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">users</span><span class="p">:</span> <span class="nb">list</span><span class="p">):</span> <span class="o">...</span>
 </span></code></pre></div>
-<p>Un código altamente cohesionado tiende a ser más autocontenido, con menos dependencias y más fácil de mantener.</p>
+<p>Un código altamente cohesionado tiende a ser más autocontenido, con menos dependencias externas y más fácil de mantener.</p>
 <hr />
 <h3 id="que-es-lo-ideal">¿Qué es lo ideal?</h3>
-<p>Teniendo en cuenta todo lo expuesto, hay que buscar el balance que garantiza mayor simplicidad y coherencia. La tendencia que deberíamos buscar es movernos siempre hacia <strong>bajo acoplamiento y alta cohesión</strong>.</p>
+<p>Considerando todo lo expuesto, el objetivo es alcanzar el balance que garantiza mayor simplicidad y coherencia. La dirección correcta es siempre hacia <strong>bajo acoplamiento y alta cohesión</strong>.</p>
 <p><img alt="Cuadrante de acoplamiento y cohesión: el objetivo es bajo acoplamiento y alta cohesión" src="../../img/acoplamiento_cohesion_cuadrante.png" /></p>
-<p>Un bajo acoplamiento nos garantiza:</p>
+<p>Apuntar al bajo acoplamiento garantiza:</p>
 <ul>
-<li>Mejorar la mantenibilidad de los módulos del software, facilitar los cambios sin tener que revisar todos los módulos dependientes.</li>
-<li>Mejorar la reutilización de las unidades del software.</li>
-<li>Facilitar las pruebas de cada módulo, al ser más independientes.</li>
+<li>Mejorar la mantenibilidad: los cambios en un módulo no arrastran modificaciones en otros.</li>
+<li>Favorecer la reutilización de las unidades del software.</li>
+<li>Facilitar las pruebas de cada módulo, al ser más independientes entre sí.</li>
 </ul>
-<p>Por otro lado, una alta cohesión nos permite:</p>
+<p>Por su parte, la alta cohesión permite:</p>
 <ul>
 <li>Tener un código más entendible, legible y coherente.</li>
-<li>Mejorar la reutilización, al tener todo lo relacionado con una cosa, en esa cosa.</li>
-<li>Mejorar el mantenimiento del software, ya que todo está perfectamente localizado.</li>
+<li>Mejorar la reutilización, al concentrar todo lo relacionado con una responsabilidad en el mismo lugar.</li>
+<li>Mejorar el mantenimiento del software, dado que todo está perfectamente localizado.</li>
 <li>Facilitar las pruebas de caja negra.</li>
 </ul>
 <hr />
