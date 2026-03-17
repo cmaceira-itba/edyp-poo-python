@@ -17,100 +17,100 @@ Un método de clase recibe `cls` como primer argumento: una referencia a la **cl
 El uso más común y elegante de `@classmethod` son los **constructores alternativos**: formas adicionales de crear objetos que complementan el `__init__` estándar.
 
 ```python
-class Temperatura:
+class Maquina:
     """
-    Temperatura con múltiples constructores para distintas unidades.
+    Máquina de producción con múltiples constructores para distintas fuentes de datos.
 
     Args:
-        celsius: Temperatura en grados Celsius.
+        nombre: Nombre o código de la máquina.
+        capacidad: Capacidad de producción en piezas/hora.
+        tiempo_ciclo: Tiempo de ciclo en segundos.
     """
 
-    CERO_ABSOLUTO_CELSIUS = -273.15
-
-    def __init__(self, celsius: float) -> None:
-        if celsius < self.CERO_ABSOLUTO_CELSIUS:
-            raise ValueError(
-                f"Temperatura {celsius}°C es menor al cero absoluto"
-            )
-        self._celsius = celsius
-
-    @classmethod
-    def desde_fahrenheit(cls, fahrenheit: float) -> "Temperatura":
-        """
-        Constructor alternativo: crea una Temperatura desde grados Fahrenheit.
-
-        Args:
-            fahrenheit: Temperatura en grados Fahrenheit.
-
-        Returns:
-            Nueva instancia de Temperatura.
-        """
-        celsius = (fahrenheit - 32) * 5 / 9
-        return cls(celsius)  # cls, no Temperatura — funciona con subclases también
+    def __init__(self, nombre: str, capacidad: int, tiempo_ciclo: float) -> None:
+        if capacidad <= 0:
+            raise ValueError("La capacidad debe ser positiva")
+        if tiempo_ciclo <= 0:
+            raise ValueError("El tiempo de ciclo debe ser positivo")
+        self.nombre = nombre
+        self._capacidad = capacidad
+        self._tiempo_ciclo = tiempo_ciclo
+        self._estado = "inactiva"
 
     @classmethod
-    def desde_kelvin(cls, kelvin: float) -> "Temperatura":
+    def desde_configuracion(cls, config: dict) -> "Maquina":
         """
-        Constructor alternativo: crea una Temperatura desde Kelvin.
+        Constructor alternativo: crea una Maquina desde un diccionario de configuración.
 
         Args:
-            kelvin: Temperatura en Kelvin (debe ser no negativo).
+            config: Diccionario con las claves 'nombre', 'capacidad', 'tiempo_ciclo'.
 
         Returns:
-            Nueva instancia de Temperatura.
+            Nueva instancia de Maquina.
+        """
+        return cls(
+            nombre=config["nombre"],
+            capacidad=config["capacidad"],
+            tiempo_ciclo=config["tiempo_ciclo"],
+        )  # cls, no Maquina — funciona con subclases también
+
+    @classmethod
+    def desde_plantilla(cls, tipo: str) -> "Maquina":
+        """
+        Constructor alternativo: crea una Maquina desde una plantilla predefinida.
+
+        Args:
+            tipo: Tipo de máquina ('cnc', 'soldadora', 'torno').
+
+        Returns:
+            Nueva instancia de Maquina con configuración estándar.
 
         Raises:
-            ValueError: Si el valor en Kelvin es negativo.
+            ValueError: Si el tipo no está reconocido.
         """
-        if kelvin < 0:
-            raise ValueError("La temperatura en Kelvin no puede ser negativa")
-        celsius = kelvin + cls.CERO_ABSOLUTO_CELSIUS
-        return cls(celsius)
-
-    @property
-    def celsius(self) -> float:
-        """Temperatura en grados Celsius."""
-        return self._celsius
-
-    @property
-    def fahrenheit(self) -> float:
-        """Temperatura en grados Fahrenheit."""
-        return self._celsius * 9 / 5 + 32
-
-    @property
-    def kelvin(self) -> float:
-        """Temperatura en Kelvin."""
-        return self._celsius - self.CERO_ABSOLUTO_CELSIUS
+        plantillas = {
+            "cnc":       ("CNC-STD", 60, 15.0),
+            "soldadora": ("SOL-STD", 30, 30.0),
+            "torno":     ("TOR-STD", 45, 20.0),
+        }
+        if tipo not in plantillas:
+            raise ValueError(f"Tipo de máquina desconocido: '{tipo}'")
+        nombre, capacidad, tiempo_ciclo = plantillas[tipo]
+        return cls(nombre, capacidad, tiempo_ciclo)
 
     def __repr__(self) -> str:
-        return f"Temperatura({self._celsius:.2f}°C)"
+        return f"Maquina({self.nombre!r}, cap={self._capacidad})"
 
 
-# Tres formas de crear el mismo objeto
-t1 = Temperatura(100.0)                     # desde Celsius (constructor principal)
-t2 = Temperatura.desde_fahrenheit(212.0)    # desde Fahrenheit
-t3 = Temperatura.desde_kelvin(373.15)       # desde Kelvin
+# Tres formas de crear el mismo tipo de objeto
+m1 = Maquina("CNC-01", capacidad=60, tiempo_ciclo=15.0)  # constructor principal
+m2 = Maquina.desde_configuracion({                        # desde dict
+    "nombre": "CNC-02",
+    "capacidad": 60,
+    "tiempo_ciclo": 15.0,
+})
+m3 = Maquina.desde_plantilla("cnc")                       # desde plantilla
 
-print(t1)  # Temperatura(100.00°C)
-print(t2)  # Temperatura(100.00°C)
-print(t3)  # Temperatura(100.00°C)
+print(m1)  # Maquina('CNC-01', cap=60)
+print(m2)  # Maquina('CNC-02', cap=60)
+print(m3)  # Maquina('CNC-STD', cap=60)
 ```
 
 ### Por qué usar `cls` en lugar de repetir el nombre de la clase
 
-Fijate que en `desde_fahrenheit` usamos `cls(celsius)` en lugar de `Temperatura(celsius)`. Esto importa cuando hay subclases:
+Fijate que en `desde_plantilla` usamos `cls(nombre, capacidad, tiempo_ciclo)` en lugar de `Maquina(...)`. Esto importa cuando hay subclases:
 
 ```python
-class TemperaturaIndustrial(Temperatura):
-    """Temperatura con mayor precisión para uso industrial."""
+class MaquinaRobotica(Maquina):
+    """Máquina con control robótico de alta precisión."""
     pass
 
 # Con cls, el método heredado retorna la subclase correcta
-ti = TemperaturaIndustrial.desde_fahrenheit(212.0)
-print(type(ti))  # <class 'TemperaturaIndustrial'> ✅
+mr = MaquinaRobotica.desde_plantilla("cnc")
+print(type(mr))  # <class 'MaquinaRobotica'> ✅
 
-# Si hubiéramos escrito Temperatura(celsius) en lugar de cls(celsius):
-# type(ti) sería <class 'Temperatura'> ❌ — perdemos el tipo correcto
+# Si hubiéramos escrito Maquina(...) en lugar de cls(...):
+# type(mr) sería <class 'Maquina'> ❌ — perdemos el tipo correcto
 ```
 
 ## `@staticmethod`: funciones utilitarias que pertenecen a la clase
@@ -118,74 +118,81 @@ print(type(ti))  # <class 'TemperaturaIndustrial'> ✅
 Un método estático no recibe ni `self` ni `cls`. Es una función regular que, por organización y cohesión, vive dentro de la clase porque está relacionada con su dominio, pero no necesita acceder al estado de ningún objeto ni a la clase misma.
 
 ```python
-class Temperatura:
+class Maquina:
     # ... (misma clase de arriba, extendida)
 
-    CERO_ABSOLUTO_CELSIUS = -273.15
-
-    def __init__(self, celsius: float) -> None:
-        if celsius < self.CERO_ABSOLUTO_CELSIUS:
-            raise ValueError(f"Temperatura {celsius}°C es menor al cero absoluto")
-        self._celsius = celsius
-
-    @classmethod
-    def desde_fahrenheit(cls, fahrenheit: float) -> "Temperatura":
-        celsius = (fahrenheit - 32) * 5 / 9
-        return cls(celsius)
+    def __init__(self, nombre: str, capacidad: int, tiempo_ciclo: float) -> None:
+        if capacidad <= 0:
+            raise ValueError("La capacidad debe ser positiva")
+        self.nombre = nombre
+        self._capacidad = capacidad
+        self._tiempo_ciclo = tiempo_ciclo
+        self._estado = "inactiva"
 
     @classmethod
-    def desde_kelvin(cls, kelvin: float) -> "Temperatura":
-        if kelvin < 0:
-            raise ValueError("La temperatura en Kelvin no puede ser negativa")
-        celsius = kelvin + cls.CERO_ABSOLUTO_CELSIUS
-        return cls(celsius)
+    def desde_configuracion(cls, config: dict) -> "Maquina":
+        return cls(
+            nombre=config["nombre"],
+            capacidad=config["capacidad"],
+            tiempo_ciclo=config["tiempo_ciclo"],
+        )
+
+    @classmethod
+    def desde_plantilla(cls, tipo: str) -> "Maquina":
+        plantillas = {
+            "cnc":       ("CNC-STD", 60, 15.0),
+            "soldadora": ("SOL-STD", 30, 30.0),
+        }
+        if tipo not in plantillas:
+            raise ValueError(f"Tipo desconocido: '{tipo}'")
+        nombre, cap, ciclo = plantillas[tipo]
+        return cls(nombre, cap, ciclo)
 
     @staticmethod
-    def es_temperatura_valida(valor_celsius: float) -> bool:
+    def calcular_eficiencia(piezas_buenas: int, piezas_totales: int) -> float:
         """
-        Verifica si un valor en Celsius es físicamente válido.
+        Calcula la eficiencia de producción como porcentaje.
 
         No necesita acceder a ningún objeto ni a la clase — es pura lógica
         de dominio que convive con la clase por cohesión.
 
         Args:
-            valor_celsius: Valor a verificar.
+            piezas_buenas: Cantidad de piezas aprobadas.
+            piezas_totales: Cantidad total de piezas producidas.
 
         Returns:
-            True si el valor es mayor al cero absoluto, False si no.
+            Eficiencia como porcentaje (0.0 a 100.0).
         """
-        return valor_celsius >= -273.15
+        if piezas_totales == 0:
+            return 0.0
+        return piezas_buenas / piezas_totales * 100
 
     @staticmethod
-    def convertir_celsius_a_fahrenheit(celsius: float) -> float:
+    def es_temperatura_operativa(temp: float) -> bool:
         """
-        Convierte Celsius a Fahrenheit sin crear un objeto.
+        Verifica si una temperatura está dentro del rango operativo estándar.
 
         Args:
-            celsius: Temperatura en grados Celsius.
+            temp: Temperatura en °C a verificar.
 
         Returns:
-            Temperatura equivalente en grados Fahrenheit.
+            True si la temperatura está entre 10°C y 80°C.
         """
-        return celsius * 9 / 5 + 32
-
-    @property
-    def celsius(self) -> float:
-        return self._celsius
+        return 10.0 <= temp <= 80.0
 
     def __repr__(self) -> str:
-        return f"Temperatura({self._celsius:.2f}°C)"
+        return f"Maquina({self.nombre!r}, cap={self._capacidad})"
 
 
 # Los métodos estáticos se pueden llamar sin instancia
-print(Temperatura.es_temperatura_valida(25.0))     # True
-print(Temperatura.es_temperatura_valida(-300.0))   # False
-print(Temperatura.convertir_celsius_a_fahrenheit(0.0))   # 32.0
-print(Temperatura.convertir_celsius_a_fahrenheit(100.0)) # 212.0
+print(Maquina.calcular_eficiencia(95, 100))   # 95.0
+print(Maquina.calcular_eficiencia(0, 0))       # 0.0
+print(Maquina.es_temperatura_operativa(45.0)) # True
+print(Maquina.es_temperatura_operativa(95.0)) # False
 
 # También se pueden llamar desde una instancia (aunque es menos idiomático)
-t = Temperatura(20.0)
-print(t.es_temperatura_valida(-280.0))  # False
+m = Maquina("CNC-01", 60, 15.0)
+print(m.calcular_eficiencia(88, 100))  # 88.0
 ```
 
 ## Tabla de decisión: ¿cuál uso?
@@ -202,31 +209,31 @@ print(t.es_temperatura_valida(-280.0))  # False
 El error más común es usar `@staticmethod` cuando en realidad se necesita `@classmethod`, perdiendo los beneficios de la herencia:
 
 ```python
-class Animal:
-    sonido = "..."
+class Maquina:
+    tipo_default = "genérica"
 
     @staticmethod
-    def crear_generico_mal() -> "Animal":
-        return Animal()  # ❌ hardcodeado — las subclases no pueden sobreescribir bien esto
+    def crear_default_mal() -> "Maquina":
+        return Maquina("DEFAULT", 10, 5.0)  # ❌ hardcodeado — las subclases no pueden sobreescribir bien esto
 
     @classmethod
-    def crear_generico_bien(cls) -> "Animal":
-        return cls()  # ✅ crea instancia de la clase que recibe (subclase incluida)
+    def crear_default_bien(cls) -> "Maquina":
+        return cls("DEFAULT", 10, 5.0)  # ✅ crea instancia de la clase que recibe (subclase incluida)
 
 
-class Perro(Animal):
-    sonido = "guau"
+class MaquinaRobotica(Maquina):
+    tipo_default = "robótica"
 
 
-# Con @staticmethod: siempre retorna Animal
-perro_mal = Perro.crear_generico_mal()
-print(type(perro_mal))   # <class 'Animal'> ❌ — esperábamos Perro
+# Con @staticmethod: siempre retorna Maquina
+m_mal = MaquinaRobotica.crear_default_mal()
+print(type(m_mal))   # <class 'Maquina'> ❌ — esperábamos MaquinaRobotica
 
-# Con @classmethod: retorna Perro porque cls = Perro
-perro_bien = Perro.crear_generico_bien()
-print(type(perro_bien))  # <class 'Perro'> ✅
+# Con @classmethod: retorna MaquinaRobotica porque cls = MaquinaRobotica
+m_bien = MaquinaRobotica.crear_default_bien()
+print(type(m_bien))  # <class 'MaquinaRobotica'> ✅
 ```
 
-> **En la práctica:** los `@classmethod` son especialmente útiles para leer objetos desde distintos formatos (JSON, CSV, diccionarios), implementando el patrón *Factory*. En lugar de llenar el `__init__` con parámetros opcionales para cada formato posible, creás un método de clase por formato: `Producto.desde_dict(data)`, `Producto.desde_csv(linea)`, `Producto.desde_json(texto)`. El `__init__` queda limpio y cada constructor alternativo tiene su propósito claro.
+> **En la práctica:** los `@classmethod` son especialmente útiles para leer objetos desde distintos formatos (JSON, CSV, diccionarios), implementando el patrón *Factory*. En lugar de llenar el `__init__` con parámetros opcionales para cada formato posible, creás un método de clase por formato: `Maquina.desde_configuracion(config)`, `Maquina.desde_csv(linea)`, `Maquina.desde_plantilla(tipo)`. El `__init__` queda limpio y cada constructor alternativo tiene su propósito claro.
 
 ---

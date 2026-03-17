@@ -6,7 +6,7 @@ Aprender la sintaxis de las clases en Python es la parte fácil. El verdadero de
 
 En programación estructurada, el diseño empieza con una pregunta: **¿qué pasos necesito para resolver esto?** La respuesta son funciones (verbos: calcular, guardar, mostrar, procesar).
 
-En POO, la pregunta inicial es diferente: **¿qué entidades existen en este dominio y cómo se relacionan entre sí?** La respuesta son objetos (sustantivos: cliente, pedido, producto, factura).
+En POO, la pregunta inicial es diferente: **¿qué entidades existen en este dominio y cómo se relacionan entre sí?** La respuesta son objetos (sustantivos: pieza, estación de trabajo, línea de montaje, operario).
 
 Este cambio de verbos a sustantivos como unidad de diseño fue descripto por Alan Kay —inventor de Smalltalk y uno de los padres de la POO— quien enfatizaba que los objetos son entidades que *reciben mensajes* y *responden* a ellos. Las acciones existen, pero son responsabilidad de los objetos que las llevan a cabo.
 
@@ -16,14 +16,17 @@ Cuando alguien aprende POO por primera vez y viene del paradigma procedural, es 
 
 ```python
 # ❌ Esto NO es POO — es código procedural disfrazado de clase
-class GestorDePedidos:
-    def procesar(self, cliente_nombre, cliente_email, productos, cantidades, direccion):
+class ControladorLinea:
+    def procesar_linea(self, materiales, estaciones, operarios, cantidad):
         # 80 líneas de lógica mezclada...
-        total = 0
-        for i, producto in enumerate(productos):
-            total += producto["precio"] * cantidades[i]
-        # validar stock, calcular envío, enviar email, guardar en BD...
-        return total
+        piezas_ok = 0
+        for material in materiales:
+            if material["disponible"] > 0:
+                for estacion in estaciones:
+                    if estacion["activa"]:
+                        piezas_ok += 1
+        # validar temperaturas, registrar fallas, calcular eficiencia...
+        return piezas_ok
 ```
 
 Este código tiene una clase, pero no tiene *objetos*. Es una función grande con un nombre de clase como disfraz. No hay estado encapsulado, no hay responsabilidades distribuidas, no hay abstracción real.
@@ -32,53 +35,69 @@ El diseño orientado a objetos correcto distribuye responsabilidades entre múlt
 
 ```python
 # ✅ Esto SÍ es POO — responsabilidades distribuidas entre objetos
-class Cliente:
-    """Conoce sus propios datos de contacto."""
-
-    def __init__(self, nombre: str, email: str) -> None:
-        self.nombre = nombre
-        self.email = email
+from enum import Enum
 
 
-class Producto:
-    """Conoce su precio y gestiona su propio stock."""
+class EstadoPieza(Enum):
+    EN_ESPERA = "en_espera"
+    EN_PROCESO = "en_proceso"
+    COMPLETADA = "completada"
+    RECHAZADA = "rechazada"
 
-    def __init__(self, nombre: str, precio: float, stock: int) -> None:
-        self.nombre = nombre
-        self._precio = precio
-        self._stock = stock
+
+class Pieza:
+    """Conoce su propio material, peso y estado en la línea."""
+
+    def __init__(self, numero_serie: str, material: str, peso: float) -> None:
+        self.numero_serie = numero_serie
+        self.material = material
+        self.peso = peso
+        self._estado = EstadoPieza.EN_ESPERA
 
     @property
-    def precio(self) -> float:
-        return self._precio
+    def estado(self) -> EstadoPieza:
+        return self._estado
 
-    def tiene_stock(self, cantidad: int) -> bool:
-        return self._stock >= cantidad
+    def marcar_en_proceso(self) -> None:
+        self._estado = EstadoPieza.EN_PROCESO
 
+    def marcar_completada(self) -> None:
+        self._estado = EstadoPieza.COMPLETADA
 
-class LineaDePedido:
-    """Representa un producto con su cantidad dentro de un pedido."""
-
-    def __init__(self, producto: Producto, cantidad: int) -> None:
-        self._producto = producto
-        self._cantidad = cantidad
-
-    def subtotal(self) -> float:
-        return self._producto.precio * self._cantidad
+    def marcar_rechazada(self) -> None:
+        self._estado = EstadoPieza.RECHAZADA
 
 
-class Pedido:
-    """Agrupa líneas de pedido y calcula el total. No sabe de clientes ni de BD."""
+class EstacionTrabajo:
+    """Procesa piezas. No sabe de operarios ni de reportes."""
 
-    def __init__(self, cliente: Cliente) -> None:
-        self._cliente = cliente
-        self._lineas: list[LineaDePedido] = []
+    def __init__(self, nombre: str, tiempo_ciclo: float) -> None:
+        self.nombre = nombre
+        self.tiempo_ciclo = tiempo_ciclo
+        self._piezas_procesadas: int = 0
 
-    def agregar(self, linea: LineaDePedido) -> None:
-        self._lineas.append(linea)
+    def procesar(self, pieza: Pieza) -> None:
+        pieza.marcar_en_proceso()
+        self._piezas_procesadas += 1
+        pieza.marcar_completada()
 
-    def total(self) -> float:
-        return sum(linea.subtotal() for linea in self._lineas)
+    def piezas_procesadas(self) -> int:
+        return self._piezas_procesadas
+
+
+class LineaDeMontaje:
+    """Orquesta estaciones. No sabe de materiales ni de operarios."""
+
+    def __init__(self, nombre: str) -> None:
+        self.nombre = nombre
+        self._estaciones: list[EstacionTrabajo] = []
+
+    def agregar_estacion(self, estacion: EstacionTrabajo) -> None:
+        self._estaciones.append(estacion)
+
+    def procesar_pieza(self, pieza: Pieza) -> None:
+        for estacion in self._estaciones:
+            estacion.procesar(pieza)
 ```
 
 > **En la práctica:** cuando revisamos trabajos prácticos, el síntoma más frecuente de "mentalidad procedural" es una única clase con un único método enorme que hace todo. Si ese método tiene más de 20 líneas, casi siempre hay objetos que todavía no fueron identificados.
@@ -89,133 +108,140 @@ Una técnica práctica para diseñar un sistema orientado a objetos desde una de
 
 Tomemos este enunciado:
 
-> *"Un cliente realiza un pedido que contiene productos. Cada producto tiene un nombre, un precio y un stock disponible. El pedido calcula su total y puede ser confirmado o cancelado."*
+> *"Una línea de montaje contiene estaciones de trabajo. Cada estación procesa piezas que llegan con un material y un peso. Una pieza puede ser completada o rechazada según el resultado del proceso."*
 
 Aplicando la técnica:
 
 | Elemento | Tipo | ¿Qué es en código? |
 | --- | --- | --- |
-| **cliente** | Sustantivo | Clase `Cliente` |
-| **pedido** | Sustantivo | Clase `Pedido` |
-| **producto** | Sustantivo | Clase `Producto` |
-| nombre, precio, stock | Sustantivos (datos) | Atributos de `Producto` |
-| **realiza** | Verbo | Relación entre `Cliente` y `Pedido` |
-| **contiene** | Verbo | `Pedido` tiene una lista de `Producto` |
-| **calcula su total** | Verbo | Método `total()` en `Pedido` |
-| **confirmar / cancelar** | Verbos | Métodos `confirmar()` y `cancelar()` en `Pedido` |
+| **línea de montaje** | Sustantivo | Clase `LineaDeMontaje` |
+| **estación de trabajo** | Sustantivo | Clase `EstacionTrabajo` |
+| **pieza** | Sustantivo | Clase `Pieza` |
+| material, peso | Sustantivos (datos) | Atributos de `Pieza` |
+| **contiene** | Verbo | `LineaDeMontaje` tiene una lista de `EstacionTrabajo` |
+| **procesa** | Verbo | Método `procesar(pieza)` en `EstacionTrabajo` |
+| **completada / rechazada** | Verbos | Estados en `EstadoPieza` y métodos en `Pieza` |
 
 El diagrama de clases resultante sería:
 
-```
-Cliente  ──────────────────>  Pedido  ─────────────────>  Producto
-         realiza (1..*)              contiene (1..*)
+```text
+LineaDeMontaje  ──────────────>  EstacionTrabajo  ──────────────>  Pieza
+               contiene (1..*)                    procesa (1..*)
 ```
 
 ```python
 from enum import Enum
 
 
-class EstadoPedido(Enum):
-    PENDIENTE = "pendiente"
-    CONFIRMADO = "confirmado"
-    CANCELADO = "cancelado"
+class EstadoPieza(Enum):
+    EN_ESPERA = "en_espera"
+    EN_PROCESO = "en_proceso"
+    COMPLETADA = "completada"
+    RECHAZADA = "rechazada"
 
 
-class Producto:
+class Pieza:
     """
-    Producto con nombre, precio y stock.
+    Pieza industrial con número de serie, material y peso.
 
     Args:
-        nombre: Nombre del producto.
-        precio: Precio unitario (debe ser positivo).
-        stock: Unidades disponibles.
+        numero_serie: Identificador único de la pieza.
+        material: Tipo de material (acero, aluminio, etc.).
+        peso: Peso en kilogramos.
     """
 
-    def __init__(self, nombre: str, precio: float, stock: int) -> None:
-        self.nombre = nombre
-        self._precio = precio
-        self._stock = stock
+    def __init__(self, numero_serie: str, material: str, peso: float) -> None:
+        if peso <= 0:
+            raise ValueError("El peso debe ser positivo")
+        self.numero_serie = numero_serie
+        self.material = material
+        self.peso = peso
+        self._estado = EstadoPieza.EN_ESPERA
 
     @property
-    def precio(self) -> float:
-        return self._precio
+    def estado(self) -> EstadoPieza:
+        return self._estado
 
-    def tiene_stock(self, cantidad: int) -> bool:
-        """Verifica si hay stock suficiente."""
-        return self._stock >= cantidad
+    def marcar_en_proceso(self) -> None:
+        if self._estado != EstadoPieza.EN_ESPERA:
+            raise ValueError(f"No se puede iniciar: pieza en estado {self._estado.value}")
+        self._estado = EstadoPieza.EN_PROCESO
+
+    def marcar_completada(self) -> None:
+        self._estado = EstadoPieza.COMPLETADA
+
+    def marcar_rechazada(self) -> None:
+        self._estado = EstadoPieza.RECHAZADA
 
     def __repr__(self) -> str:
-        return f"Producto({self.nombre!r}, ${self._precio:.2f})"
+        return f"Pieza({self.numero_serie!r}, {self.material!r}, estado={self._estado.value})"
 
 
-class Cliente:
+class EstacionTrabajo:
     """
-    Cliente con nombre y email.
+    Estación que procesa piezas en la línea de montaje.
 
     Args:
-        nombre: Nombre completo del cliente.
-        email: Dirección de correo electrónico.
+        nombre: Nombre identificador de la estación.
+        tiempo_ciclo: Tiempo de ciclo en segundos.
     """
 
-    def __init__(self, nombre: str, email: str) -> None:
+    def __init__(self, nombre: str, tiempo_ciclo: float) -> None:
         self.nombre = nombre
-        self.email = email
+        self.tiempo_ciclo = tiempo_ciclo
+        self._piezas_procesadas: int = 0
+
+    def procesar(self, pieza: Pieza) -> None:
+        """Procesa una pieza actualizando su estado."""
+        pieza.marcar_en_proceso()
+        self._piezas_procesadas += 1
+        pieza.marcar_completada()
+
+    def piezas_procesadas(self) -> int:
+        return self._piezas_procesadas
 
     def __repr__(self) -> str:
-        return f"Cliente({self.nombre!r})"
+        return f"EstacionTrabajo({self.nombre!r})"
 
 
-class Pedido:
+class LineaDeMontaje:
     """
-    Pedido de un cliente con una o más líneas de producto.
+    Línea de montaje que agrupa estaciones de trabajo.
 
     Args:
-        cliente: El cliente que realiza el pedido.
+        nombre: Nombre de la línea.
     """
 
-    def __init__(self, cliente: Cliente) -> None:
-        self._cliente = cliente
-        self._productos: list[tuple[Producto, int]] = []
-        self._estado = EstadoPedido.PENDIENTE
+    def __init__(self, nombre: str) -> None:
+        self.nombre = nombre
+        self._estaciones: list[EstacionTrabajo] = []
 
-    def agregar_producto(self, producto: Producto, cantidad: int) -> None:
-        """Agrega un producto al pedido."""
-        if cantidad <= 0:
-            raise ValueError("La cantidad debe ser positiva")
-        self._productos.append((producto, cantidad))
+    def agregar_estacion(self, estacion: EstacionTrabajo) -> None:
+        """Agrega una estación al final de la línea."""
+        self._estaciones.append(estacion)
 
-    def total(self) -> float:
-        """Calcula el total del pedido."""
-        return sum(p.precio * cantidad for p, cantidad in self._productos)
-
-    def confirmar(self) -> None:
-        """Confirma el pedido si está en estado PENDIENTE."""
-        if self._estado != EstadoPedido.PENDIENTE:
-            raise ValueError(f"No se puede confirmar un pedido {self._estado.value}")
-        self._estado = EstadoPedido.CONFIRMADO
-
-    def cancelar(self) -> None:
-        """Cancela el pedido si no fue ya confirmado."""
-        if self._estado == EstadoPedido.CONFIRMADO:
-            raise ValueError("No se puede cancelar un pedido ya confirmado")
-        self._estado = EstadoPedido.CANCELADO
+    def procesar_pieza(self, pieza: Pieza) -> None:
+        """Pasa la pieza por todas las estaciones en orden."""
+        for estacion in self._estaciones:
+            estacion.procesar(pieza)
 
     def __repr__(self) -> str:
-        return f"Pedido({self._cliente!r}, total=${self.total():.2f}, {self._estado.value})"
+        return f"LineaDeMontaje({self.nombre!r}, estaciones={len(self._estaciones)})"
 
 
 # Demostración
-laptop = Producto("Laptop", 1500.0, 10)
-mouse = Producto("Mouse", 45.0, 50)
-cliente = Cliente("Carlos López", "carlos@ejemplo.com")
+corte = EstacionTrabajo("Corte CNC", tiempo_ciclo=12.5)
+soldadura = EstacionTrabajo("Soldadura MIG", tiempo_ciclo=30.0)
 
-pedido = Pedido(cliente)
-pedido.agregar_producto(laptop, 2)
-pedido.agregar_producto(mouse, 3)
-pedido.confirmar()
+linea = LineaDeMontaje("Línea A")
+linea.agregar_estacion(corte)
+linea.agregar_estacion(soldadura)
 
-print(pedido)         # Pedido(Cliente('Carlos López'), total=$3135.00, confirmado)
-print(pedido.total()) # 3135.0
+pieza = Pieza("P-0001", "acero", 2.3)
+linea.procesar_pieza(pieza)
+
+print(pieza)         # Pieza('P-0001', 'acero', estado=completada)
+print(linea)         # LineaDeMontaje('Línea A', estaciones=2)
 ```
 
 ## El cambio lleva tiempo

@@ -11,12 +11,12 @@ La **asociación** es la relación más general: un objeto *conoce* o *usa* a ot
 **Test:** ¿Puede cada objeto existir sin el otro? Si la respuesta es sí para ambos, es asociación.
 
 ```python
-class Estudiante:
+class Operario:
     """
-    Estudiante universitario.
+    Operario de planta que puede ser asignado a distintas estaciones.
 
     Args:
-        nombre: Nombre completo del estudiante.
+        nombre: Nombre completo del operario.
         legajo: Número de legajo.
     """
 
@@ -25,40 +25,49 @@ class Estudiante:
         self.legajo = legajo
 
     def __repr__(self) -> str:
-        return f"Estudiante({self.nombre!r}, legajo={self.legajo!r})"
+        return f"Operario({self.nombre!r}, legajo={self.legajo!r})"
 
 
-class Curso:
+class EstacionTrabajo:
     """
-    Curso universitario con lista de estudiantes inscriptos.
+    Estación de trabajo con operario asignado.
 
     Args:
-        nombre: Nombre del curso.
+        nombre: Nombre de la estación.
     """
 
     def __init__(self, nombre: str) -> None:
         self.nombre = nombre
-        self._inscriptos: list[Estudiante] = []
+        self._operario_asignado: Operario | None = None
 
-    def inscribir(self, estudiante: Estudiante) -> None:
-        """Inscribe un estudiante en el curso."""
-        self._inscriptos.append(estudiante)
+    def asignar_operario(self, operario: Operario) -> None:
+        """Asigna un operario a esta estación."""
+        self._operario_asignado = operario
 
-    def listar(self) -> list[str]:
-        """Retorna los nombres de los inscriptos."""
-        return [e.nombre for e in self._inscriptos]
+    def liberar_operario(self) -> None:
+        """Libera al operario de esta estación."""
+        self._operario_asignado = None
+
+    def operario_actual(self) -> str:
+        if self._operario_asignado:
+            return self._operario_asignado.nombre
+        return "Sin asignar"
 
 
-# El Estudiante puede existir sin el Curso y viceversa → asociación
-ana = Estudiante("Ana García", "12345")
-carlos = Estudiante("Carlos López", "67890")
+# El Operario puede existir sin la Estación y viceversa → asociación
+juan = Operario("Juan Pérez", "OP-001")
+maria = Operario("María López", "OP-002")
 
-poo = Curso("Programación Orientada a Objetos")
-poo.inscribir(ana)
-poo.inscribir(carlos)
+corte = EstacionTrabajo("Corte CNC")
+corte.asignar_operario(juan)
+print(corte.operario_actual())  # Juan Pérez
 
-print(poo.listar())  # ['Ana García', 'Carlos López']
-# Si el curso desaparece, Ana y Carlos siguen existiendo
+# El operario puede reasignarse a otra estación
+corte.liberar_operario()
+soldadura = EstacionTrabajo("Soldadura MIG")
+soldadura.asignar_operario(juan)
+print(soldadura.operario_actual())  # Juan Pérez
+# Si la estación se cierra, Juan sigue existiendo
 ```
 
 ## Agregación
@@ -68,53 +77,53 @@ La **agregación** es una asociación con matiz: un objeto *contiene* una colecc
 **Test:** Si destruís el contenedor, ¿los elementos siguen existiendo? Si sí, es agregación.
 
 ```python
-class Jugador:
+class EstacionTrabajo:
     """
-    Jugador de un equipo deportivo.
+    Estación de trabajo de la planta.
 
     Args:
-        nombre: Nombre del jugador.
-        numero: Número de camiseta.
+        nombre: Nombre de la estación.
+        tiempo_ciclo: Tiempo de ciclo en segundos.
     """
 
-    def __init__(self, nombre: str, numero: int) -> None:
+    def __init__(self, nombre: str, tiempo_ciclo: float) -> None:
         self.nombre = nombre
-        self.numero = numero
+        self.tiempo_ciclo = tiempo_ciclo
 
     def __repr__(self) -> str:
-        return f"Jugador({self.nombre!r}, #{self.numero})"
+        return f"EstacionTrabajo({self.nombre!r})"
 
 
-class Equipo:
+class LineaDeMontaje:
     """
-    Equipo deportivo. Agrega jugadores que existen independientemente.
+    Línea de montaje. Agrega estaciones que existen independientemente.
 
     Args:
-        nombre: Nombre del equipo.
+        nombre: Nombre de la línea.
     """
 
     def __init__(self, nombre: str) -> None:
         self.nombre = nombre
-        self._jugadores: list[Jugador] = []
+        self._estaciones: list[EstacionTrabajo] = []
 
-    def agregar_jugador(self, jugador: Jugador) -> None:
-        """Agrega un jugador al equipo."""
-        self._jugadores.append(jugador)
+    def agregar_estacion(self, estacion: EstacionTrabajo) -> None:
+        """Agrega una estación a la línea."""
+        self._estaciones.append(estacion)
 
-    def total_jugadores(self) -> int:
-        """Retorna la cantidad de jugadores en el equipo."""
-        return len(self._jugadores)
+    def total_estaciones(self) -> int:
+        """Retorna la cantidad de estaciones en la línea."""
+        return len(self._estaciones)
 
 
-messi = Jugador("Lionel Messi", 10)
-di_maria = Jugador("Ángel Di María", 11)
+corte = EstacionTrabajo("Corte CNC", tiempo_ciclo=12.0)
+soldadura = EstacionTrabajo("Soldadura MIG", tiempo_ciclo=30.0)
 
-argentina = Equipo("Argentina")
-argentina.agregar_jugador(messi)
-argentina.agregar_jugador(di_maria)
+linea_a = LineaDeMontaje("Línea A")
+linea_a.agregar_estacion(corte)
+linea_a.agregar_estacion(soldadura)
 
-# Si el equipo Argentina se disuelve, los jugadores siguen existiendo
-# Un jugador puede pasar a otro equipo → no es propiedad exclusiva
+# Si la Línea A se cierra, las estaciones pueden pasar a otra línea
+# Una estación no es propiedad exclusiva de una línea → no es composición
 ```
 
 ## Composición
@@ -124,57 +133,69 @@ La **composición** es la relación más fuerte de propiedad: el objeto *compues
 **Test:** ¿Tiene sentido la parte sin el todo? Si no, es composición.
 
 ```python
-class Direccion:
+class Sensor:
     """
-    Dirección de envío. Solo existe en el contexto de un pedido.
+    Sensor de temperatura interno de una máquina.
+    No tiene sentido fuera de la máquina que lo contiene.
 
     Args:
-        calle: Nombre de la calle y número.
-        ciudad: Ciudad de destino.
-        codigo_postal: Código postal.
+        id_sensor: Identificador del sensor.
+        rango_max: Temperatura máxima operativa en °C.
     """
 
-    def __init__(self, calle: str, ciudad: str, codigo_postal: str) -> None:
-        self.calle = calle
-        self.ciudad = ciudad
-        self.codigo_postal = codigo_postal
+    def __init__(self, id_sensor: str, rango_max: float) -> None:
+        self._id = id_sensor
+        self._rango_max = rango_max
+        self._lectura_actual = 0.0
 
-    def __repr__(self) -> str:
-        return f"{self.calle}, {self.ciudad} ({self.codigo_postal})"
+    def leer(self) -> float:
+        """Retorna la lectura actual del sensor."""
+        return self._lectura_actual
+
+    def actualizar(self, temperatura: float) -> None:
+        """Actualiza la lectura del sensor."""
+        self._lectura_actual = temperatura
+
+    def esta_en_rango(self) -> bool:
+        """Indica si la temperatura está dentro del rango operativo."""
+        return self._lectura_actual <= self._rango_max
 
 
-class Pedido:
+class Maquina:
     """
-    Pedido de compra con dirección de entrega.
-    La dirección es parte del pedido — no tiene existencia propia.
+    Máquina industrial con sensor de temperatura integrado.
+    El sensor se crea y vive dentro de la máquina — composición.
 
     Args:
-        numero: Número único de pedido.
-        calle: Calle y número de la dirección.
-        ciudad: Ciudad de entrega.
-        codigo_postal: Código postal.
+        nombre: Nombre de la máquina.
+        temp_max: Temperatura máxima operativa en °C.
     """
 
-    def __init__(
-        self, numero: str, calle: str, ciudad: str, codigo_postal: str
-    ) -> None:
-        self.numero = numero
-        # La dirección se crea DENTRO del pedido → composición
-        self._direccion = Direccion(calle, ciudad, codigo_postal)
+    def __init__(self, nombre: str, temp_max: float = 80.0) -> None:
+        self.nombre = nombre
+        # El Sensor se crea DENTRO de la Maquina → composición
+        self.__sensor = Sensor(f"SEN-{nombre}", rango_max=temp_max)
 
-    def info_envio(self) -> str:
-        """Retorna la información de envío del pedido."""
-        return f"Pedido #{self.numero} → {self._direccion}"
+    @property
+    def temperatura(self) -> float:
+        """Temperatura actual según el sensor interno."""
+        return self.__sensor.leer()
 
-    def __repr__(self) -> str:
-        return f"Pedido({self.numero!r})"
+    def actualizar_temperatura(self, temp: float) -> None:
+        """Actualiza la lectura del sensor interno."""
+        self.__sensor.actualizar(temp)
+
+    def esta_operativa(self) -> bool:
+        """Indica si la temperatura está dentro del rango seguro."""
+        return self.__sensor.esta_en_rango()
 
 
-pedido = Pedido("0042", "Av. Corrientes 1234", "Buenos Aires", "C1043")
-print(pedido.info_envio())
-# Pedido #0042 → Av. Corrientes 1234, Buenos Aires (C1043)
+maquina = Maquina("Torno-01", temp_max=75.0)
+maquina.actualizar_temperatura(60.0)
+print(maquina.temperatura)     # 60.0
+print(maquina.esta_operativa()) # True
 
-# La Direccion no existe por sí sola: se crea y vive dentro del Pedido
+# El Sensor no existe por sí solo: vive y muere con la Maquina
 ```
 
 ## Herencia
@@ -184,45 +205,45 @@ La **herencia** establece una relación "es-un" entre clases: la subclase es una
 **Test:** ¿Podés decir con naturalidad que "B es un A"? Solo entonces usá herencia.
 
 ```python
-class Vehiculo:
+class EstacionTrabajo:
     """
-    Abstracción base para cualquier vehículo.
+    Abstracción base para cualquier estación de la línea de montaje.
 
     Args:
-        marca: Marca del vehículo.
-        velocidad_max: Velocidad máxima en km/h.
+        nombre: Nombre de la estación.
+        tiempo_ciclo: Tiempo de ciclo en segundos.
     """
 
-    def __init__(self, marca: str, velocidad_max: int) -> None:
-        self.marca = marca
-        self.velocidad_max = velocidad_max
+    def __init__(self, nombre: str, tiempo_ciclo: float) -> None:
+        self.nombre = nombre
+        self.tiempo_ciclo = tiempo_ciclo
 
     def describir(self) -> str:
-        """Descripción genérica del vehículo."""
-        return f"{self.marca} (máx. {self.velocidad_max} km/h)"
+        """Descripción genérica de la estación."""
+        return f"{self.nombre} (ciclo: {self.tiempo_ciclo}s)"
 
 
-class Auto(Vehiculo):
+class EstacionCorte(EstacionTrabajo):
     """
-    Auto: ES UN Vehículo con número de puertas.
+    Estación de corte CNC. ES UNA EstacionTrabajo.
 
     Args:
-        marca: Marca del auto.
-        velocidad_max: Velocidad máxima en km/h.
-        puertas: Número de puertas.
+        nombre: Nombre de la estación.
+        tiempo_ciclo: Tiempo de ciclo en segundos.
+        velocidad_corte: Velocidad de corte en mm/min.
     """
 
-    def __init__(self, marca: str, velocidad_max: int, puertas: int) -> None:
-        super().__init__(marca, velocidad_max)
-        self.puertas = puertas
+    def __init__(self, nombre: str, tiempo_ciclo: float, velocidad_corte: float) -> None:
+        super().__init__(nombre, tiempo_ciclo)
+        self.velocidad_corte = velocidad_corte
 
     def describir(self) -> str:
-        return f"Auto {self.marca}, {self.puertas} puertas (máx. {self.velocidad_max} km/h)"
+        return f"Corte {self.nombre} a {self.velocidad_corte} mm/min (ciclo: {self.tiempo_ciclo}s)"
 
 
-auto = Auto("Toyota", 180, 4)
-print(auto.describir())  # Auto Toyota, 4 puertas (máx. 180 km/h)
-print(isinstance(auto, Vehiculo))  # True — un Auto ES UN Vehículo
+est = EstacionCorte("CNC-01", tiempo_ciclo=15.0, velocidad_corte=200.0)
+print(est.describir())            # Corte CNC-01 a 200.0 mm/min (ciclo: 15.0s)
+print(isinstance(est, EstacionTrabajo))  # True — una EstacionCorte ES UNA EstacionTrabajo
 ```
 
 ## Multiplicidad
@@ -231,51 +252,53 @@ Más allá del tipo de relación, importa cuántos objetos participan de cada la
 
 | Multiplicidad | Implementación en Python | Ejemplo |
 | --- | --- | --- |
-| Uno a uno (1:1) | Atributo simple | Un `Pedido` tiene una `Direccion` |
-| Uno a muchos (1:N) | `list[Tipo]` | Un `Carrito` tiene muchos `Producto` |
-| Muchos a muchos (N:M) | `list[Tipo]` en ambos lados | `Estudiante` ↔ `Curso` |
+| Uno a uno (1:1) | Atributo simple | Una `Maquina` tiene un `Sensor` |
+| Uno a muchos (1:N) | `list[Tipo]` | Una `EstacionCorte` tiene N `Pieza` en cola |
+| Muchos a muchos (N:M) | `list[Tipo]` en ambos lados | `Operario` ↔ `EstacionTrabajo` |
 
 ```python
-# Uno a muchos: una Factura tiene muchas LineaDeFactura
-class LineaDeFactura:
+class Pieza:
     """
-    Línea individual en una factura.
+    Pieza en proceso.
 
     Args:
-        descripcion: Descripción del ítem.
-        importe: Importe de la línea.
+        numero_serie: Número de serie de la pieza.
+        material: Material de la pieza.
     """
 
-    def __init__(self, descripcion: str, importe: float) -> None:
-        self.descripcion = descripcion
-        self.importe = importe
+    def __init__(self, numero_serie: str, material: str) -> None:
+        self.numero_serie = numero_serie
+        self.material = material
+
+    def __repr__(self) -> str:
+        return f"Pieza({self.numero_serie!r})"
 
 
-class Factura:
+class EstacionCorte:
     """
-    Factura con múltiples líneas.
+    Estación de corte con cola de piezas pendientes.
 
     Args:
-        numero: Número de factura.
+        nombre: Nombre de la estación.
     """
 
-    def __init__(self, numero: str) -> None:
-        self.numero = numero
-        self._lineas: list[LineaDeFactura] = []   # 1:N
+    def __init__(self, nombre: str) -> None:
+        self.nombre = nombre
+        self._cola: list[Pieza] = []   # 1:N
 
-    def agregar_linea(self, descripcion: str, importe: float) -> None:
-        """Agrega una línea a la factura."""
-        self._lineas.append(LineaDeFactura(descripcion, importe))
+    def encolar_pieza(self, pieza: Pieza) -> None:
+        """Agrega una pieza a la cola de procesamiento."""
+        self._cola.append(pieza)
 
-    def total(self) -> float:
-        """Calcula el total de la factura."""
-        return sum(linea.importe for linea in self._lineas)
+    def piezas_en_cola(self) -> int:
+        """Retorna la cantidad de piezas pendientes."""
+        return len(self._cola)
 
 
-factura = Factura("F-0001")
-factura.agregar_linea("Consultoría (10 hs)", 5000.0)
-factura.agregar_linea("Gastos de traslado", 350.0)
-print(f"Total: ${factura.total():.2f}")  # Total: $5350.00
+estacion = EstacionCorte("CNC-02")
+estacion.encolar_pieza(Pieza("P-0001", "acero"))
+estacion.encolar_pieza(Pieza("P-0002", "aluminio"))
+print(f"Piezas en cola: {estacion.piezas_en_cola()}")  # Piezas en cola: 2
 ```
 
 ## Regla práctica

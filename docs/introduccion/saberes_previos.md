@@ -25,21 +25,15 @@ Dentro de este modelo, se considera innecesario y contraproducente el uso de tra
 El bloque fundamental de construcción son **algoritmos** encapsulados en funciones:
 
 ```python
-def factorial(n: int) -> int | str:
-    if n < 0:
-        return "El factorial no está definido para números negativos."
-    elif n == 0:
-        return 1
-    else:
-        result = 1
-        for i in range(1, n + 1):
-            result *= i
-        return result
+def calcular_eficiencia(piezas_producidas: int, tiempo_total: float) -> float:
+    """Calcula la eficiencia de una línea como piezas por hora."""
+    if tiempo_total <= 0:
+        return 0.0
+    return piezas_producidas / tiempo_total * 60  # piezas por minuto × 60
 
 # Ejemplo de uso:
-print(f"El factorial de 5 es: {factorial(5)}")
-print(f"El factorial de 0 es: {factorial(0)}")
-print(f"El factorial de -3 es: {factorial(-3)}")
+print(f"Eficiencia: {calcular_eficiencia(120, 45):.2f} piezas/hora")
+print(f"Eficiencia: {calcular_eficiencia(0, 10):.2f} piezas/hora")
 ```
 
 ### Código Espagueti
@@ -47,22 +41,22 @@ print(f"El factorial de -3 es: {factorial(-3)}")
 Término peyorativo para los programas con una estructura de control de flujo compleja e incomprensible. Su nombre alude a la similitud visual con un plato de fideos: una masa de hilos intrincados y anudados sin dirección aparente.
 
 ```python
-# ❌ Ejemplo de código espagueti: validación con flags anidados
-def procesar_pedido(usuario, items, descuento):
+# ❌ Ejemplo de código espagueti: control de planta con flags anidados
+def procesar_turno(estaciones, piezas, temperatura):
     ok = False
     total = 0
-    if usuario:
-        if len(items) > 0:
-            for item in items:
-                if item['stock'] > 0:
-                    total += item['precio']
+    if estaciones:
+        if len(piezas) > 0:
+            for pieza in piezas:
+                if pieza['material'] != 'defectuoso':
+                    total += 1
                     ok = True
                 else:
                     ok = False
                     break
             if ok:
-                if descuento > 0:
-                    total = total - (total * descuento / 100)
+                if temperatura > 0:
+                    total = total - (total * temperatura / 100)
     return total if ok else -1
 ```
 
@@ -81,36 +75,40 @@ Grado en que los módulos de un programa dependen entre sí. Si para hacer cambi
 En POO, cuando una clase `X` usa una clase `Y`, se dice que `X` depende de `Y`: no puede realizar su trabajo sin ella. Cabe notar que el acoplamiento es direccional — puede existir dependencia de `X` hacia `Y` sin que se dé en sentido inverso.
 
 ```python
-# ❌ ALTO ACOPLAMIENTO: OrderProcessor crea y controla FileManager
-
-class FileManager:
+# ❌ ALTO ACOPLAMIENTO: ControladorLinea crea y controla EstacionCorteV1
+class EstacionCorteV1:
     def __init__(self) -> None:
-        self.file_path = "./order_log.txt"
+        self.velocidad = 100  # mm/min fija
 
-    def save_data(self, data: str) -> bool:
-        with open(self.file_path, 'a') as f:
-            f.write(f"{data}\n")
-        return True
+    def cortar(self, pieza: str) -> str:
+        return f"Cortando {pieza} a {self.velocidad} mm/min"
 
 
-class OrderProcessor:
+class ControladorLineaAcoplado:
     def __init__(self) -> None:
-        self.file_manager = FileManager()  # ❌ dependencia hardcodeada
+        self.estacion = EstacionCorteV1()  # ❌ dependencia hardcodeada
 
-    def process_order(self, order_details: str) -> bool:
-        return self.file_manager.save_data(f"Pedido: {order_details}")
+    def ejecutar(self, pieza: str) -> str:
+        return self.estacion.cortar(pieza)
 
 
-# ✅ BAJO ACOPLAMIENTO: FileManager se inyecta desde afuera
+# ✅ BAJO ACOPLAMIENTO: la estación se inyecta desde afuera
+class EstacionCorteV2:
+    def __init__(self, velocidad: float) -> None:
+        self.velocidad = velocidad
 
-class OrderProcessorV2:
-    def __init__(self, file_manager: FileManager) -> None:
-        self.file_manager = file_manager  # ✅ inyección de dependencia
+    def cortar(self, pieza: str) -> str:
+        return f"Cortando {pieza} a {self.velocidad} mm/min"
 
-    def process_order(self, order_details: str) -> bool:
-        return self.file_manager.save_data(f"Pedido: {order_details}")
 
-# Ahora es fácil cambiar el gestor de archivos sin tocar OrderProcessorV2
+class ControladorLineaDesacoplado:
+    def __init__(self, estacion: EstacionCorteV2) -> None:
+        self.estacion = estacion  # ✅ inyección de dependencia
+
+    def ejecutar(self, pieza: str) -> str:
+        return self.estacion.cortar(pieza)
+
+# Ahora es fácil cambiar la estación sin tocar ControladorLineaDesacoplado
 ```
 
 ### Cohesión
@@ -120,24 +118,24 @@ Mientras el acoplamiento mide la dependencia *entre* módulos, la cohesión mide
 En POO, una clase tendrá alta cohesión si sus métodos están relacionados entre sí, tienen contenido claro y temática común — todo perfectamente delimitado dentro de la clase.
 
 ```python
-# ❌ BAJA COHESIÓN: UserManager hace demasiado
-class UserManager:
-    def create_user(self, name: str): ...
-    def send_email(self, user, msg: str): ...    # ¿por qué gestión de usuarios envía emails?
-    def generate_report(self): ...              # ¿y también genera reportes?
-    def connect_to_db(self): ...                # ¿y maneja la conexión a BD?
+# ❌ BAJA COHESIÓN: GestorPlanta hace demasiado
+class GestorPlanta:
+    def registrar_maquina(self, nombre: str): ...
+    def enviar_alerta(self, operario, msg: str): ...    # ¿por qué gestión de planta envía alertas?
+    def generar_reporte(self): ...                     # ¿y también genera reportes?
+    def conectar_sensor(self, sensor_id: str): ...     # ¿y maneja sensores?
 
 
 # ✅ ALTA COHESIÓN: cada clase tiene una responsabilidad clara
-class UserRepository:
-    def create(self, name: str): ...
-    def find_by_id(self, user_id: int): ...
+class RepositorioMaquinas:
+    def registrar(self, nombre: str): ...
+    def buscar_por_id(self, maquina_id: str): ...
 
-class EmailService:
-    def send(self, recipient: str, message: str): ...
+class ServicioMantenimiento:
+    def enviar_alerta(self, operario: str, mensaje: str): ...
 
-class ReportGenerator:
-    def generate_user_report(self, users: list): ...
+class GeneradorReportes:
+    def generar_reporte_turno(self, maquinas: list): ...
 ```
 
 Un código altamente cohesionado tiende a ser más autocontenido, con menos dependencias externas y más fácil de mantener.

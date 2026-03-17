@@ -4,24 +4,25 @@
 
 Una clase debe tener una, y solo una, razón para cambiar.
 
-Tomá el caso de una clase `Usuario` que gestiona datos del usuario, guarda en base de datos y además envía emails de bienvenida: está haciendo demasiado. Separar responsabilidades conduce a un diseño más mantenible: `Usuario` (datos), `UsuarioRepository` (base de datos), `EmailService` (envíos).
+Tomá el caso de una clase `Maquina` que gestiona su estado operativo, guarda eventos en base de datos y además genera reportes de turno: está haciendo demasiado. Separar responsabilidades conduce a un diseño más mantenible: `Maquina` (estado y ciclos), `RegistradorEventos` (persistencia), `GeneradorReportes` (presentación).
 
 ```python
 # ❌ Viola SRP: la clase hace demasiado
-class Invoice:
-    def calculate_total(self): ...
-    def print_invoice(self): ...    # responsabilidad de presentación
-    def save_to_db(self): ...       # responsabilidad de persistencia
+class MaquinaConTodo:
+    def iniciar_ciclo(self): ...
+    def guardar_en_db(self): ...       # responsabilidad de persistencia
+    def imprimir_reporte(self): ...    # responsabilidad de presentación
 
 # ✅ Respeta SRP: cada clase tiene una razón para cambiar
-class Invoice:
-    def calculate_total(self) -> float: ...
+class Maquina:
+    def iniciar_ciclo(self) -> None: ...
+    def obtener_estado(self) -> dict: ...
 
-class InvoicePrinter:
-    def print(self, invoice: Invoice) -> None: ...
+class RegistradorEventos:
+    def guardar(self, maquina: Maquina) -> None: ...
 
-class InvoiceRepository:
-    def save(self, invoice: Invoice) -> None: ...
+class GeneradorReportes:
+    def imprimir(self, maquina: Maquina) -> None: ...
 ```
 
 ## O — Open/Closed Principle (Principio de Abierto/Cerrado)
@@ -31,85 +32,79 @@ Las clases deben estar abiertas para su extensión, pero cerradas para su modifi
 Agregar nueva funcionalidad no debería requerir modificar código que ya funciona —y arriesgarse a romperlo. La solución es el polimorfismo: extendé el comportamiento agregando nuevas clases en lugar de acumular `if/else`.
 
 ```python
-# ❌ Viola OCP: hay que modificar la clase para agregar un nuevo formato
-class ReportExporter:
-    def export(self, report, format: str):
-        if format == "pdf":
-            ...
-        elif format == "csv":
-            ...
-        # Cada nuevo formato requiere modificar esta clase
-
-# ✅ Respeta OCP: se extiende sin modificar
 from abc import ABC, abstractmethod
 
-class ReportExporter(ABC):
+# ❌ Viola OCP: hay que modificar la clase para agregar una nueva estación
+class ProcesadorPieza:
+    def procesar(self, pieza: str, tipo_estacion: str) -> str:
+        if tipo_estacion == "corte":
+            return f"Cortando {pieza}"
+        elif tipo_estacion == "soldadura":
+            return f"Soldando {pieza}"
+        # Cada nueva estación requiere modificar esta clase
+
+
+# ✅ Respeta OCP: se extiende sin modificar
+class ProcesadorBase(ABC):
     @abstractmethod
-    def export(self, report) -> None: ...
+    def procesar(self, pieza: str) -> str: ...
 
-class PDFExporter(ReportExporter):
-    def export(self, report) -> None: ...
+class ProcesadorCorte(ProcesadorBase):
+    def procesar(self, pieza: str) -> str:
+        return f"Cortando {pieza}"
 
-class CSVExporter(ReportExporter):
-    def export(self, report) -> None: ...
+class ProcesadorSoldadura(ProcesadorBase):
+    def procesar(self, pieza: str) -> str:
+        return f"Soldando {pieza}"
+
+class ProcesadorPintura(ProcesadorBase):
+    def procesar(self, pieza: str) -> str:
+        return f"Pintando {pieza}"
 ```
 
 ## L — Liskov Substitution Principle (Principio de Sustitución de Liskov)
 
 Las clases derivadas deben poder sustituirse por sus clases base sin alterar el comportamiento correcto del programa.
 
-Cuando una clase hija viola el contrato establecido por la clase base —por ejemplo, `PatoDeHule` lanzando una excepción en `volar()` cuando la base promete que ese método es válido—, el principio queda roto. La herencia debe tener sentido tanto semántico como funcional.
+Cuando una clase hija viola el contrato establecido por la clase base —por ejemplo, `EstacionMantenimiento` lanzando una excepción en `procesar()` cuando la base promete que ese método es válido—, el principio queda roto. La herencia debe tener sentido tanto semántico como funcional.
 
 ```python
-# ❌ Viola LSP: PatoDeHule no respeta el contrato de la clase base
-class Animal:
-    def volar(self) -> str:
-        return "Volando..."
+from abc import ABC, abstractmethod
 
-class Pato(Animal):
-    def volar(self) -> str:
-        return "El pato vuela"
 
-class PatoDeHule(Animal):
-    def volar(self) -> str:
-        raise NotImplementedError("¡Un pato de hule no puede volar!")
-        # ❌ Quien use Animal espera poder llamar volar() sin excepciones
+class EstacionTrabajo(ABC):
+    """Contrato base: toda estación puede procesar una pieza."""
+
+    @abstractmethod
+    def procesar(self, pieza: str) -> str: ...
+
+
+# ❌ Viola LSP: EstacionDesactivada no respeta el contrato de la base
+class EstacionDesactivadaMal(EstacionTrabajo):
+    def procesar(self, pieza: str) -> str:
+        raise NotImplementedError("¡Esta estación está fuera de servicio!")
+        # ❌ Quien use EstacionTrabajo espera poder llamar procesar() sin excepciones
 
 
 # ✅ Respeta LSP: la jerarquía refleja capacidades reales
-class Animal:
-    """Clase base: solo comportamiento común a todos los animales."""
+class EstacionCorte(EstacionTrabajo):
+    """Estación operativa que puede procesar piezas."""
 
-    def __init__(self, nombre: str) -> None:
-        self.nombre = nombre
-
-    def respirar(self) -> str:
-        return f"{self.nombre} respira"
+    def procesar(self, pieza: str) -> str:
+        return f"[CORTE] Procesando {pieza}"
 
 
-class AnimalVolador(Animal):
-    """Extensión para animales que pueden volar."""
+class EstacionSoldadura(EstacionTrabajo):
+    """Estación operativa que puede procesar piezas."""
 
-    def volar(self) -> str:
-        return f"{self.nombre} vuela"
-
-
-class Pato(AnimalVolador):
-    def volar(self) -> str:
-        return f"{self.nombre} vuela con sus alas"
+    def procesar(self, pieza: str) -> str:
+        return f"[SOLDADURA] Procesando {pieza}"
 
 
-class PatoDeHule(Animal):
-    """No hereda de AnimalVolador porque no puede volar. ✅"""
-
-    def chillar(self) -> str:
-        return f"{self.nombre}: ¡Squeak!"
-
-
-# Ahora podemos substituir Animal por cualquier subclase sin sorpresas
-animales: list[Animal] = [Pato("Donald"), PatoDeHule("Rubber")]
-for a in animales:
-    print(a.respirar())  # ✅ funciona para todos
+# Ahora podemos substituir EstacionTrabajo por cualquier subclase sin sorpresas
+estaciones: list[EstacionTrabajo] = [EstacionCorte(), EstacionSoldadura()]
+for est in estaciones:
+    print(est.procesar("P-0001"))  # ✅ funciona para todas
 ```
 
 ## I — Interface Segregation Principle (Principio de Segregación de Interfaz)
@@ -121,64 +116,56 @@ Aunque Python no tiene "interfaces" explícitas, este principio cobra especial r
 ```python
 from abc import ABC, abstractmethod
 
-# ❌ Viola ISP: una ABC enorme que fuerza a Robot a implementar
-#    métodos que no tiene sentido para él
-class Trabajador(ABC):
+# ❌ Viola ISP: una ABC enorme que fuerza a EstacionSimple a implementar
+#    métodos que no tiene sentido para ella
+class IEstacionCompleta(ABC):
     @abstractmethod
-    def trabajar(self) -> None: ...
-
-    @abstractmethod
-    def comer(self) -> None: ...
+    def procesar(self, pieza: str) -> str: ...
 
     @abstractmethod
-    def dormir(self) -> None: ...
+    def calibrar(self) -> None: ...
 
+    @abstractmethod
+    def enviar_telemetria(self) -> dict: ...
 
-class Robot(Trabajador):
-    def trabajar(self) -> None:
-        print("Robot trabajando")
-
-    def comer(self) -> None:
-        raise NotImplementedError("Los robots no comen")  # ❌ forzado
-
-    def dormir(self) -> None:
-        raise NotImplementedError("Los robots no duermen")  # ❌ forzado
+    @abstractmethod
+    def actualizar_firmware(self, version: str) -> None: ...
 
 
 # ✅ Respeta ISP: interfaces pequeñas y específicas
-class Trabajable(ABC):
+class IMonitoreable(ABC):
     @abstractmethod
-    def trabajar(self) -> None: ...
+    def enviar_telemetria(self) -> dict: ...
 
 
-class Comedor(ABC):
+class IMantenible(ABC):
     @abstractmethod
-    def comer(self) -> None: ...
+    def calibrar(self) -> None: ...
 
 
-class Dormidor(ABC):
+class IConfigurable(ABC):
     @abstractmethod
-    def dormir(self) -> None: ...
+    def actualizar_firmware(self, version: str) -> None: ...
 
 
-class Humano(Trabajable, Comedor, Dormidor):
-    """Implementa todo porque un humano hace todo."""
+class EstacionCorte(IMonitoreable, IMantenible):
+    """Implementa solo lo que necesita. ✅"""
 
-    def trabajar(self) -> None:
-        print("Humano trabajando")
+    def procesar(self, pieza: str) -> str:
+        return f"Cortando {pieza}"
 
-    def comer(self) -> None:
-        print("Humano comiendo")
+    def calibrar(self) -> None:
+        print("Calibrando velocidad de corte")
 
-    def dormir(self) -> None:
-        print("Humano durmiendo")
+    def enviar_telemetria(self) -> dict:
+        return {"velocidad": 200, "temperatura": 45}
 
 
-class Robot(Trabajable):
-    """Solo implementa lo que necesita. ✅"""
+class SensorBasico(IMonitoreable):
+    """Solo monitorea — no necesita calibración ni firmware. ✅"""
 
-    def trabajar(self) -> None:
-        print("Robot trabajando")
+    def enviar_telemetria(self) -> dict:
+        return {"lectura": 23.5}
 ```
 
 ## D — Dependency Inversion Principle (Principio de Inversión de Dependencias)
@@ -188,26 +175,44 @@ Los módulos de alto nivel no deben depender de módulos de bajo nivel. Ambos de
 Cuando una clase de alto nivel instancia directamente sus dependencias concretas, queda acoplada a una implementación específica —difícil de testear, difícil de cambiar. La inversión de dependencias rompe ese acoplamiento: en lugar de crear la dependencia, la clase la recibe desde afuera (inyección de dependencia), dependiendo de una abstracción que puede tomar cualquier forma concreta.
 
 ```python
-# ❌ Viola DIP: depende de implementación concreta
-class Notification:
-    def __init__(self):
-        self.email = EmailSender()  # dependencia de bajo nivel
+from abc import ABC, abstractmethod
 
-    def send(self, msg: str):
-        self.email.send(msg)
+# ❌ Viola DIP: SistemaControl depende de EstacionCorte concreta
+class SistemaControlMal:
+    def __init__(self) -> None:
+        self.estacion = EstacionCorte()  # dependencia de bajo nivel hardcodeada
+
+    def ejecutar_ciclo(self, pieza: str) -> str:
+        return self.estacion.procesar(pieza)
 
 
-# ✅ Respeta DIP: depende de abstracción
-class MessageSender(ABC):
+# ✅ Respeta DIP: SistemaControl depende de abstracción
+class EstacionTrabajo(ABC):
     @abstractmethod
-    def send(self, message: str) -> None: ...
+    def procesar(self, pieza: str) -> str: ...
 
-class Notification:
-    def __init__(self, sender: MessageSender) -> None:
-        self.sender = sender  # inyección de dependencia
+class SistemaControl:
+    def __init__(self, estacion: EstacionTrabajo) -> None:
+        self._estacion = estacion  # inyección de dependencia
 
-    def send(self, message: str) -> None:
-        self.sender.send(message)
+    def ejecutar_ciclo(self, pieza: str) -> str:
+        return self._estacion.procesar(pieza)
+
+
+# El mismo SistemaControl funciona con cualquier estación
+class EstacionCorte(EstacionTrabajo):
+    def procesar(self, pieza: str) -> str:
+        return f"[CORTE] {pieza}"
+
+class EstacionSoldadura(EstacionTrabajo):
+    def procesar(self, pieza: str) -> str:
+        return f"[SOLDADURA] {pieza}"
+
+control_corte = SistemaControl(EstacionCorte())
+control_soldadura = SistemaControl(EstacionSoldadura())
+
+print(control_corte.ejecutar_ciclo("P-0001"))     # [CORTE] P-0001
+print(control_soldadura.ejecutar_ciclo("P-0001")) # [SOLDADURA] P-0001
 ```
 
 ---

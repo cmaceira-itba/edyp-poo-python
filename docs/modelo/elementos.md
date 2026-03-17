@@ -31,71 +31,79 @@ Todo diseño orientado a objetos enfrenta una tensión inherente: el deseo de en
 
 En Python, cada archivo `.py` es naturalmente un módulo. Dado que abstracción, encapsulación y modularidad son principios sinérgicos, la modularidad opera como el contenedor que los organiza y delimita.
 
-A continuación, el ejemplo muestra tres clases que en un sistema real vivirían en archivos separados (`productos.py`, `inventario.py`, `reporte.py`). Cada módulo tiene una única responsabilidad y sus dependencias son mínimas:
+A continuación, el ejemplo muestra tres clases que en un sistema real vivirían en archivos separados (`maquina.py`, `linea_montaje.py`, `reporte.py`). Cada módulo tiene una única responsabilidad y sus dependencias son mínimas:
 
 ```python
-# --- módulo: productos.py ---
-class Producto:
-    """Encapsula los datos y reglas de negocio de un producto."""
+# --- módulo: maquina.py ---
+class Maquina:
+    """Encapsula los datos y reglas de negocio de una máquina industrial."""
 
-    def __init__(self, nombre: str, precio: float) -> None:
-        if precio < 0:
-            raise ValueError("El precio no puede ser negativo")
+    def __init__(self, nombre: str, capacidad: int) -> None:
+        if capacidad <= 0:
+            raise ValueError("La capacidad debe ser positiva")
         self.nombre = nombre
-        self._precio = precio
+        self._capacidad = capacidad
+        self._estado = "inactiva"
 
     @property
-    def precio(self) -> float:
-        return self._precio
+    def capacidad(self) -> int:
+        return self._capacidad
+
+    @property
+    def estado(self) -> str:
+        return self._estado
+
+    def activar(self) -> None:
+        self._estado = "activa"
 
     def __repr__(self) -> str:
-        return f"Producto({self.nombre!r}, ${self._precio:.2f})"
+        return f"Maquina({self.nombre!r}, estado={self._estado!r})"
 
 
-# --- módulo: inventario.py ---
-class Inventario:
-    """Gestiona una colección de productos. Solo depende de Producto."""
+# --- módulo: linea_montaje.py ---
+class LineaDeMontaje:
+    """Gestiona una colección de máquinas. Solo depende de Maquina."""
 
     def __init__(self) -> None:
-        self._items: list[Producto] = []
+        self._maquinas: list[Maquina] = []
 
-    def agregar(self, producto: Producto) -> None:
-        self._items.append(producto)
+    def agregar(self, maquina: Maquina) -> None:
+        self._maquinas.append(maquina)
 
-    def buscar(self, nombre: str) -> Producto | None:
-        return next((p for p in self._items if p.nombre == nombre), None)
+    def buscar(self, nombre: str) -> Maquina | None:
+        return next((m for m in self._maquinas if m.nombre == nombre), None)
 
-    def total_stock(self) -> int:
-        return len(self._items)
+    def total_maquinas(self) -> int:
+        return len(self._maquinas)
 
 
 # --- módulo: reporte.py ---
-class ReporteInventario:
+class ReportePlanta:
     """Genera reportes. Cohesivo: solo sabe de reportes, nada más."""
 
-    def generar(self, inventario: Inventario) -> str:
+    def generar(self, linea: LineaDeMontaje) -> str:
         lineas = [
-            "=== Reporte de Inventario ===",
-            f"Total de productos: {inventario.total_stock()}",
+            "=== Reporte de Planta ===",
+            f"Total de máquinas: {linea.total_maquinas()}",
         ]
         return "\n".join(lineas)
 
 
 # Uso
-inv = Inventario()
-inv.agregar(Producto("Laptop", 1500))
-inv.agregar(Producto("Monitor", 400))
+linea = LineaDeMontaje()
+linea.agregar(Maquina("CNC-01", capacidad=100))
+linea.agregar(Maquina("Soldadora-02", capacidad=50))
 
-reporte = ReporteInventario()
-print(reporte.generar(inv))
+reporte = ReportePlanta()
+print(reporte.generar(linea))
 ```
 
 ### Cohesión y acoplamiento
 
 Dos métricas guían el diseño modular:
 
-- **Cohesión** (alta es buena): un módulo es cohesivo cuando todas sus partes trabajan juntas hacia un único propósito. `ReporteInventario` solo genera reportes — no agrega productos, no valida precios. Eso es alta cohesión.
-- **Acoplamiento** (bajo es bueno): un módulo tiene bajo acoplamiento cuando depende de pocos módulos externos y solo de sus interfaces públicas. Si `ReporteInventario` solo necesita saber que `Inventario` tiene `total_stock()`, no importa cómo lo implementa internamente.
+- **Cohesión** (alta es buena): un módulo es cohesivo cuando todas sus partes trabajan juntas hacia un único propósito. `ReportePlanta` solo genera reportes — no agrega máquinas, no valida capacidades. Eso es alta cohesión.
+- **Acoplamiento** (bajo es bueno): un módulo tiene bajo acoplamiento cuando depende de pocos módulos externos y solo de sus interfaces públicas. Si `ReportePlanta` solo necesita saber que `LineaDeMontaje` tiene `total_maquinas()`, no importa cómo lo implementa internamente.
 
 > En la práctica, cuando un cambio en una parte del sistema irradia modificaciones hacia muchos otros archivos, es una señal clara de alto acoplamiento. La solución casi siempre implica identificar qué responsabilidades están mal asignadas y redistribuirlas en módulos más cohesivos.
 
@@ -103,8 +111,8 @@ Dos métricas guían el diseño modular:
 
 Cualquier sistema real involucra decenas de abstracciones que necesitan relacionarse entre sí. La jerarquía organiza esas relaciones de manera que el sistema siga siendo comprensible. Las dos formas fundamentales son:
 
-- **Jerarquía "es-un"** (herencia): una subclase *es un* tipo específico de su clase padre. `Auto` es un `Vehiculo`.
-- **Jerarquía "tiene-un"** (composición): un objeto *contiene* o *usa* a otro. `Auto` tiene un `Motor`.
+- **Jerarquía "es-un"** (herencia): una subclase *es un* tipo específico de su clase padre. `EstacionCorte` es una `EstacionTrabajo`.
+- **Jerarquía "tiene-un"** (composición): un objeto *contiene* o *usa* a otro. `Maquina` tiene un `Sensor`.
 
 Elegir entre estas dos es una de las decisiones de diseño más frecuentes y más importantes. La regla práctica: si podés decir con naturalidad que A *es un* B en todos los contextos, usá herencia. Si la relación es que A *tiene un* B o A *usa un* B, usá composición. En la práctica, el abuso de herencia genera jerarquías rígidas y difíciles de cambiar — la composición suele ser la opción más flexible.
 

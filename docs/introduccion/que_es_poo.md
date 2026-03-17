@@ -21,50 +21,60 @@ Un objeto tiene dos dimensiones inseparables:
 - **Estado**: los datos que el objeto conoce sobre sí mismo (sus atributos o campos).
 - **Comportamiento**: las acciones que el objeto puede realizar o recibir (sus métodos).
 
-Pensá en una cuenta bancaria. Tiene un estado (saldo, titular, número de cuenta) y un comportamiento (depositar, retirar, consultar saldo). En un diseño procedural, el saldo sería una variable en algún lugar y las funciones `depositar()` y `retirar()` estarían dispersas en el código. En POO, todo eso vive junto dentro de un único objeto `CuentaBancaria`.
+Pensá en una máquina de la planta de producción. Tiene un estado (si está activa o en falla, cuántos ciclos completó, su historial de fallas) y un comportamiento (iniciar un ciclo, reportar una falla, consultar su estado). En un diseño procedural, esos datos serían variables dispersas y las funciones vivirían separadas. En POO, todo eso convive dentro de un único objeto `Maquina`.
 
 ```python
-class CuentaBancaria:
+class Maquina:
     """
-    Cuenta bancaria simple. Ejemplo de objeto con estado y comportamiento.
+    Máquina de producción con estado y comportamiento encapsulados.
 
     Attributes:
-        titular: Nombre del titular de la cuenta.
+        nombre: Nombre o código identificador de la máquina.
     """
 
-    def __init__(self, titular: str, saldo_inicial: float = 0.0) -> None:
-        self._titular = titular
-        self._saldo = saldo_inicial
+    def __init__(self, nombre: str) -> None:
+        self.nombre = nombre
+        self._estado = "inactiva"
+        self._ciclos_producidos = 0
+        self._historial_fallas: list[str] = []
 
-    def depositar(self, monto: float) -> None:
-        """Acredita monto en la cuenta."""
-        if monto <= 0:
-            raise ValueError("El monto debe ser positivo")
-        self._saldo += monto
+    def iniciar_ciclo(self) -> None:
+        """Ejecuta un ciclo de producción si la máquina está activa."""
+        if self._estado != "activa":
+            raise RuntimeError(f"La máquina '{self.nombre}' no está activa")
+        self._ciclos_producidos += 1
 
-    def retirar(self, monto: float) -> None:
-        """Debita monto de la cuenta."""
-        if monto <= 0:
-            raise ValueError("El monto debe ser positivo")
-        if monto > self._saldo:
-            raise ValueError("Saldo insuficiente")
-        self._saldo -= monto
+    def activar(self) -> None:
+        """Pone la máquina en estado activo."""
+        self._estado = "activa"
 
-    @property
-    def saldo(self) -> float:
-        """Retorna el saldo actual (solo lectura)."""
-        return self._saldo
+    def reportar_falla(self, descripcion: str) -> None:
+        """Registra una falla y cambia el estado a 'falla'."""
+        self._estado = "falla"
+        self._historial_fallas.append(descripcion)
+
+    def obtener_estado(self) -> dict:
+        """Retorna un resumen del estado actual de la máquina."""
+        return {
+            "nombre": self.nombre,
+            "estado": self._estado,
+            "ciclos": self._ciclos_producidos,
+            "fallas": len(self._historial_fallas),
+        }
 
     def __repr__(self) -> str:
-        return f"CuentaBancaria({self._titular!r}, saldo=${self._saldo:.2f})"
+        return f"Maquina({self.nombre!r}, estado={self._estado!r})"
 
 
 # Estado y comportamiento juntos en un objeto
-cuenta = CuentaBancaria("Ana García", 1000.0)
-cuenta.depositar(500.0)
-cuenta.retirar(200.0)
-print(cuenta.saldo)  # 1300.0
-print(cuenta)        # CuentaBancaria('Ana García', saldo=$1300.00)
+maquina = Maquina("CNC-01")
+maquina.activar()
+maquina.iniciar_ciclo()
+maquina.iniciar_ciclo()
+print(maquina.obtener_estado())
+# {'nombre': 'CNC-01', 'estado': 'activa', 'ciclos': 2, 'fallas': 0}
+print(maquina)
+# Maquina('CNC-01', estado='activa')
 ```
 
 ## Las cuatro características fundamentales

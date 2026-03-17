@@ -11,7 +11,7 @@ La analogía clásica es la del plano de arquitectura: el plano de una casa no e
 En Python, una clase se define con la palabra reservada `class` seguida del nombre en **PascalCase** (también llamado CamelCase: cada palabra empieza con mayúscula):
 
 ```python
-class Producto:
+class Pieza:
     pass  # clase vacía por ahora
 ```
 
@@ -22,56 +22,60 @@ Un **objeto** es una instancia concreta de una clase, creada en tiempo de ejecuc
 Se crea invocando la clase como si fuera una función, con el operador `()`:
 
 ```python
-producto_a = Producto()  # se crea una instancia de Producto
-producto_b = Producto()  # una instancia diferente, independiente
+pieza_a = Pieza()  # se crea una instancia de Pieza
+pieza_b = Pieza()  # una instancia diferente, independiente
 ```
 
-`producto_a` y `producto_b` son dos objetos distintos, cada uno con su propia identidad en memoria.
+`pieza_a` y `pieza_b` son dos objetos distintos, cada uno con su propia identidad en memoria.
 
 ## El constructor: `__init__`
 
 El método `__init__` es el **constructor** de la clase. Python lo llama automáticamente cada vez que se crea un nuevo objeto. Su propósito es inicializar el estado del objeto: asignar valores a los atributos que va a tener.
 
 ```python
-class Producto:
+class Pieza:
     """
-    Producto con nombre y precio.
+    Pieza industrial con número de serie, material y peso.
 
     Args:
-        nombre: Nombre del producto.
-        precio: Precio unitario (debe ser positivo).
+        numero_serie: Identificador único de la pieza.
+        material: Tipo de material (acero, aluminio, etc.).
+        peso: Peso en kilogramos.
     """
 
-    def __init__(self, nombre: str, precio: float) -> None:
-        self.nombre = nombre
-        self.precio = precio
+    def __init__(self, numero_serie: str, material: str, peso: float) -> None:
+        self.numero_serie = numero_serie
+        self.material = material
+        self.peso = peso
 ```
 
-Cuando escribís `Producto("Laptop", 1500.0)`, Python crea un objeto vacío y llama a `__init__` pasando ese objeto como primer argumento (que dentro del método se llama `self`).
+Cuando escribís `Pieza("P-0001", "acero", 2.3)`, Python crea un objeto vacío y llama a `__init__` pasando ese objeto como primer argumento (que dentro del método se llama `self`).
 
 ## `self`: la referencia al objeto actual
 
-`self` es el primer parámetro de cualquier método de instancia y representa al objeto sobre el que se está operando. Python lo pasa automáticamente: cuando llamás `producto.describir()`, Python llama internamente a `Producto.describir(producto)`.
+`self` es el primer parámetro de cualquier método de instancia y representa al objeto sobre el que se está operando. Python lo pasa automáticamente: cuando llamás `pieza.describir()`, Python llama internamente a `Pieza.describir(pieza)`.
 
 No es una palabra reservada (podría llamarse diferente), pero es una convención tan universal que nunca deberías cambiarla.
 
 ```python
-class Producto:
+class Pieza:
     """
-    Producto con nombre, precio y método de descripción.
+    Pieza industrial con número de serie, material y peso.
 
     Args:
-        nombre: Nombre del producto.
-        precio: Precio unitario.
+        numero_serie: Identificador único de la pieza.
+        material: Tipo de material (acero, aluminio, etc.).
+        peso: Peso en kilogramos.
     """
 
-    def __init__(self, nombre: str, precio: float) -> None:
-        self.nombre = nombre   # atributo de instancia
-        self.precio = precio   # atributo de instancia
+    def __init__(self, numero_serie: str, material: str, peso: float) -> None:
+        self.numero_serie = numero_serie   # atributo de instancia
+        self.material = material           # atributo de instancia
+        self.peso = peso                   # atributo de instancia
 
     def describir(self) -> str:
-        """Retorna una descripción legible del producto."""
-        return f"{self.nombre}: ${self.precio:.2f}"
+        """Retorna una descripción legible de la pieza."""
+        return f"Pieza {self.numero_serie}: {self.material}, {self.peso:.2f} kg"
 ```
 
 ## Atributos de instancia: el estado de cada objeto
@@ -87,74 +91,80 @@ Todo objeto tiene tres dimensiones:
 - **Comportamiento**: las operaciones que puede realizar (sus métodos).
 
 ```python
-class Producto:
+class Pieza:
     """
-    Producto con nombre, precio y método de descripción.
+    Pieza industrial con número de serie, material, peso y grosor.
 
     Args:
-        nombre: Nombre del producto.
-        precio: Precio unitario.
+        numero_serie: Identificador único de la pieza.
+        material: Tipo de material (acero, aluminio, etc.).
+        peso: Peso en kilogramos.
+        grosor: Grosor en milímetros.
     """
 
-    def __init__(self, nombre: str, precio: float) -> None:
-        self.nombre = nombre
-        self.precio = precio
+    def __init__(
+        self, numero_serie: str, material: str, peso: float, grosor: float = 1.0
+    ) -> None:
+        self.numero_serie = numero_serie
+        self.material = material
+        self.peso = peso
+        self.grosor = grosor
 
     def describir(self) -> str:
-        """Retorna una descripción legible del producto."""
-        return f"{self.nombre}: ${self.precio:.2f}"
+        """Retorna una descripción legible de la pieza."""
+        return f"Pieza {self.numero_serie}: {self.material}, {self.peso:.2f} kg"
 
-    def aplicar_descuento(self, porcentaje: float) -> None:
-        """Aplica un descuento al precio del producto.
+    def aplicar_desgaste(self, porcentaje: float) -> None:
+        """Reduce el grosor por desgaste durante el procesamiento.
 
         Args:
-            porcentaje: Porcentaje de descuento (0-100).
+            porcentaje: Porcentaje de reducción del grosor (0-100).
         """
         if not 0 < porcentaje <= 100:
             raise ValueError("El porcentaje debe estar entre 0 y 100")
-        self.precio *= (1 - porcentaje / 100)
+        self.grosor *= (1 - porcentaje / 100)
 
     def __repr__(self) -> str:
-        return f"Producto({self.nombre!r}, ${self.precio:.2f})"
+        return f"Pieza({self.numero_serie!r}, {self.material!r}, {self.peso:.2f}kg)"
 
 
 # Instanciación: se crean dos objetos independientes
-laptop = Producto("Laptop", 1500.0)
-mouse = Producto("Mouse", 45.0)
+pieza_1 = Pieza("P-0001", "acero", 2.3, grosor=5.0)
+pieza_2 = Pieza("P-0002", "aluminio", 0.8, grosor=3.0)
 
 # Identidad: son distintos objetos en memoria
-print(id(laptop) == id(mouse))   # False
+print(id(pieza_1) == id(pieza_2))   # False
 
 # Estado: cada objeto tiene su propio estado
-print(laptop.describir())  # Laptop: $1500.00
-print(mouse.describir())   # Mouse: $45.00
+print(pieza_1.describir())  # Pieza P-0001: acero, 2.30 kg
+print(pieza_2.describir())  # Pieza P-0002: aluminio, 0.80 kg
 
 # Independencia: modificar uno no afecta al otro
-laptop.aplicar_descuento(10)
-print(laptop.precio)  # 1350.0
-print(mouse.precio)   # 45.0  ← sin cambios
+pieza_1.aplicar_desgaste(10)
+print(pieza_1.grosor)  # 4.5
+print(pieza_2.grosor)  # 3.0  ← sin cambios
 ```
 
 ## Las instancias son independientes entre sí
 
-Este punto merece énfasis: cada objeto es su propio mundo. Crear cien instancias de `Producto` produce cien objetos independientes. El estado de uno no interfiere con el de los demás.
+Este punto merece énfasis: cada objeto es su propio mundo. Crear cien instancias de `Pieza` produce cien objetos independientes. El estado de uno no interfiere con el de los demás.
 
 ```python
-# Tres productos, tres estados independientes
-productos = [
-    Producto("Teclado", 80.0),
-    Producto("Monitor", 400.0),
-    Producto("Webcam", 60.0),
+# Tres piezas, tres estados independientes
+piezas = [
+    Pieza("P-0010", "acero", 1.5, grosor=4.0),
+    Pieza("P-0011", "aluminio", 0.9, grosor=2.5),
+    Pieza("P-0012", "acero", 2.1, grosor=6.0),
 ]
 
-# Aplicar descuento solo al primero
-productos[0].aplicar_descuento(20)
+# Aplicar desgaste solo a la primera
+piezas[0].aplicar_desgaste(20)
 
-for p in productos:
+for p in piezas:
     print(p)
-# Producto('Teclado', $64.00)   ← modificado
-# Producto('Monitor', $400.00)  ← sin cambios
-# Producto('Webcam', $60.00)    ← sin cambios
+# Pieza('P-0010', 'acero', 1.50kg)   ← modificada
+# Pieza('P-0011', 'aluminio', 0.90kg) ← sin cambios
+# Pieza('P-0012', 'acero', 2.10kg)   ← sin cambios
 ```
 
 > **En la práctica:** un error clásico de quienes empiezan es usar atributos de *clase* (definidos directamente en el cuerpo de la clase, fuera de `__init__`) pensando que son atributos de instancia. Los atributos de clase son compartidos por *todas* las instancias, lo cual raramente es lo que se quiere. Siempre asigná el estado inicial del objeto dentro de `__init__` usando `self`.

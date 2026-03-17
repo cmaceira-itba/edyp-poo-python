@@ -4,7 +4,7 @@ Identificar las características esenciales de un objeto e ignorar los detalles 
 
 ![La abstracción se centra en las características esenciales de un objeto según la perspectiva del observador](../img/abstraccion.png)
 
-Para ilustrar esto, pensá en cómo manejás un auto: usás el volante, el acelerador y los frenos sin necesitar saber nada sobre cómo funciona el motor internamente. El auto expone una interfaz simple y oculta la complejidad del mecanismo. En POO hacemos exactamente lo mismo con las clases: exponemos lo necesario y ocultamos lo demás.
+Para ilustrar esto, pensá en cómo operás una máquina industrial de la planta: presionás el botón de inicio, configurás la velocidad y monitoreás el indicador de temperatura — sin necesitar saber nada sobre el circuito de control, los actuadores hidráulicos ni el PLC interno. La máquina expone una interfaz simple y oculta la complejidad del mecanismo. En POO hacemos exactamente lo mismo con las clases: exponemos lo necesario y ocultamos lo demás.
 
 Llevado al código Python, la abstracción formal se implementa con clases abstractas del módulo `abc`. Una clase abstracta define *qué* operaciones debe ofrecer un objeto, sin especificar *cómo* las implementa cada subclase concreta.
 
@@ -12,90 +12,115 @@ Llevado al código Python, la abstracción formal se implementa con clases abstr
 from abc import ABC, abstractmethod
 
 
-class Figura(ABC):
-    """Abstracción de una figura geométrica."""
+class EstacionTrabajo(ABC):
+    """Abstracción de una estación de trabajo en la línea de montaje."""
 
     @abstractmethod
-    def area(self) -> float:
-        """Calcula el área de la figura."""
+    def procesar(self, pieza: str) -> str:
+        """Procesa una pieza y retorna el resultado."""
         ...
 
     @abstractmethod
-    def perimetro(self) -> float:
-        """Calcula el perímetro de la figura."""
+    def obtener_reporte(self) -> str:
+        """Retorna un reporte del estado de la estación."""
         ...
 
     def describir(self) -> str:
-        """Descripción textual con área y perímetro."""
-        return f"Área: {self.area():.2f}, Perímetro: {self.perimetro():.2f}"
+        """Descripción general con el reporte incluido."""
+        return f"Estación activa — {self.obtener_reporte()}"
 
 
-class Circulo(Figura):
+class EstacionCorte(EstacionTrabajo):
     """
-    Figura geométrica circular.
+    Estación de corte CNC.
 
     Args:
-        radio: Radio del círculo (debe ser positivo).
+        velocidad_corte: Velocidad de corte en mm/min.
     """
 
-    def __init__(self, radio: float) -> None:
-        self.radio = radio
+    def __init__(self, velocidad_corte: float) -> None:
+        self._velocidad = velocidad_corte
+        self._piezas = 0
 
-    def area(self) -> float:
-        import math
-        return math.pi * self.radio ** 2
+    def procesar(self, pieza: str) -> str:
+        self._piezas += 1
+        return f"[CORTE] {pieza} cortado a {self._velocidad} mm/min"
 
-    def perimetro(self) -> float:
-        import math
-        return 2 * math.pi * self.radio
+    def obtener_reporte(self) -> str:
+        return f"Corte: {self._piezas} piezas procesadas"
 
 
-class Rectangulo(Figura):
+class EstacionSoldadura(EstacionTrabajo):
     """
-    Figura geométrica rectangular.
+    Estación de soldadura MIG.
 
     Args:
-        ancho: Ancho del rectángulo.
-        alto: Alto del rectángulo.
+        temperatura_soldadura: Temperatura de soldadura en °C.
     """
 
-    def __init__(self, ancho: float, alto: float) -> None:
-        self.ancho = ancho
-        self.alto = alto
+    def __init__(self, temperatura_soldadura: float) -> None:
+        self._temperatura = temperatura_soldadura
+        self._piezas = 0
 
-    def area(self) -> float:
-        return self.ancho * self.alto
+    def procesar(self, pieza: str) -> str:
+        self._piezas += 1
+        return f"[SOLDADURA] {pieza} soldado a {self._temperatura}°C"
 
-    def perimetro(self) -> float:
-        return 2 * (self.ancho + self.alto)
+    def obtener_reporte(self) -> str:
+        return f"Soldadura: {self._piezas} piezas procesadas"
+
+
+class EstacionPintura(EstacionTrabajo):
+    """
+    Estación de pintura industrial.
+
+    Args:
+        color: Color aplicado en esta estación.
+    """
+
+    def __init__(self, color: str) -> None:
+        self._color = color
+        self._piezas = 0
+
+    def procesar(self, pieza: str) -> str:
+        self._piezas += 1
+        return f"[PINTURA] {pieza} pintado en {self._color}"
+
+    def obtener_reporte(self) -> str:
+        return f"Pintura ({self._color}): {self._piezas} piezas procesadas"
 
 
 # Polimorfismo: misma interfaz, distinto comportamiento
-figuras: list[Figura] = [Circulo(5), Rectangulo(4, 6)]
-for figura in figuras:
-    print(figura.describir())
+estaciones: list[EstacionTrabajo] = [
+    EstacionCorte(200.0),
+    EstacionSoldadura(350.0),
+    EstacionPintura("rojo"),
+]
+for est in estaciones:
+    print(est.procesar("P-0001"))
+    print(est.describir())
 ```
 
 ## La abstracción como contrato
 
-Una clase abstracta no es solo una "clase que no se puede instanciar". Es un **contrato**: cualquier clase que herede de `Figura` y no implemente `area()` y `perimetro()` lanzará un `TypeError` al intentar ser instanciada. Python impone ese contrato automáticamente.
+Una clase abstracta no es solo una "clase que no se puede instanciar". Es un **contrato**: cualquier clase que herede de `EstacionTrabajo` y no implemente `procesar()` y `obtener_reporte()` lanzará un `TypeError` al intentar ser instanciada. Python impone ese contrato automáticamente.
 
 ```python
 # Intentar instanciar directamente la clase abstracta falla
 try:
-    f = Figura()  # ❌ TypeError
+    est = EstacionTrabajo()  # ❌ TypeError
 except TypeError as e:
     print(e)
-# Can't instantiate abstract class Figura without an implementation for abstract methods...
+# Can't instantiate abstract class EstacionTrabajo without an implementation...
 
 # Una subclase que no implementa todos los métodos también falla
-class FiguraIncompleta(Figura):
-    def area(self) -> float:
-        return 0.0
-    # Falta implementar perimetro()
+class EstacionIncompleta(EstacionTrabajo):
+    def procesar(self, pieza: str) -> str:
+        return f"Procesando {pieza}"
+    # Falta implementar obtener_reporte()
 
 try:
-    fi = FiguraIncompleta()  # ❌ TypeError
+    ei = EstacionIncompleta()  # ❌ TypeError
 except TypeError as e:
     print(e)
 ```
@@ -112,20 +137,20 @@ La abstracción no es solo cosa de ABCs. Existe en múltiples niveles:
 from abc import ABC, abstractmethod
 
 
-class Notificador(ABC):
+class SistemaAlerta(ABC):
     """
-    Abstracción de un sistema de notificaciones.
-    Define el contrato sin especificar el canal.
+    Abstracción de un sistema de alertas de planta.
+    Define el contrato sin especificar el canal de notificación.
     """
 
     @abstractmethod
     def enviar(self, destinatario: str, mensaje: str) -> bool:
         """
-        Envía una notificación.
+        Envía una alerta.
 
         Args:
-            destinatario: Identificador del destinatario (email, número, etc.).
-            mensaje: Texto de la notificación.
+            destinatario: Identificador del destinatario (nombre, email, etc.).
+            mensaje: Texto de la alerta.
 
         Returns:
             True si el envío fue exitoso, False en caso contrario.
@@ -133,36 +158,34 @@ class Notificador(ABC):
         ...
 
 
-class NotificadorEmail(Notificador):
-    """Notificador que envía emails."""
+class NotificadorOperario(SistemaAlerta):
+    """Notifica al operario mediante pantalla de la planta."""
 
     def enviar(self, destinatario: str, mensaje: str) -> bool:
-        # En producción, aquí iría la lógica de envío de email
-        print(f"[EMAIL] Para: {destinatario} | {mensaje}")
+        print(f"[PANTALLA PLANTA] Para: {destinatario} | {mensaje}")
         return True
 
 
-class NotificadorSMS(Notificador):
-    """Notificador que envía SMS."""
+class NotificadorSupervisor(SistemaAlerta):
+    """Notifica al supervisor mediante email."""
 
     def enviar(self, destinatario: str, mensaje: str) -> bool:
-        # En producción, aquí iría la lógica de envío de SMS
-        print(f"[SMS] Para: {destinatario} | {mensaje}")
+        print(f"[EMAIL SUPERVISOR] Para: {destinatario} | {mensaje}")
         return True
 
 
-def notificar_todos(
-    notificadores: list[Notificador],
+def alertar_todos(
+    sistemas: list[SistemaAlerta],
     destinatario: str,
     mensaje: str,
 ) -> None:
-    """Envía una notificación por todos los canales disponibles."""
-    for notificador in notificadores:
-        notificador.enviar(destinatario, mensaje)
+    """Envía una alerta por todos los sistemas disponibles."""
+    for sistema in sistemas:
+        sistema.enviar(destinatario, mensaje)
 
 
-canales: list[Notificador] = [NotificadorEmail(), NotificadorSMS()]
-notificar_todos(canales, "ana@ejemplo.com", "Tu pedido fue confirmado")
+canales: list[SistemaAlerta] = [NotificadorOperario(), NotificadorSupervisor()]
+alertar_todos(canales, "Juan Pérez", "Temperatura fuera de rango en CNC-01")
 ```
 
 ## En la práctica: ABC vs duck typing
@@ -181,17 +204,23 @@ Python ofrece dos caminos para lograr abstracción polimórfica:
 
 ```python
 # Duck typing: sin ABC, sin herencia formal
-class NotificadorWhatsApp:
-    """Notificador por WhatsApp. No hereda de Notificador (duck typing)."""
+class EstacionRobotica:
+    """Estación robótica. No hereda de EstacionTrabajo (duck typing)."""
 
-    def enviar(self, destinatario: str, mensaje: str) -> bool:
-        print(f"[WHATSAPP] Para: {destinatario} | {mensaje}")
-        return True
+    def __init__(self, modelo: str) -> None:
+        self._modelo = modelo
+
+    def procesar(self, pieza: str) -> str:
+        return f"[ROBOT {self._modelo}] Procesando {pieza} automáticamente"
+
+    def obtener_reporte(self) -> str:
+        return f"Robot {self._modelo} operativo"
 
 
-# Funciona igual porque tiene el método enviar()
-wp = NotificadorWhatsApp()
-wp.enviar("+54911...", "Tu pedido fue confirmado")  # ✅
+# Funciona igual porque tiene los métodos procesar() y obtener_reporte()
+robot = EstacionRobotica("ABB-IRB6700")
+print(robot.procesar("P-0005"))   # ✅
+print(robot.describir())          # ❌ describir() no existe en duck typing — error en runtime
 ```
 
 > **En la práctica:** en proyectos de equipo o en código que otros van a consumir, preferí ABC. El contrato explícito evita bugs silenciosos: si olvidás implementar un método, el error aparece al instanciar la clase, no horas después en producción cuando ese método es llamado. Para código propio y proyectos pequeños, duck typing es perfectamente válido y más ágil.

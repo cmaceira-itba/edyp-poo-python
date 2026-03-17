@@ -13,48 +13,57 @@ A diferencia de lenguajes como Java o C++, Python no tiene modificadores de acce
 | Convención | Ejemplo | Significado |
 | --- | --- | --- |
 | Sin prefijo | `self.nombre` | Público: accesible desde cualquier lugar |
-| Un guión bajo | `self._saldo` | "Protegido": convención de que es interno, no parte de la API pública |
-| Dos guiones bajos | `self.__saldo` | "Muy privado": Python aplica *name mangling* para dificultar el acceso externo |
+| Un guión bajo | `self._estado` | "Protegido": convención de que es interno, no parte de la API pública |
+| Dos guiones bajos | `self.__contador` | "Muy privado": Python aplica *name mangling* para dificultar el acceso externo |
 
 En la práctica, `_un_guion` es suficiente para la mayoría de los casos. `__dos_guiones` se reserva para cuando realmente querés evitar que subclases o código externo accedan directamente al atributo.
 
 ```python
-class CuentaBancaria:
-    """Ejemplo de encapsulamiento: el saldo no es accesible directamente."""
+class Maquina:
+    """Ejemplo de encapsulamiento: los contadores internos no son accesibles directamente."""
 
-    def __init__(self, titular: str, saldo_inicial: float = 0) -> None:
-        self._titular = titular
-        self.__saldo = saldo_inicial  # __ = name mangling, muy privado
-
-    @property
-    def saldo(self) -> float:
-        """El saldo es de solo lectura desde afuera."""
-        return self.__saldo
+    def __init__(self, nombre: str) -> None:
+        self.nombre = nombre                  # público
+        self._estado = "inactiva"             # protegido
+        self.__contador_piezas = 0            # muy privado (name mangling)
+        self.__sensor_temperatura = 20.0      # muy privado
 
     @property
-    def titular(self) -> str:
-        return self._titular
+    def contador_piezas(self) -> int:
+        """El contador de piezas es de solo lectura desde afuera."""
+        return self.__contador_piezas
 
-    def depositar(self, monto: float) -> None:
-        if monto <= 0:
-            raise ValueError("El monto debe ser positivo")
-        self.__saldo += monto
+    @property
+    def temperatura(self) -> float:
+        """Temperatura actual del sensor interno (solo lectura)."""
+        return self.__sensor_temperatura
 
-    def retirar(self, monto: float) -> None:
-        if monto <= 0:
-            raise ValueError("El monto debe ser positivo")
-        if monto > self.__saldo:
-            raise ValueError("Saldo insuficiente")
-        self.__saldo -= monto
+    def iniciar_ciclo(self) -> None:
+        """Ejecuta un ciclo de producción incrementando el contador interno."""
+        if self._estado != "activa":
+            raise RuntimeError(f"La máquina '{self.nombre}' no está activa")
+        self.__contador_piezas += 1
+
+    def activar(self) -> None:
+        self._estado = "activa"
+
+    def obtener_reporte(self) -> dict:
+        """API pública para consultar el estado."""
+        return {
+            "nombre": self.nombre,
+            "estado": self._estado,
+            "piezas": self.__contador_piezas,
+        }
 
     def __repr__(self) -> str:
-        return f"CuentaBancaria({self._titular!r}, saldo=${self.__saldo:.2f})"
+        return f"Maquina({self.nombre!r}, estado={self._estado!r})"
 
 
-cuenta = CuentaBancaria("Ana García", 1000)
-cuenta.depositar(500)
-print(cuenta.saldo)    # ✅ acceso controlado
-# cuenta.__saldo = 999999  # ❌ no funciona (name mangling)
+maquina = Maquina("CNC-01")
+maquina.activar()
+maquina.iniciar_ciclo()
+print(maquina.contador_piezas)    # ✅ acceso controlado
+# maquina.__contador_piezas = 999  # ❌ no funciona (name mangling)
 ```
 
 ## Por qué importa el encapsulamiento
@@ -62,56 +71,49 @@ print(cuenta.saldo)    # ✅ acceso controlado
 Sin encapsulamiento, cualquier parte del programa puede modificar el estado de cualquier objeto sin pasar por sus reglas de validación. Esto lleva a estados inconsistentes que son difíciles de rastrear.
 
 ```python
-# ❌ Sin encapsulamiento: el saldo puede quedar negativo sin control
-class CuentaSinEncapsulamiento:
-    def __init__(self, titular: str) -> None:
-        self.saldo = 0.0  # público, cualquiera puede modificarlo
+# ❌ Sin encapsulamiento: el contador puede quedar en un estado inválido
+class MaquinaSinEncapsulamiento:
+    def __init__(self, nombre: str) -> None:
+        self.nombre = nombre
+        self.contador_piezas = 0  # público, cualquiera puede modificarlo
 
-cuenta_rota = CuentaSinEncapsulamiento("Carlos")
-cuenta_rota.saldo = -99999.0  # Python no se queja, pero el estado es inválido
-print(cuenta_rota.saldo)      # -99999.0 ← estado inconsistente
+maquina_rota = MaquinaSinEncapsulamiento("Torno-01")
+maquina_rota.contador_piezas = -999  # Python no se queja, pero el estado es inválido
+print(maquina_rota.contador_piezas)  # -999 ← estado inconsistente
 ```
 
 ```python
 # ✅ Con encapsulamiento: las reglas de negocio se aplican siempre
-class CuentaSegura:
+class MaquinaSegura:
     """
-    Cuenta bancaria con saldo protegido por encapsulamiento.
+    Máquina con contadores protegidos por encapsulamiento.
 
     Args:
-        titular: Nombre del titular.
-        saldo_inicial: Saldo inicial de la cuenta.
+        nombre: Nombre o código de la máquina.
     """
 
-    def __init__(self, titular: str, saldo_inicial: float = 0.0) -> None:
-        if saldo_inicial < 0:
-            raise ValueError("El saldo inicial no puede ser negativo")
-        self._titular = titular
-        self._saldo = saldo_inicial
+    def __init__(self, nombre: str) -> None:
+        self.nombre = nombre
+        self._estado = "inactiva"
+        self._contador_piezas: int = 0
 
     @property
-    def saldo(self) -> float:
-        """Saldo actual (solo lectura)."""
-        return self._saldo
+    def contador_piezas(self) -> int:
+        """Contador de piezas producidas (solo lectura)."""
+        return self._contador_piezas
 
-    def depositar(self, monto: float) -> None:
-        """Acredita monto en la cuenta."""
-        if monto <= 0:
-            raise ValueError(f"El monto a depositar debe ser positivo, recibí: {monto}")
-        self._saldo += monto
+    def activar(self) -> None:
+        """Pone la máquina en estado activo."""
+        self._estado = "activa"
 
-    def retirar(self, monto: float) -> None:
-        """Debita monto de la cuenta."""
-        if monto <= 0:
-            raise ValueError(f"El monto a retirar debe ser positivo, recibí: {monto}")
-        if monto > self._saldo:
-            raise ValueError(
-                f"Saldo insuficiente: tenés ${self._saldo:.2f}, intentás retirar ${monto:.2f}"
-            )
-        self._saldo -= monto
+    def iniciar_ciclo(self) -> None:
+        """Ejecuta un ciclo de producción. Valida el estado antes de ejecutar."""
+        if self._estado != "activa":
+            raise RuntimeError(f"La máquina '{self.nombre}' debe estar activa para producir")
+        self._contador_piezas += 1
 
     def __repr__(self) -> str:
-        return f"CuentaSegura({self._titular!r}, saldo=${self._saldo:.2f})"
+        return f"MaquinaSegura({self.nombre!r}, piezas={self._contador_piezas})"
 ```
 
 ## Propiedades con `@property`
@@ -121,66 +123,81 @@ El decorador `@property` es la forma idiomática de Python para implementar gett
 La gran ventaja es que podés empezar con un atributo público simple y, si más adelante necesitás agregar validación, convertirlo en una propiedad sin cambiar el código que lo consume.
 
 ```python
-class Temperatura:
+class Maquina:
     """
-    Temperatura en grados Celsius con validación de rango.
+    Máquina de producción con sensor de temperatura validado.
 
     Args:
-        celsius: Temperatura inicial en grados Celsius.
+        nombre: Nombre o código de la máquina.
     """
 
-    CERO_ABSOLUTO = -273.15  # constante de clase
+    TEMP_MINIMA_OPERATIVA = 0.0    # constante de clase
 
-    def __init__(self, celsius: float) -> None:
+    def __init__(self, nombre: str) -> None:
+        self.nombre = nombre
+        self._estado = "inactiva"
+        self._contador_piezas: int = 0
         # Usamos el setter desde el inicio para validar desde la construcción
-        self.celsius = celsius
+        self.temperatura = self.TEMP_MINIMA_OPERATIVA
 
     @property
-    def celsius(self) -> float:
-        """Temperatura en grados Celsius."""
-        return self._celsius
+    def temperatura(self) -> float:
+        """Temperatura del sensor en °C."""
+        return self.__sensor_temperatura
 
-    @celsius.setter
-    def celsius(self, valor: float) -> None:
-        """Establece la temperatura con validación de cero absoluto."""
-        if valor < self.CERO_ABSOLUTO:
+    @temperatura.setter
+    def temperatura(self, valor: float) -> None:
+        """Establece la temperatura con validación de rango operativo."""
+        if valor < self.TEMP_MINIMA_OPERATIVA:
             raise ValueError(
-                f"Temperatura inválida: {valor}°C es menor al cero absoluto "
-                f"({self.CERO_ABSOLUTO}°C)"
+                f"Temperatura inválida: {valor}°C es menor al mínimo operativo "
+                f"({self.TEMP_MINIMA_OPERATIVA}°C)"
             )
-        self._celsius = valor
+        self.__sensor_temperatura = valor
 
     @property
-    def fahrenheit(self) -> float:
-        """Temperatura en grados Fahrenheit (derivada, solo lectura)."""
-        return self._celsius * 9 / 5 + 32
+    def contador_piezas(self) -> int:
+        """Contador de piezas producidas (solo lectura)."""
+        return self._contador_piezas
 
-    @property
-    def kelvin(self) -> float:
-        """Temperatura en Kelvin (derivada, solo lectura)."""
-        return self._celsius - self.CERO_ABSOLUTO
+    def activar(self) -> None:
+        self._estado = "activa"
+
+    def iniciar_ciclo(self) -> None:
+        if self._estado != "activa":
+            raise RuntimeError(f"La máquina '{self.nombre}' no está activa")
+        self._contador_piezas += 1
+
+    def obtener_reporte(self) -> dict:
+        return {
+            "nombre": self.nombre,
+            "estado": self._estado,
+            "temperatura": self.__sensor_temperatura,
+            "piezas": self._contador_piezas,
+        }
 
     def __repr__(self) -> str:
-        return f"Temperatura({self._celsius}°C)"
+        return f"Maquina({self.nombre!r})"
 
 
 # Uso
-temp = Temperatura(100.0)
-print(temp.celsius)     # 100.0
-print(temp.fahrenheit)  # 212.0
-print(temp.kelvin)      # 373.15
+maquina = Maquina("Soldadora-01")
+maquina.temperatura = 45.0     # ✅ setter con validación
+print(maquina.temperatura)     # 45.0
 
-temp.celsius = 25.0     # ✅ setter con validación
-print(temp)             # Temperatura(25.0°C)
+maquina.activar()
+maquina.iniciar_ciclo()
+print(maquina.obtener_reporte())
+# {'nombre': 'Soldadora-01', 'estado': 'activa', 'temperatura': 45.0, 'piezas': 1}
 
 try:
-    temp.celsius = -300.0  # ❌ ValueError: menor al cero absoluto
+    maquina.temperatura = -10.0  # ❌ ValueError: menor al mínimo operativo
 except ValueError as e:
     print(e)
 
-# Una propiedad derivada es de solo lectura (no tiene setter)
+# Una propiedad de solo lectura no tiene setter
 try:
-    temp.fahrenheit = 100.0  # ❌ AttributeError
+    maquina.contador_piezas = 100  # ❌ AttributeError
 except AttributeError as e:
     print(e)
 ```

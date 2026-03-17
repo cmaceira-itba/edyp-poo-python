@@ -12,7 +12,7 @@ Lo que **no** hace un test unitario:
 - No testea la base de datos, la red ni el sistema de archivos.
 - No testea lógica de otras clases relacionadas.
 
-Si tu clase `Inventario` usa una clase `Producto`, en el test de `Inventario` vas a **simular** el comportamiento de `Producto` con un *mock*, sin usar la clase real.
+Si tu clase `LineaDeMontaje` usa una clase `EstacionTrabajo`, en el test de `LineaDeMontaje` vas a **simular** el comportamiento de `EstacionTrabajo` con un *mock*, sin usar la clase real.
 
 ## pytest: El Framework Estándar
 
@@ -29,11 +29,11 @@ pip install pytest pytest-mock
 ```text
 mi_proyecto/
 ├── src/
-│   ├── cuenta_bancaria.py
-│   └── producto.py
+│   ├── estacion_trabajo.py
+│   └── linea_montaje.py
 └── tests/
-    ├── test_cuenta_bancaria.py
-    └── test_producto.py
+    ├── test_estacion_corte.py
+    └── test_linea_montaje.py
 ```
 
 Los archivos de test deben llamarse `test_*.py` o `*_test.py`, y las funciones (o métodos de clase) deben comenzar con `test_`. Dada esa convención, pytest los descubre y ejecuta automáticamente.
@@ -45,7 +45,7 @@ Los archivos de test deben llamarse `test_*.py` o `*_test.py`, y las funciones (
 pytest
 
 # Correr un archivo específico
-pytest tests/test_cuenta_bancaria.py
+pytest tests/test_estacion_corte.py
 
 # Ver output detallado
 pytest -v
@@ -59,108 +59,133 @@ pytest -v --tb=short
 pytest usa el `assert` nativo de Python; cuando una aserción falla, muestra exactamente qué valores tenía cada lado:
 
 ```python
-assert cuenta.saldo == 1500    # si falla: AssertionError: assert 1200 == 1500
+assert estacion.piezas_procesadas() == 5    # si falla: AssertionError: assert 3 == 5
 assert resultado is not None
-assert "error" in mensaje.lower()
+assert "falla" in mensaje.lower()
 ```
 
 ## Tests básicos con clases
 
 ```python
-# src/cuenta_bancaria.py
-class CuentaBancaria:
-    """Cuenta bancaria con saldo controlado."""
+# src/estacion_corte.py
+class EstacionCorte:
+    """Estación de corte CNC."""
 
-    def __init__(self, titular: str, saldo_inicial: float = 0.0) -> None:
-        if saldo_inicial < 0:
-            raise ValueError("El saldo inicial no puede ser negativo")
-        self._titular = titular
-        self._saldo = saldo_inicial
-
-    @property
-    def saldo(self) -> float:
-        return self._saldo
+    def __init__(self, nombre: str, velocidad_corte: float) -> None:
+        if velocidad_corte <= 0:
+            raise ValueError("La velocidad de corte debe ser positiva")
+        self.nombre = nombre
+        self._velocidad = velocidad_corte
+        self._piezas_procesadas: int = 0
+        self._bloqueada: bool = False
 
     @property
-    def titular(self) -> str:
-        return self._titular
+    def piezas_procesadas(self) -> int:
+        return self._piezas_procesadas
 
-    def depositar(self, monto: float) -> None:
-        if monto <= 0:
-            raise ValueError("El monto debe ser positivo")
-        self._saldo += monto
+    @property
+    def esta_bloqueada(self) -> bool:
+        return self._bloqueada
 
-    def retirar(self, monto: float) -> None:
-        if monto <= 0:
-            raise ValueError("El monto debe ser positivo")
-        if monto > self._saldo:
-            raise ValueError("Saldo insuficiente")
-        self._saldo -= monto
+    def bloquear(self) -> None:
+        self._bloqueada = True
+
+    def desbloquear(self) -> None:
+        self._bloqueada = False
+
+    def procesar(self, pieza: str) -> str:
+        if self._bloqueada:
+            raise RuntimeError(f"La estación '{self.nombre}' está bloqueada")
+        self._piezas_procesadas += 1
+        return f"[{self.nombre}] {pieza} cortado a {self._velocidad} mm/min"
 
 
-# tests/test_cuenta_bancaria.py
+# tests/test_estacion_corte.py
 import pytest
 
 
-class TestCuentaBancaria:
-    """Tests unitarios para CuentaBancaria."""
+class TestEstacionCorte:
+    """Tests unitarios para EstacionCorte."""
 
-    def test_saldo_inicial_por_defecto_es_cero(self) -> None:
-        cuenta = CuentaBancaria("Carlos")
-        assert cuenta.saldo == 0.0
-
-    def test_saldo_inicial_se_asigna_correctamente(self) -> None:
-        cuenta = CuentaBancaria("Carlos", 1000.0)
-        assert cuenta.saldo == 1000.0
-
-    def test_saldo_inicial_negativo_lanza_value_error(self) -> None:
+    def test_velocidad_invalida_lanza_value_error(self) -> None:
         with pytest.raises(ValueError):
-            CuentaBancaria("Carlos", -100.0)
+            EstacionCorte("CNC-01", velocidad_corte=-50.0)
 
-    def test_depositar_incrementa_el_saldo(self) -> None:
-        cuenta = CuentaBancaria("Carlos", 1000.0)
-        cuenta.depositar(500.0)
-        assert cuenta.saldo == 1500.0
+    def test_velocidad_cero_lanza_value_error(self) -> None:
+        with pytest.raises(ValueError):
+            EstacionCorte("CNC-01", velocidad_corte=0.0)
 
-    def test_depositar_monto_negativo_lanza_value_error(self) -> None:
-        cuenta = CuentaBancaria("Carlos", 1000.0)
-        with pytest.raises(ValueError, match="debe ser positivo"):
-            cuenta.depositar(-50.0)
+    def test_piezas_procesadas_inician_en_cero(self) -> None:
+        estacion = EstacionCorte("CNC-01", velocidad_corte=200.0)
+        assert estacion.piezas_procesadas == 0
 
-    def test_retirar_reduce_el_saldo(self) -> None:
-        cuenta = CuentaBancaria("Carlos", 1000.0)
-        cuenta.retirar(300.0)
-        assert cuenta.saldo == 700.0
+    def test_procesar_incrementa_contador(self) -> None:
+        estacion = EstacionCorte("CNC-01", velocidad_corte=200.0)
+        estacion.procesar("P-0001")
+        assert estacion.piezas_procesadas == 1
 
-    def test_retirar_exactamente_el_saldo_disponible(self) -> None:
-        """Caso borde: retirar exactamente lo que hay disponible."""
-        cuenta = CuentaBancaria("Carlos", 500.0)
-        cuenta.retirar(500.0)
-        assert cuenta.saldo == 0.0
+    def test_procesar_multiples_piezas(self) -> None:
+        estacion = EstacionCorte("CNC-01", velocidad_corte=200.0)
+        estacion.procesar("P-0001")
+        estacion.procesar("P-0002")
+        estacion.procesar("P-0003")
+        assert estacion.piezas_procesadas == 3
 
-    def test_retirar_mas_del_saldo_lanza_value_error(self) -> None:
-        cuenta = CuentaBancaria("Carlos", 100.0)
-        with pytest.raises(ValueError, match="Saldo insuficiente"):
-            cuenta.retirar(200.0)
+    def test_procesar_retorna_string_con_nombre_pieza(self) -> None:
+        estacion = EstacionCorte("CNC-01", velocidad_corte=200.0)
+        resultado = estacion.procesar("P-0001")
+        assert "P-0001" in resultado
+
+    def test_estacion_bloqueada_lanza_runtime_error(self) -> None:
+        estacion = EstacionCorte("CNC-01", velocidad_corte=200.0)
+        estacion.bloquear()
+        with pytest.raises(RuntimeError, match="bloqueada"):
+            estacion.procesar("P-0001")
+
+    def test_pieza_rechazada_no_incrementa_contador_si_bloqueada(self) -> None:
+        estacion = EstacionCorte("CNC-01", velocidad_corte=200.0)
+        estacion.bloquear()
+        try:
+            estacion.procesar("P-0001")
+        except RuntimeError:
+            pass
+        assert estacion.piezas_procesadas == 0
+
+    def test_desbloquear_permite_procesar_de_nuevo(self) -> None:
+        estacion = EstacionCorte("CNC-01", velocidad_corte=200.0)
+        estacion.bloquear()
+        estacion.desbloquear()
+        resultado = estacion.procesar("P-0001")
+        assert "P-0001" in resultado
+        assert estacion.piezas_procesadas == 1
 
 
 # Fixtures: setup compartido entre tests
 @pytest.fixture
-def cuenta_con_saldo() -> CuentaBancaria:
-    """Cuenta con saldo de $1000 lista para usar en los tests."""
-    return CuentaBancaria("Test User", 1000.0)
+def estacion_corte_vacia() -> EstacionCorte:
+    """EstacionCorte lista para usar, sin piezas procesadas."""
+    return EstacionCorte("CNC-TEST", velocidad_corte=200.0)
 
 
-class TestCuentaBancariaConFixture:
-    """Mismos tests usando fixtures para no repetir el setup en cada uno."""
+@pytest.fixture
+def linea_con_dos_estaciones():
+    """Línea con dos estaciones preconfiguradas."""
+    linea = LineaDeMontaje("Línea TEST")
+    linea.agregar_estacion(EstacionCorte("CNC-01", velocidad_corte=200.0))
+    linea.agregar_estacion(EstacionCorte("CNC-02", velocidad_corte=150.0))
+    return linea
 
-    def test_depositar_con_fixture(self, cuenta_con_saldo: CuentaBancaria) -> None:
-        cuenta_con_saldo.depositar(200.0)
-        assert cuenta_con_saldo.saldo == 1200.0
 
-    def test_retirar_con_fixture(self, cuenta_con_saldo: CuentaBancaria) -> None:
-        cuenta_con_saldo.retirar(400.0)
-        assert cuenta_con_saldo.saldo == 600.0
+class TestEstacionCorteConFixture:
+    """Tests usando fixtures para no repetir el setup en cada uno."""
+
+    def test_procesar_con_fixture(self, estacion_corte_vacia: EstacionCorte) -> None:
+        estacion_corte_vacia.procesar("P-0001")
+        assert estacion_corte_vacia.piezas_procesadas == 1
+
+    def test_bloquear_con_fixture(self, estacion_corte_vacia: EstacionCorte) -> None:
+        estacion_corte_vacia.bloquear()
+        assert estacion_corte_vacia.esta_bloqueada is True
 ```
 
 ## Mocking: Aislar la Clase Bajo Test
@@ -171,7 +196,7 @@ Cuando una clase depende de otra, no querés que los tests de la primera fallen 
 
 - Cuando tu clase usa otra clase de dominio (para aislar la unidad bajo test).
 - Cuando la dependencia conecta con recursos externos: bases de datos, APIs, sistema de archivos.
-- Cuando necesitás simular condiciones difíciles de reproducir (ej: una API que devuelve error 500).
+- Cuando necesitás simular condiciones difíciles de reproducir (ej: un sensor que devuelve valores fuera de rango).
 
 | Necesidad | Herramienta |
 | --- | --- |
@@ -184,85 +209,101 @@ Cuando una clase depende de otra, no querés que los tests de la primera fallen 
 > **Nota sobre `spec=`**: usar `MagicMock(spec=MiClase)` restringe el mock a los métodos que `MiClase` realmente tiene. Así se evita que los mocks "aprueben" código que llama a métodos con nombres incorrectos.
 
 ```python
-# src/gateway_pago.py
-class GatewayPago:
-    """Servicio externo de pago (ej: Mercado Pago, Stripe)."""
+# src/sensor_externo.py
+class SensorExterno:
+    """Sensor IoT externo que consulta una API de telemetría."""
 
-    def procesar(self, monto: float, tarjeta: str) -> bool:
-        """Llama a la API externa. En tests NO queremos que esto suceda."""
-        raise NotImplementedError("Esto conectaría con la API real")
+    def leer_temperatura(self) -> float:
+        """Conecta con la API IoT y retorna la temperatura actual."""
+        raise NotImplementedError("Esto conectaría con la API real de sensores")
+
+    def esta_activo(self) -> bool:
+        """Verifica si el sensor está activo."""
+        raise NotImplementedError("Esto consultaría el estado real del sensor")
 
 
-class ProcesadorPedido:
+class ControladorMaquina:
     """
-    Procesa un pedido usando un gateway de pago externo.
+    Controlador que monitorea la máquina usando un sensor IoT externo.
 
     Attributes:
-        gateway: Servicio de pago inyectado por el constructor.
-        comision: Porcentaje de comisión sobre el total (0.0 a 1.0).
+        sensor: Sensor externo inyectado por el constructor.
+        temp_critica: Temperatura a partir de la cual se activa la alerta.
     """
 
-    def __init__(self, gateway: GatewayPago, comision: float = 0.05) -> None:
-        self._gateway = gateway
-        self._comision = comision
+    def __init__(self, sensor: SensorExterno, temp_critica: float = 80.0) -> None:
+        self._sensor = sensor
+        self._temp_critica = temp_critica
+        self._alertas: int = 0
 
-    def procesar_pedido(self, monto: float, tarjeta: str) -> dict:
+    def monitorear(self) -> dict:
         """
-        Procesa el pago de un pedido.
+        Lee el sensor y determina el estado de la máquina.
 
         Returns:
-            dict con 'aprobado' (bool) y 'total_cobrado' (float).
+            dict con 'temperatura', 'alerta' (bool) y 'total_alertas'.
 
         Raises:
-            ValueError: si el monto no es positivo.
+            RuntimeError: Si el sensor no está activo.
         """
-        if monto <= 0:
-            raise ValueError(f"El monto debe ser positivo: {monto}")
-        total = monto * (1 + self._comision)
-        aprobado = self._gateway.procesar(total, tarjeta)
-        return {"aprobado": aprobado, "total_cobrado": total if aprobado else 0.0}
+        if not self._sensor.esta_activo():
+            raise RuntimeError("El sensor externo no está activo")
+        temperatura = self._sensor.leer_temperatura()
+        alerta = temperatura >= self._temp_critica
+        if alerta:
+            self._alertas += 1
+        return {
+            "temperatura": temperatura,
+            "alerta": alerta,
+            "total_alertas": self._alertas,
+        }
 
 
-# tests/test_procesador_pedido.py
+# tests/test_controlador_maquina.py
 import pytest
 from unittest.mock import MagicMock
 
 
-class TestProcesadorPedido:
+class TestControladorMaquina:
     """
-    Tests unitarios de ProcesadorPedido.
-    GatewayPago es mockeado: nunca se llama a la API real.
+    Tests unitarios de ControladorMaquina.
+    SensorExterno es mockeado: nunca se llama a la API real.
     """
 
-    def test_pedido_aprobado_retorna_total_con_comision(self) -> None:
-        gateway_mock = MagicMock(spec=GatewayPago)
-        gateway_mock.procesar.return_value = True
+    def test_temperatura_normal_no_genera_alerta(self) -> None:
+        sensor_mock = MagicMock(spec=SensorExterno)
+        sensor_mock.esta_activo.return_value = True
+        sensor_mock.leer_temperatura.return_value = 45.0
 
-        procesador = ProcesadorPedido(gateway_mock, comision=0.10)
-        resultado = procesador.procesar_pedido(100.0, "4111-1111-1111-1111")
+        controlador = ControladorMaquina(sensor_mock, temp_critica=80.0)
+        resultado = controlador.monitorear()
 
-        assert resultado["aprobado"] is True
-        assert resultado["total_cobrado"] == pytest.approx(110.0)
+        assert resultado["temperatura"] == 45.0
+        assert resultado["alerta"] is False
+        assert resultado["total_alertas"] == 0
 
-    def test_pedido_rechazado_retorna_cero(self) -> None:
-        gateway_mock = MagicMock(spec=GatewayPago)
-        gateway_mock.procesar.return_value = False
+    def test_temperatura_critica_genera_alerta(self) -> None:
+        sensor_mock = MagicMock(spec=SensorExterno)
+        sensor_mock.esta_activo.return_value = True
+        sensor_mock.leer_temperatura.return_value = 85.0
 
-        procesador = ProcesadorPedido(gateway_mock)
-        resultado = procesador.procesar_pedido(200.0, "tarjeta-invalida")
+        controlador = ControladorMaquina(sensor_mock, temp_critica=80.0)
+        resultado = controlador.monitorear()
 
-        assert resultado["aprobado"] is False
-        assert resultado["total_cobrado"] == 0.0
+        assert resultado["alerta"] is True
+        assert resultado["total_alertas"] == 1
 
-    def test_monto_negativo_lanza_error_sin_llamar_al_gateway(self) -> None:
-        gateway_mock = MagicMock(spec=GatewayPago)
-        procesador = ProcesadorPedido(gateway_mock)
+    def test_sensor_inactivo_lanza_runtime_error(self) -> None:
+        sensor_mock = MagicMock(spec=SensorExterno)
+        sensor_mock.esta_activo.return_value = False
 
-        with pytest.raises(ValueError):
-            procesador.procesar_pedido(-50.0, "tarjeta")
+        controlador = ControladorMaquina(sensor_mock)
 
-        # El gateway nunca debe ser llamado si el monto es inválido
-        gateway_mock.procesar.assert_not_called()
+        with pytest.raises(RuntimeError):
+            controlador.monitorear()
+
+        # El sensor de temperatura nunca debe ser consultado si está inactivo
+        sensor_mock.leer_temperatura.assert_not_called()
 ```
 
 ---

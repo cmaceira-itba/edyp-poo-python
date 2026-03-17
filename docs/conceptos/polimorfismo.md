@@ -12,52 +12,54 @@ El nombre viene de la frase atribuida a James Whitcomb Riley:
 
 > *"Si camina como un pato y grazna como un pato, entonces probablemente sea un pato."*
 
-En código: si el objeto tiene el método `area()`, podés llamarlo. No importa de qué clase es, no importa si hereda de `Figura` o no.
+En código: si el objeto tiene el método `procesar()`, podés llamarlo. No importa de qué clase es, no importa si hereda de `EstacionTrabajo` o no.
 
 ```python
-import math
+class EstacionCorte:
+    """Estación de corte CNC."""
+
+    def __init__(self, velocidad: float) -> None:
+        self._velocidad = velocidad
+
+    def procesar(self, pieza: str) -> str:
+        return f"[CORTE] {pieza} a {self._velocidad} mm/min"
 
 
-class Circulo:
-    """Figura circular."""
+class EstacionSoldadura:
+    """Estación de soldadura MIG."""
 
-    def __init__(self, radio: float) -> None:
-        self.radio = radio
+    def __init__(self, temperatura: float) -> None:
+        self._temperatura = temperatura
 
-    def area(self) -> float:
-        return math.pi * self.radio ** 2
-
-
-class Cuadrado:
-    """Figura cuadrada."""
-
-    def __init__(self, lado: float) -> None:
-        self.lado = lado
-
-    def area(self) -> float:
-        return self.lado ** 2
+    def procesar(self, pieza: str) -> str:
+        return f"[SOLDADURA] {pieza} a {self._temperatura}°C"
 
 
-class Triangulo:
-    """Triángulo rectángulo."""
+class EstacionPintura:
+    """Estación de pintura industrial."""
 
-    def __init__(self, base: float, altura: float) -> None:
-        self.base = base
-        self.altura = altura
+    def __init__(self, color: str) -> None:
+        self._color = color
 
-    def area(self) -> float:
-        return self.base * self.altura / 2
+    def procesar(self, pieza: str) -> str:
+        return f"[PINTURA] {pieza} en color {self._color}"
 
 
 # Duck typing: ninguna de estas clases hereda de la misma base
-# pero todas tienen area() → polimorfismo
-def calcular_area_total(figuras: list) -> float:
-    """Calcula el área total de una colección de figuras."""
-    return sum(figura.area() for figura in figuras)
+# pero todas tienen procesar() → polimorfismo
+def procesar_en_todas(estaciones: list, pieza: str) -> list[str]:
+    """Procesa una pieza en todas las estaciones disponibles."""
+    return [est.procesar(pieza) for est in estaciones]
 
 
-figuras = [Circulo(5), Cuadrado(4), Triangulo(6, 3)]
-print(f"Área total: {calcular_area_total(figuras):.2f}")  # Área total: 102.54
+estaciones = [
+    EstacionCorte(200.0),
+    EstacionSoldadura(350.0),
+    EstacionPintura("rojo"),
+]
+resultados = procesar_en_todas(estaciones, "P-0001")
+for r in resultados:
+    print(r)
 ```
 
 ## Polimorfismo con herencia y method overriding
@@ -65,130 +67,144 @@ print(f"Área total: {calcular_area_total(figuras):.2f}")  # Área total: 102.54
 La forma más clásica de polimorfismo es a través de la herencia: una subclase redefine un método de la clase padre, y al llamarlo, Python ejecuta la versión de la subclase.
 
 ```python
-import math
 from abc import ABC, abstractmethod
 
 
-class Figura(ABC):
+class EstacionTrabajo(ABC):
     """
-    Abstracción base para figuras geométricas.
-    Define el contrato: toda figura debe poder calcular su área y perímetro.
+    Abstracción base para estaciones de la línea de montaje.
+    Define el contrato: toda estación debe poder procesar piezas y generar reportes.
     """
 
+    def __init__(self, nombre: str) -> None:
+        self.nombre = nombre
+        self._piezas_procesadas: int = 0
+
     @abstractmethod
-    def area(self) -> float:
-        """Calcula el área de la figura."""
+    def procesar(self, pieza: str) -> str:
+        """Procesa una pieza y retorna el resultado."""
         ...
 
     @abstractmethod
-    def perimetro(self) -> float:
-        """Calcula el perímetro de la figura."""
+    def obtener_reporte(self) -> str:
+        """Retorna un reporte del estado de la estación."""
         ...
 
     def describir(self) -> str:
-        """Descripción con área y perímetro. Mismo código, distinto resultado."""
-        nombre = self.__class__.__name__
-        return f"{nombre}: área={self.area():.2f}, perímetro={self.perimetro():.2f}"
+        """Descripción con reporte. Mismo código, distinto resultado."""
+        return f"{self.nombre}: {self.obtener_reporte()}"
 
 
-class Circulo(Figura):
+class EstacionCorte(EstacionTrabajo):
     """
-    Figura circular.
+    Estación de corte CNC.
 
     Args:
-        radio: Radio del círculo.
+        nombre: Nombre de la estación.
+        velocidad_corte: Velocidad de corte en mm/min.
     """
 
-    def __init__(self, radio: float) -> None:
-        self.radio = radio
+    def __init__(self, nombre: str, velocidad_corte: float) -> None:
+        super().__init__(nombre)
+        self._velocidad = velocidad_corte
 
-    def area(self) -> float:
-        return math.pi * self.radio ** 2
+    def procesar(self, pieza: str) -> str:
+        self._piezas_procesadas += 1
+        return f"[CORTE] {pieza} a {self._velocidad} mm/min"
 
-    def perimetro(self) -> float:
-        return 2 * math.pi * self.radio
+    def obtener_reporte(self) -> str:
+        return f"Corte a {self._velocidad} mm/min, {self._piezas_procesadas} piezas"
 
 
-class Rectangulo(Figura):
+class EstacionSoldadura(EstacionTrabajo):
     """
-    Figura rectangular.
+    Estación de soldadura MIG.
 
     Args:
-        ancho: Ancho del rectángulo.
-        alto: Alto del rectángulo.
+        nombre: Nombre de la estación.
+        temperatura_soldadura: Temperatura de soldadura en °C.
     """
 
-    def __init__(self, ancho: float, alto: float) -> None:
-        self.ancho = ancho
-        self.alto = alto
+    def __init__(self, nombre: str, temperatura_soldadura: float) -> None:
+        super().__init__(nombre)
+        self._temperatura = temperatura_soldadura
 
-    def area(self) -> float:
-        return self.ancho * self.alto
+    def procesar(self, pieza: str) -> str:
+        self._piezas_procesadas += 1
+        return f"[SOLDADURA] {pieza} a {self._temperatura}°C"
 
-    def perimetro(self) -> float:
-        return 2 * (self.ancho + self.alto)
+    def obtener_reporte(self) -> str:
+        return f"Soldadura a {self._temperatura}°C, {self._piezas_procesadas} piezas"
 
 
-class Triangulo(Figura):
+class EstacionPintura(EstacionTrabajo):
     """
-    Triángulo con tres lados.
+    Estación de pintura industrial.
 
     Args:
-        a: Lado a.
-        b: Lado b.
-        c: Lado c.
+        nombre: Nombre de la estación.
+        color: Color aplicado en esta estación.
     """
 
-    def __init__(self, a: float, b: float, c: float) -> None:
-        if a + b <= c or a + c <= b or b + c <= a:
-            raise ValueError("Los lados no forman un triángulo válido")
-        self.a = a
-        self.b = b
-        self.c = c
+    def __init__(self, nombre: str, color: str) -> None:
+        super().__init__(nombre)
+        self._color = color
 
-    def area(self) -> float:
-        # Fórmula de Herón
-        s = (self.a + self.b + self.c) / 2
-        return math.sqrt(s * (s - self.a) * (s - self.b) * (s - self.c))
+    def procesar(self, pieza: str) -> str:
+        self._piezas_procesadas += 1
+        return f"[PINTURA] {pieza} en {self._color}"
 
-    def perimetro(self) -> float:
-        return self.a + self.b + self.c
+    def obtener_reporte(self) -> str:
+        return f"Pintura ({self._color}), {self._piezas_procesadas} piezas"
 
 
 # Polimorfismo: misma interfaz, distintos resultados
-figuras: list[Figura] = [
-    Circulo(5),
-    Rectangulo(4, 6),
-    Triangulo(3, 4, 5),
+estaciones: list[EstacionTrabajo] = [
+    EstacionCorte("CNC-01", 200.0),
+    EstacionSoldadura("MIG-01", 350.0),
+    EstacionPintura("PAINT-01", "rojo"),
 ]
 
-for figura in figuras:
-    print(figura.describir())
+for est in estaciones:
+    print(est.procesar("P-0001"))
+    print(est.describir())
+    print()
 
-print(f"\nÁrea total: {sum(f.area() for f in figuras):.2f}")
+print(f"Total piezas procesadas: {sum(e._piezas_procesadas for e in estaciones)}")
 ```
 
-## El beneficio práctico: código que trabaja con cualquier subtipo
+## El beneficio práctico: el SistemaControl
 
-El polimorfismo permite escribir funciones que operan sobre la interfaz abstracta sin importar el tipo concreto. Esto hace que el código sea extensible: podés agregar nuevas subclases sin modificar las funciones que las usan.
+El polimorfismo permite escribir clases que operan sobre la interfaz abstracta sin importar el tipo concreto. Esto hace que el código sea extensible: podés agregar nuevas subclases sin modificar las clases que las usan.
 
 ```python
-def figura_mas_grande(figuras: list[Figura]) -> Figura:
+class SistemaControl:
     """
-    Retorna la figura con mayor área.
-
-    Args:
-        figuras: Lista de figuras a comparar.
-
-    Returns:
-        La figura con el área más grande.
+    Sistema de control que ejecuta el ciclo de producción.
+    Depende de la abstracción EstacionTrabajo, no de las concretas.
     """
-    return max(figuras, key=lambda f: f.area())
+
+    def ejecutar_ciclo(
+        self, estaciones: list[EstacionTrabajo], pieza: str
+    ) -> list[str]:
+        """
+        Ejecuta el ciclo de producción pasando la pieza por todas las estaciones.
+
+        Args:
+            estaciones: Lista de estaciones a ejecutar.
+            pieza: Identificador de la pieza a procesar.
+
+        Returns:
+            Lista de resultados de cada estación.
+        """
+        return [est.procesar(pieza) for est in estaciones]
 
 
-ganadora = figura_mas_grande(figuras)
-print(f"La figura más grande es: {ganadora.describir()}")
-# Funciona con cualquier Figura, incluso con subclases que todavía no existen
+control = SistemaControl()
+resultados = control.ejecutar_ciclo(estaciones, "P-0002")
+for r in resultados:
+    print(r)
+# Funciona con cualquier EstacionTrabajo, incluso con subclases que todavía no existen
 ```
 
 ## `isinstance()` y `type()`: cuándo usarlos (y cuándo no)
@@ -199,38 +215,39 @@ El problema es que abusar de estas verificaciones es un **código de olor** que 
 
 ```python
 # ❌ Esto es polimorfismo manual — antipatrón
-def calcular_area_mal(figura) -> float:
-    if type(figura) == Circulo:
-        return math.pi * figura.radio ** 2
-    elif type(figura) == Rectangulo:
-        return figura.ancho * figura.alto
-    elif type(figura) == Triangulo:
-        s = (figura.a + figura.b + figura.c) / 2
-        return math.sqrt(s * (s - figura.a) * (s - figura.b) * (s - figura.c))
+def procesar_mal(estacion, pieza: str) -> str:
+    if isinstance(estacion, EstacionCorte):
+        return f"Cortando {pieza}"
+    elif isinstance(estacion, EstacionSoldadura):
+        return f"Soldando {pieza}"
+    elif isinstance(estacion, EstacionPintura):
+        return f"Pintando {pieza}"
     else:
-        raise TypeError(f"Tipo no soportado: {type(figura)}")
+        raise TypeError(f"Tipo no soportado: {type(estacion)}")
 
-# Cada vez que agregás una nueva figura, tenés que modificar esta función → viola OCP
+# Cada vez que agregás una nueva estación, tenés que modificar esta función → viola OCP
 ```
 
 ```python
-# ✅ Polimorfismo real: cada clase sabe calcular su propia área
-def calcular_area_bien(figura: Figura) -> float:
-    return figura.area()
+# ✅ Polimorfismo real: cada clase sabe procesar su propia pieza
+def procesar_bien(estacion: EstacionTrabajo, pieza: str) -> str:
+    return estacion.procesar(pieza)
 
-# Si agregás un Hexagono mañana, esta función no cambia
+# Si agregás una EstacionEnsambladoRobotico mañana, esta función no cambia
 ```
 
 `isinstance()` tiene usos válidos, principalmente para hacer validaciones de tipo en puntos de entrada (constructores, funciones públicas) o para verificar que un objeto cumple con una interfaz antes de usarlo. Lo que hay que evitar es usarlo como sustituto de los métodos polimórficos.
 
 ```python
 # ✅ Uso legítimo de isinstance: validar en punto de entrada
-def procesar_figura(figura: object) -> None:
-    if not isinstance(figura, Figura):
-        raise TypeError(f"Se esperaba una Figura, recibí: {type(figura).__name__}")
-    print(figura.describir())
+def ejecutar_estacion(estacion: object, pieza: str) -> str:
+    if not isinstance(estacion, EstacionTrabajo):
+        raise TypeError(
+            f"Se esperaba una EstacionTrabajo, recibí: {type(estacion).__name__}"
+        )
+    return estacion.procesar(pieza)
 ```
 
-> **En la práctica:** cuando revisamos código de alumnos, el indicador más frecuente de "polimorfismo no aprovechado" es una cadena de `if/elif` que verifica el tipo del objeto para decidir qué hacer. Cada vez que te tentés a escribir `if isinstance(x, TipoA): ... elif isinstance(x, TipoB): ...`, preguntate: ¿debería este comportamiento estar en un método de `TipoA` y `TipoB` directamente?
+> **En la práctica:** cuando revisamos código de alumnos, el indicador más frecuente de "polimorfismo no aprovechado" es una cadena de `if/elif` que verifica el tipo del objeto para decidir qué hacer. Cada vez que te tentés a escribir `if isinstance(x, EstacionCorte): ... elif isinstance(x, EstacionSoldadura): ...`, preguntate: ¿debería este comportamiento estar en un método de `EstacionCorte` y `EstacionSoldadura` directamente?
 
 ---

@@ -16,20 +16,20 @@ Un **user story** (historia de usuario) describe una funcionalidad desde la pers
 
 > *"Como [tipo de usuario], quiero [acción], para [objetivo o beneficio]."*
 
-Por ejemplo: *"Como cliente, quiero agregar productos al carrito, para poder comprarlos juntos."*
+Por ejemplo: *"Como supervisor de planta, quiero ver el estado de cada máquina en tiempo real, para detectar fallas antes de que paren la producción."*
 
 A partir de esas historias, el **User Story Mapping** las organiza en un mapa bidimensional:
 
-- **Eje horizontal (izquierda a derecha):** el flujo de uso del sistema, ordenado como lo haría un usuario real. Primero busca productos, después los agrega al carrito, después paga, etc.
+- **Eje horizontal (izquierda a derecha):** el flujo de uso del sistema, ordenado como lo haría un usuario real. Primero carga piezas, después las procesa en cada estación, después verifica el resultado, etc.
 - **Eje vertical (arriba a abajo):** el nivel de detalle y prioridad. Las historias más importantes van arriba; las variantes y casos especiales, abajo.
 
 ### Pasos para construir un User Story Map
 
-1. **Identificar a los actores:** ¿Quiénes usan el sistema? (cliente, administrador, vendedor…). Cada actor tiene sus propias necesidades.
-2. **Describir las actividades principales:** ¿Qué tareas grandes hace cada actor? Por ejemplo: *buscar*, *comprar*, *gestionar stock*. Estas van en la fila superior del mapa.
-3. **Desglosar en historias concretas:** Para cada actividad, escribir las acciones específicas que la componen. *"Buscar por categoría"*, *"filtrar por precio"*, *"ver detalle del producto"* son historias que componen la actividad *buscar*.
+1. **Identificar a los actores:** ¿Quiénes usan el sistema? (supervisor, operario, jefe de mantenimiento…). Cada actor tiene sus propias necesidades.
+2. **Describir las actividades principales:** ¿Qué tareas grandes hace cada actor? Por ejemplo: *cargar pieza*, *procesar en estación*, *verificar resultado*, *registrar falla*. Estas van en la fila superior del mapa.
+3. **Desglosar en historias concretas:** Para cada actividad, escribir las acciones específicas que la componen. *"Ver temperatura de la máquina"*, *"recibir alerta por falla"*, *"consultar historial de ciclos"* son historias que componen la actividad *monitorear*.
 4. **Priorizar:** Marcar cuáles historias forman el flujo mínimo que necesitás para que el sistema funcione (el llamado *walking skeleton*). Esto define qué construir primero.
-5. **Identificar los objetos:** Revisá todas las historias y subrayá los **sustantivos** (cliente, carrito, producto, pedido). Esos son los candidatos a clases de tu modelo.
+5. **Identificar los objetos:** Revisá todas las historias y subrayá los **sustantivos** (máquina, pieza, estación, operario, sensor). Esos son los candidatos a clases de tu modelo.
 
 ### ¿Por qué usar esta técnica?
 
@@ -77,37 +77,38 @@ Las relaciones capturan cómo se vinculan las clases. En un diagrama liviano us�
 
 | Relación | Símbolo | Semántica | Ejemplo |
 | --- | --- | --- | --- |
-| **Asociación** | `A ──── B` | A usa o referencia a B | `Pedido` usa `Cliente` |
-| **Composición** | `A ◆──── B` | A contiene B; B no existe sin A | `Auto` contiene `Motor` |
-| **Agregación** | `A ◇──── B` | A agrupa B; B puede existir solo | `Inventario` agrupa `Producto` |
-| **Herencia** | `A ──▷ B` | A es un tipo de B | `Moto` es un `Vehículo` |
+| **Asociación** | `A ──── B` | A usa o referencia a B | `EstacionTrabajo` usa `Operario` |
+| **Composición** | `A ◆──── B` | A contiene B; B no existe sin A | `Maquina` contiene `Sensor` |
+| **Agregación** | `A ◇──── B` | A agrupa B; B puede existir solo | `LineaDeMontaje` agrupa `EstacionTrabajo` |
+| **Herencia** | `A ──▷ B` | A es un tipo de B | `EstacionCorte` es una `EstacionTrabajo` |
 
 > La diferencia entre composición y agregación suele generar dudas. La regla práctica: si destruís el contenedor y el contenido pierde sentido por sí solo, es composición; si puede existir independientemente, es agregación. En la mayoría de los diseños que hacemos en la materia, la distinción no es crítica — lo que importa es que quede claro que una clase *contiene* a otra.
 
-### Ejemplo completo: sistema de pedidos
+### Ejemplo completo: sistema de planta de producción
 
-El siguiente diagrama modela las clases del ejemplo de acoplamiento visto antes:
+El siguiente diagrama modela las clases principales de nuestra planta:
 
 ```text
          ┌─────────────────────────┐
-         │        Cliente          │
+         │      LineaDeMontaje     │
          ├─────────────────────────┤
          │ - nombre: str           │
-         │ - email: str            │
+         │ - estaciones: list      │
          ├─────────────────────────┤
-         │ + get_nombre(): str     │
+         │ + agregar_estacion()    │
+         │ + procesar_pieza()      │
          └────────────┬────────────┘
-                      │ 1
-                      │ asociación
+                      │ ◇ 1
+                      │ agregación
                       │ *
          ┌────────────▼────────────┐         ┌─────────────────────────┐
-         │         Pedido          │ ◆─────── │        Producto         │
-         ├─────────────────────────┤  1    *  ├─────────────────────────┤
-         │ - id: int               │          │ - nombre: str           │
-         │ - items: list[Producto] │          │ - precio: float         │
-         ├─────────────────────────┤          │ - stock: int            │
-         │ + agregar(p: Producto)  │          ├─────────────────────────┤
-         │ + calcular_total(): float│         │ + vender(cant: int)     │
+         │    EstacionTrabajo      │ ──────── │         Pieza           │
+         ├─────────────────────────┤  procesa ├─────────────────────────┤
+         │ - nombre: str           │  (0..*)  │ - numero_serie: str     │
+         │ - tiempo_ciclo: float   │          │ - material: str         │
+         ├─────────────────────────┤          │ - peso: float           │
+         │ + procesar(p: Pieza)    │          ├─────────────────────────┤
+         │ + obtener_reporte(): str│          │ + marcar_completada()   │
          └─────────────────────────┘          └─────────────────────────┘
 ```
 
@@ -132,28 +133,29 @@ El mismo diagrama del ejemplo anterior en sintaxis Mermaid se vería así:
 
 ```mermaid
 classDiagram
-    class Cliente {
+    class LineaDeMontaje {
         - nombre: str
-        - email: str
-        + get_nombre() str
+        - estaciones: list
+        + agregar_estacion(e: EstacionTrabajo)
+        + procesar_pieza(p: Pieza)
     }
 
-    class Pedido {
-        - id: int
-        - items: list
-        + agregar(p: Producto)
-        + calcular_total() float
-    }
-
-    class Producto {
+    class EstacionTrabajo {
         - nombre: str
-        - precio: float
-        - stock: int
-        + vender(cant: int)
+        - tiempo_ciclo: float
+        + procesar(p: Pieza)
+        + obtener_reporte() str
     }
 
-    Cliente "1" --> "*" Pedido : realiza
-    Pedido "1" *-- "*" Producto : contiene
+    class Pieza {
+        - numero_serie: str
+        - material: str
+        - peso: float
+        + marcar_completada()
+    }
+
+    LineaDeMontaje "1" o-- "*" EstacionTrabajo : agrega
+    EstacionTrabajo "1" --> "*" Pieza : procesa
 ```
 
 ---

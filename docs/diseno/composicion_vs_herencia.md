@@ -18,9 +18,9 @@ Antes de elegir, aplicá este test:
 | **tiene-un** | ¿A posee un B como parte de sí mismo? | Composición (atributo en `__init__`) |
 | **usa-un** | ¿A necesita un B para funcionar, pero no lo posee? | Asociación (parámetro o atributo) |
 
-Un `Auto` *es un* `Vehiculo` → herencia.
-Un `Auto` *tiene un* `Motor` → composición.
-Un `Logger` *usa una* `ConexionDB` → asociación.
+Una `EstacionCorte` *es una* `EstacionTrabajo` → herencia.
+Una `Maquina` *tiene un* `RegistradorEventos` → composición.
+Un `SistemaControl` *usa una* `EstacionTrabajo` → asociación.
 
 ## El problema de la clase base frágil
 
@@ -29,42 +29,42 @@ La herencia crea un acoplamiento muy fuerte entre padre e hijo. El hijo depende 
 ```python
 # ── Ejemplo del problema ──────────────────────────────────────────────────────
 
-class Contenedor:
-    """Clase base que guarda elementos."""
+class EstacionBase:
+    """Clase base que registra piezas procesadas."""
 
     def __init__(self) -> None:
-        self._items: list = []
-        self._contador = 0  # cuántos elementos se agregaron en total
+        self._piezas: list = []
+        self._contador = 0  # cuántas piezas se procesaron en total
 
-    def agregar(self, item) -> None:
-        self._items.append(item)
+    def agregar_pieza(self, pieza) -> None:
+        self._piezas.append(pieza)
         self._contador += 1
 
-    def agregar_varios(self, items: list) -> None:
-        for item in items:
-            self.agregar(item)  # llama a agregar() para mantener el contador
+    def agregar_lote(self, piezas: list) -> None:
+        for pieza in piezas:
+            self.agregar_pieza(pieza)  # llama a agregar_pieza() para mantener el contador
 
 
-class ContenedorAuditado(Contenedor):
-    """Quiere contar cuántas veces se agrega un elemento."""
+class EstacionConRegistro(EstacionBase):
+    """Quiere contar cuántas veces se agrega una pieza."""
 
     def __init__(self) -> None:
         super().__init__()
         self._veces_llamado = 0
 
-    def agregar(self, item) -> None:
+    def agregar_pieza(self, pieza) -> None:
         self._veces_llamado += 1
-        super().agregar(item)
+        super().agregar_pieza(pieza)
 
 
-ca = ContenedorAuditado()
-ca.agregar("a")
-ca.agregar("b")
-ca.agregar_varios(["c", "d", "e"])
+est = EstacionConRegistro()
+est.agregar_pieza("P-0001")
+est.agregar_pieza("P-0002")
+est.agregar_lote(["P-0003", "P-0004", "P-0005"])
 
-print(ca._veces_llamado)  # ¿Cuánto esperabas? ¿2? ¿5?
-# Es 5 — porque agregar_varios() llama a agregar() en un loop,
-# y agregar() está sobreescrito en la subclase.
+print(est._veces_llamado)  # ¿Cuánto esperabas? ¿2? ¿5?
+# Es 5 — porque agregar_lote() llama a agregar_pieza() en un loop,
+# y agregar_pieza() está sobreescrito en la subclase.
 # Pequeños cambios en la clase padre producen efectos inesperados en los hijos.
 ```
 
@@ -73,46 +73,46 @@ Este tipo de bug es difícil de detectar porque el código "parece correcto" per
 ## El mismo problema resuelto con composición
 
 ```python
-class RegistroDeItems:
+class RegistroPiezas:
     """
-    Gestiona una colección de ítems.
+    Gestiona una colección de piezas.
     Clase autónoma, no hereda de nada especial.
     """
 
     def __init__(self) -> None:
-        self._items: list = []
+        self._piezas: list = []
 
-    def agregar(self, item) -> None:
-        self._items.append(item)
+    def agregar(self, pieza) -> None:
+        self._piezas.append(pieza)
 
-    def agregar_varios(self, items: list) -> None:
-        self._items.extend(items)
+    def agregar_lote(self, piezas: list) -> None:
+        self._piezas.extend(piezas)
 
     def __len__(self) -> int:
-        return len(self._items)
+        return len(self._piezas)
 
 
-class ContenedorAuditadoComposicion:
+class EstacionConRegistroComposicion:
     """
-    Contenedor con auditoría. USA un RegistroDeItems, no lo extiende.
+    Estación con auditoría. USA un RegistroPiezas, no lo extiende.
 
-    Al no heredar, no hay riesgo de que cambios en RegistroDeItems
+    Al no heredar, no hay riesgo de que cambios en RegistroPiezas
     rompan el comportamiento de la auditoría.
     """
 
     def __init__(self) -> None:
-        self._registro = RegistroDeItems()  # composición
+        self._registro = RegistroPiezas()  # composición
         self._veces_llamado = 0
 
-    def agregar(self, item) -> None:
-        """Agrega un ítem y registra la operación."""
-        self._registro.agregar(item)
+    def agregar_pieza(self, pieza) -> None:
+        """Agrega una pieza y registra la operación."""
+        self._registro.agregar(pieza)
         self._veces_llamado += 1
 
-    def agregar_varios(self, items: list) -> None:
-        """Agrega varios ítems registrando cada uno."""
-        for item in items:
-            self.agregar(item)  # pasa por la auditoría correctamente
+    def agregar_lote(self, piezas: list) -> None:
+        """Agrega varias piezas registrando cada una."""
+        for pieza in piezas:
+            self.agregar_pieza(pieza)  # pasa por la auditoría correctamente
 
     def total_operaciones(self) -> int:
         """Retorna el total de operaciones de agregado."""
@@ -122,25 +122,25 @@ class ContenedorAuditadoComposicion:
         return len(self._registro)
 
 
-ca = ContenedorAuditadoComposicion()
-ca.agregar("a")
-ca.agregar("b")
-ca.agregar_varios(["c", "d", "e"])
+est = EstacionConRegistroComposicion()
+est.agregar_pieza("P-0001")
+est.agregar_pieza("P-0002")
+est.agregar_lote(["P-0003", "P-0004", "P-0005"])
 
-print(ca.total_operaciones())  # 5 — predecible, sin surpresas
-print(len(ca))                 # 5
+print(est.total_operaciones())  # 5 — predecible, sin sorpresas
+print(len(est))                 # 5
 ```
 
-## Un caso real: Logger inyectable por composición
+## Un caso real: RegistradorEventos inyectable por composición
 
-Uno de los ejemplos más clásicos de composición sobre herencia es un Logger que se puede "enchufar" a cualquier clase. Con herencia, estarías forzando a todas las clases a ser subclase de `Logger`. Con composición, cualquier clase puede tener un logger.
+Uno de los ejemplos más clásicos de composición sobre herencia es un RegistradorEventos que se puede "enchufar" a cualquier clase. Con herencia, estarías forzando a todas las clases a ser subclase del registrador. Con composición, cualquier clase puede tener uno.
 
 ```python
 from abc import ABC, abstractmethod
 
 
-class Logger(ABC):
-    """Abstracción de un logger. Define el contrato."""
+class RegistradorEventos(ABC):
+    """Abstracción de un registrador de eventos. Define el contrato."""
 
     @abstractmethod
     def log(self, mensaje: str) -> None:
@@ -148,15 +148,15 @@ class Logger(ABC):
         ...
 
 
-class LoggerConsola(Logger):
-    """Logger que imprime en consola."""
+class RegistradorConsola(RegistradorEventos):
+    """Registrador que imprime en consola."""
 
     def log(self, mensaje: str) -> None:
         print(f"[LOG] {mensaje}")
 
 
-class LoggerArchivo(Logger):
-    """Logger que simula escritura en archivo."""
+class RegistradorArchivo(RegistradorEventos):
+    """Registrador que simula escritura en archivo."""
 
     def __init__(self, ruta: str) -> None:
         self._ruta = ruta
@@ -166,8 +166,8 @@ class LoggerArchivo(Logger):
         print(f"[ARCHIVO:{self._ruta}] {mensaje}")
 
 
-class LoggerSilencioso(Logger):
-    """Logger que no hace nada. Útil para tests."""
+class RegistradorSilencioso(RegistradorEventos):
+    """Registrador que no hace nada. Útil para tests."""
 
     def log(self, mensaje: str) -> None:
         pass  # no hace nada — Null Object pattern
@@ -175,44 +175,46 @@ class LoggerSilencioso(Logger):
 
 # ── Herencia: el problema ────────────────────────────────────────────────────
 
-class ServicioMalo(LoggerConsola):
-    """❌ Hereda Logger solo para tener logging. Relación forzada."""
+class MaquinaMala(RegistradorConsola):
+    """❌ Hereda RegistradorConsola solo para tener logging. Relación forzada."""
 
-    def procesar(self, dato: str) -> str:
-        self.log(f"Procesando: {dato}")  # usa el método heredado
-        return dato.upper()
+    def iniciar_ciclo(self) -> str:
+        self.log("Iniciando ciclo...")  # usa el método heredado
+        return "Ciclo ejecutado"
 
-# ServicioMalo ES UN LoggerConsola → ¿tiene sentido esa relación?
-# ¿Qué pasa si querés cambiar al LoggerArchivo? Tenés que cambiar la herencia.
+# MaquinaMala ES UN RegistradorConsola → ¿tiene sentido esa relación?
+# ¿Qué pasa si querés cambiar al RegistradorArchivo? Tenés que cambiar la herencia.
 
 
 # ── Composición: la solución ─────────────────────────────────────────────────
 
-class ServicioBueno:
+class Maquina:
     """
-    ✅ Recibe un Logger por composición. Flexible y sin acoplamiento.
+    ✅ Recibe un RegistradorEventos por composición. Flexible y sin acoplamiento.
 
     Args:
-        logger: Implementación del logger a usar.
+        nombre: Nombre de la máquina.
+        registrador: Implementación del registrador a usar.
     """
 
-    def __init__(self, logger: Logger) -> None:
-        self._logger = logger  # composición: tiene-un Logger
+    def __init__(self, nombre: str, registrador: RegistradorEventos) -> None:
+        self.nombre = nombre
+        self._registrador = registrador  # composición: tiene-un RegistradorEventos
 
-    def procesar(self, dato: str) -> str:
-        """Procesa el dato y registra la operación."""
-        self._logger.log(f"Procesando: {dato}")
-        return dato.upper()
+    def iniciar_ciclo(self) -> str:
+        """Inicia un ciclo de producción y lo registra."""
+        self._registrador.log(f"[{self.nombre}] Iniciando ciclo de producción")
+        return "Ciclo ejecutado"
 
 
-# La misma clase, tres comportamientos distintos, sin cambiar ServicioBueno
-s1 = ServicioBueno(LoggerConsola())
-s2 = ServicioBueno(LoggerArchivo("app.log"))
-s3 = ServicioBueno(LoggerSilencioso())
+# La misma clase, tres comportamientos distintos, sin cambiar Maquina
+m1 = Maquina("CNC-01", RegistradorConsola())
+m2 = Maquina("MIG-01", RegistradorArchivo("planta.log"))
+m3 = Maquina("PAINT-01", RegistradorSilencioso())
 
-s1.procesar("hola")  # [LOG] Procesando: hola
-s2.procesar("hola")  # [ARCHIVO:app.log] Procesando: hola
-s3.procesar("hola")  # (sin output)
+m1.iniciar_ciclo()  # [LOG] [CNC-01] Iniciando ciclo de producción
+m2.iniciar_ciclo()  # [ARCHIVO:planta.log] [MIG-01] Iniciando ciclo de producción
+m3.iniciar_ciclo()  # (sin output)
 ```
 
 Esto es el patrón **Strategy**: el comportamiento variable (logging) se encapsula en una clase separada y se inyecta en quien lo necesita. Es uno de los patrones más útiles que emerge naturalmente de preferir composición sobre herencia.
@@ -250,42 +252,40 @@ class SerializableMixin:
         return ", ".join(f"{k}={v!r}" for k, v in datos.items())
 
 
-class Producto(SerializableMixin):
+class EstacionTrabajo(SerializableMixin):
     """
-    Producto con serialización gracias al mixin.
+    Estación de trabajo con serialización gracias al mixin.
 
     Args:
-        codigo: Código del producto.
-        nombre: Nombre del producto.
-        precio: Precio unitario.
+        nombre: Nombre de la estación.
+        tiempo_ciclo: Tiempo de ciclo en segundos.
     """
 
-    def __init__(self, codigo: str, nombre: str, precio: float) -> None:
-        self.codigo = codigo
+    def __init__(self, nombre: str, tiempo_ciclo: float) -> None:
         self.nombre = nombre
-        self.precio = precio
+        self.tiempo_ciclo = tiempo_ciclo
 
 
-class Cliente(SerializableMixin):
+class Pieza(SerializableMixin):
     """
-    Cliente con serialización gracias al mismo mixin.
+    Pieza con serialización gracias al mismo mixin.
 
     Args:
-        nombre: Nombre completo del cliente.
-        email: Dirección de correo.
+        numero_serie: Número de serie de la pieza.
+        material: Material de la pieza.
     """
 
-    def __init__(self, nombre: str, email: str) -> None:
-        self.nombre = nombre
-        self.email = email
+    def __init__(self, numero_serie: str, material: str) -> None:
+        self.numero_serie = numero_serie
+        self.material = material
 
 
-p = Producto("LAP001", "Laptop", 1500.0)
-c = Cliente("Ana García", "ana@ejemplo.com")
+est = EstacionTrabajo("CNC-01", 15.0)
+pieza = Pieza("P-0001", "acero")
 
-print(p.a_dict())  # {'codigo': 'LAP001', 'nombre': 'Laptop', 'precio': 1500.0}
-print(c.a_dict())  # {'nombre': 'Ana García', 'email': 'ana@ejemplo.com'}
-print(p)           # codigo='LAP001', nombre='Laptop', precio=1500.0
+print(est.a_dict())    # {'nombre': 'CNC-01', 'tiempo_ciclo': 15.0}
+print(pieza.a_dict())  # {'numero_serie': 'P-0001', 'material': 'acero'}
+print(est)             # nombre='CNC-01', tiempo_ciclo=15.0
 ```
 
 Los mixins son herencia, pero con un propósito muy acotado: agregan un comportamiento transversal sin establecer una jerarquía de dominio. La convención en Python es nombrarlos con el sufijo `Mixin` para dejar claro que no son clases base completas.

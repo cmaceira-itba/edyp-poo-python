@@ -4,7 +4,7 @@ Python maneja las situaciones anómalas durante la ejecución mediante excepcion
 
 Lejos de ser un recurso de "último momento", el manejo de excepciones es parte integral del **diseño**. Bertrand Meyer formalizó esta idea en el concepto de *Design by Contract*: cada método tiene precondiciones (qué espera recibir) y postcondiciones (qué garantiza producir); las excepciones son el instrumento para comunicar que ese contrato fue violado.
 
-> **En la práctica:** en proyectos reales, las excepciones mal diseñadas son una fuente constante de bugs difíciles de rastrear. Una excepción genérica como `Exception("algo salió mal")` nada le dice a quien la captura; en cambio, una como `StockInsuficienteError` es autodocumentada y le permite a quien llama tomar decisiones informadas.
+> **En la práctica:** en proyectos reales, las excepciones mal diseñadas son una fuente constante de bugs difíciles de rastrear. Una excepción genérica como `Exception("algo salió mal")` nada le dice a quien la captura; en cambio, una como `MaquinaFalloError` es autodocumentada y le permite a quien llama tomar decisiones informadas.
 
 ## Excepciones Built-in Principales
 
@@ -15,7 +15,7 @@ BaseException
  ├── SystemExit           → sys.exit() lo lanza, no lo capturés
  ├── KeyboardInterrupt    → Ctrl+C, tampoco lo capturés
  └── Exception
-      ├── ValueError       → tipo correcto, valor inválido (ej: precio negativo)
+      ├── ValueError       → tipo correcto, valor inválido (ej: temperatura negativa)
       ├── TypeError        → tipo incorrecto (ej: recibís str, esperabas int)
       ├── AttributeError   → el atributo no existe en el objeto
       ├── KeyError         → la clave no existe en el diccionario
@@ -54,63 +54,55 @@ El bloque `else` separa con claridad "la operación exitosa" del bloque `try`, q
 ## Uso de excepciones built-in en una clase de dominio
 
 ```python
-class CuentaBancaria:
+class Maquina:
     """
-    Cuenta bancaria con saldo protegido.
+    Máquina de producción con validación en cada operación.
 
     Attributes:
-        titular: Nombre del titular de la cuenta.
+        nombre: Nombre o código de la máquina.
     """
 
-    def __init__(self, titular: str, saldo_inicial: float = 0.0) -> None:
-        if not isinstance(titular, str) or not titular.strip():
-            raise TypeError("El titular debe ser un string no vacío")
-        if saldo_inicial < 0:
-            raise ValueError(f"El saldo inicial no puede ser negativo: {saldo_inicial}")
-        self._titular = titular
-        self._saldo = saldo_inicial
+    def __init__(self, nombre: str, temp_max: float = 80.0) -> None:
+        if not isinstance(nombre, str) or not nombre.strip():
+            raise TypeError("El nombre debe ser un string no vacío")
+        if temp_max <= 0:
+            raise ValueError(f"La temperatura máxima debe ser positiva: {temp_max}")
+        self.nombre = nombre
+        self._temp_max = temp_max
+        self._estado = "inactiva"
+        self._ciclos = 0
 
     @property
-    def saldo(self) -> float:
-        return self._saldo
+    def ciclos(self) -> int:
+        return self._ciclos
 
-    @property
-    def titular(self) -> str:
-        return self._titular
+    def activar(self) -> None:
+        self._estado = "activa"
 
-    def depositar(self, monto: float) -> None:
-        """Incrementa el saldo. Lanza ValueError si el monto no es positivo."""
-        if monto <= 0:
-            raise ValueError(f"El monto a depositar debe ser positivo, recibí: {monto}")
-        self._saldo += monto
-
-    def retirar(self, monto: float) -> None:
-        """Decrementa el saldo. Lanza ValueError si el monto es inválido o el saldo insuficiente."""
-        if monto <= 0:
-            raise ValueError(f"El monto a retirar debe ser positivo, recibí: {monto}")
-        if monto > self._saldo:
-            raise ValueError(
-                f"Saldo insuficiente: tenés ${self._saldo:.2f}, intentás retirar ${monto:.2f}"
-            )
-        self._saldo -= monto
+    def iniciar_ciclo(self) -> None:
+        """Ejecuta un ciclo. Lanza RuntimeError si la máquina no está activa."""
+        if self._estado != "activa":
+            raise RuntimeError(f"La máquina '{self.nombre}' debe estar activa")
+        self._ciclos += 1
 
     def __repr__(self) -> str:
-        return f"CuentaBancaria({self._titular!r}, saldo=${self._saldo:.2f})"
+        return f"Maquina({self.nombre!r}, ciclos={self._ciclos})"
 
 
 # Patrones de manejo
-cuenta = CuentaBancaria("Ana García", 1000.0)
+maquina = Maquina("CNC-01", temp_max=75.0)
+maquina.activar()
 
 # try / except / else / finally
 try:
-    cuenta.retirar(200.0)
-    saldo_actual = cuenta.saldo      # solo se ejecuta si no hubo excepción
-except ValueError as e:
-    print(f"Error de negocio: {e}")
+    maquina.iniciar_ciclo()
+    ciclos_actuales = maquina.ciclos   # solo se ejecuta si no hubo excepción
+except RuntimeError as e:
+    print(f"Error operativo: {e}")
 else:
-    print(f"Retiro exitoso. Saldo actual: ${saldo_actual:.2f}")   # ✅ se ejecuta
+    print(f"Ciclo exitoso. Total ciclos: {ciclos_actuales}")   # ✅ se ejecuta
 finally:
-    print("Operación registrada.")                                 # siempre se ejecuta
+    print("Operación registrada en bitácora.")                  # siempre se ejecuta
 ```
 
 ## Excepciones Personalizadas
@@ -119,87 +111,136 @@ Para errores de programación —un `TypeError` o un `ValueError`— las excepci
 
 **¿Por qué crear excepciones propias?**
 
-- **Semántica**: `StockInsuficienteError` comunica el problema sin necesidad de leer el mensaje.
-- **Captura selectiva**: quien llama puede hacer `except StockInsuficienteError` para manejar ese caso específico.
+- **Semántica**: `MaquinaFalloError` comunica el problema sin necesidad de leer el mensaje.
+- **Captura selectiva**: quien llama puede hacer `except MaquinaFalloError` para manejar ese caso específico.
 - **Información adicional**: podés agregar atributos con el contexto relevante.
 
 **Patrón recomendado:** definí una excepción base por módulo o dominio, y excepciones específicas que hereden de ella:
 
 ```text
 Exception
- └── InventarioError                ← excepción base del dominio
-      ├── StockInsuficienteError    ← error específico con atributos propios
-      └── ProductoNoEncontradoError ← otro error específico
+ └── PlantaError                    ← excepción base del dominio
+      ├── MaquinaFalloError          ← error específico con atributos propios
+      ├── MaterialInsuficienteError  ← otro error específico
+      └── EstacionBloqueadaError     ← error de bloqueo de estación
 ```
 
 ```python
-class InventarioError(Exception):
-    """Excepción base para todos los errores del módulo de inventario."""
+class PlantaError(Exception):
+    """Excepción base para todos los errores del módulo de planta."""
     pass
 
 
-class StockInsuficienteError(InventarioError):
-    """Se lanza cuando no hay suficiente stock para completar una operación."""
+class MaquinaFalloError(PlantaError):
+    """Se lanza cuando una máquina detecta una condición de falla."""
 
-    def __init__(self, producto: str, disponible: int, solicitado: int) -> None:
-        self.producto = producto
-        self.disponible = disponible
-        self.solicitado = solicitado
+    def __init__(self, maquina_id: str, codigo_error: str) -> None:
+        self.maquina_id = maquina_id
+        self.codigo_error = codigo_error
         super().__init__(
-            f"Stock insuficiente para '{producto}': "
-            f"disponible={disponible}, solicitado={solicitado}"
+            f"Falla en máquina '{maquina_id}': código {codigo_error}"
         )
 
 
-class ProductoNoEncontradoError(InventarioError):
-    """Se lanza cuando se busca un producto que no existe en el inventario."""
+class MaterialInsuficienteError(PlantaError):
+    """Se lanza cuando no hay suficiente material para completar una operación."""
+
+    def __init__(self, material: str, disponible: float, requerido: float) -> None:
+        self.material = material
+        self.disponible = disponible
+        self.requerido = requerido
+        super().__init__(
+            f"Material insuficiente para '{material}': "
+            f"disponible={disponible:.1f}kg, requerido={requerido:.1f}kg"
+        )
+
+
+class EstacionBloqueadaError(PlantaError):
+    """Se lanza cuando una estación está bloqueada y no puede procesar piezas."""
 
     def __init__(self, nombre: str) -> None:
         self.nombre = nombre
-        super().__init__(f"Producto no encontrado: '{nombre}'")
+        super().__init__(f"Estación '{nombre}' está bloqueada")
 
 
-class Producto:
+class Maquina:
     """
-    Representa un producto con nombre, precio y stock disponible.
+    Máquina con detección de temperatura fuera de rango.
 
     Args:
-        nombre: Nombre del producto.
-        precio: Precio unitario (debe ser positivo).
-        stock: Cantidad disponible (debe ser no negativa).
+        nombre: Nombre de la máquina.
+        temp_max: Temperatura máxima operativa en °C.
     """
 
-    def __init__(self, nombre: str, precio: float, stock: int) -> None:
+    def __init__(self, nombre: str, temp_max: float = 80.0) -> None:
         self.nombre = nombre
-        self._precio = precio
-        self._stock = stock
+        self._temp_max = temp_max
+        self._temperatura = 20.0
+        self._estado = "activa"
 
-    def vender(self, cantidad: int) -> float:
+    def actualizar_temperatura(self, temp: float) -> None:
         """
-        Descuenta stock y retorna el total de la venta.
+        Actualiza la temperatura del sensor.
 
         Raises:
-            ValueError: si la cantidad no es positiva.
-            StockInsuficienteError: si no hay suficiente stock.
+            MaquinaFalloError: Si la temperatura supera el máximo operativo.
         """
-        if cantidad <= 0:
-            raise ValueError("La cantidad debe ser positiva")
-        if cantidad > self._stock:
-            raise StockInsuficienteError(self.nombre, self._stock, cantidad)
-        self._stock -= cantidad
-        return cantidad * self._precio
+        self._temperatura = temp
+        if temp > self._temp_max:
+            self._estado = "falla"
+            raise MaquinaFalloError(
+                maquina_id=self.nombre,
+                codigo_error=f"TEMP_ALTA ({temp}°C > {self._temp_max}°C)"
+            )
+
+
+class LineaDeMontaje:
+    """Línea de montaje con manejo de excepciones en el ciclo de producción."""
+
+    def __init__(self, nombre: str) -> None:
+        self.nombre = nombre
+        self._maquinas: list[Maquina] = []
+
+    def agregar_maquina(self, maquina: Maquina) -> None:
+        self._maquinas.append(maquina)
+
+    def ejecutar_ciclo(self, sensor_temp: float) -> str:
+        """
+        Ejecuta un ciclo de producción con manejo completo de excepciones.
+
+        Args:
+            sensor_temp: Temperatura registrada por el sensor externo.
+
+        Returns:
+            Mensaje indicando el resultado del ciclo.
+        """
+        resultado = "desconocido"
+        try:
+            for maquina in self._maquinas:
+                maquina.actualizar_temperatura(sensor_temp)
+            resultado = "exitoso"
+        except MaquinaFalloError as e:
+            resultado = f"fallido — {e}"
+            print(f"[ALERTA] {e}")
+            print(f"  Máquina afectada: {e.maquina_id}")
+            print(f"  Código de error: {e.codigo_error}")
+        except PlantaError as e:
+            resultado = f"error general — {e}"
+            print(f"[ERROR PLANTA] {e}")
+        else:
+            print(f"Ciclo completado sin incidentes. Temperatura: {sensor_temp}°C")
+        finally:
+            print(f"Ciclo de línea '{self.nombre}': {resultado}")
+        return resultado
 
 
 # Uso con captura selectiva
-laptop = Producto("Laptop", 1500.0, 3)
+linea = LineaDeMontaje("Línea A")
+linea.agregar_maquina(Maquina("CNC-01", temp_max=75.0))
+linea.agregar_maquina(Maquina("MIG-01", temp_max=90.0))
 
-try:
-    total = laptop.vender(10)
-except StockInsuficienteError as e:
-    print(f"No podemos completar el pedido: {e}")
-    print(f"Te ofrecemos {e.disponible} unidades en su lugar.")
-except InventarioError as e:
-    print(f"Error de inventario: {e}")
+linea.ejecutar_ciclo(60.0)   # temperatura normal → ciclo exitoso
+linea.ejecutar_ciclo(85.0)   # temperatura alta → MaquinaFalloError en CNC-01
 ```
 
 ---

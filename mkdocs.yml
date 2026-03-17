@@ -107,6 +107,7 @@ nav:
       - Principios SOLID: modelo/solid.md
       - Composición vs. Herencia: diseno/composicion_vs_herencia.md
   - Prácticas:
+      - Enumeraciones (Enum): practicas/enums.md
       - Excepciones: practicas/excepciones.md
       - Testing con pytest: practicas/testing.md
       - Checklist y Fuentes: practicas/checklist.md

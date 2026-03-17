@@ -22,8 +22,9 @@ print(list.__len__([1, 2, 3]))  # 3
 Ya lo conocés: inicializa el estado del objeto al crearlo.
 
 ```python
-def __init__(self, nombre: str) -> None:
-    self.nombre = nombre
+def __init__(self, numero_serie: str, material: str) -> None:
+    self.numero_serie = numero_serie
+    self.material = material
 ```
 
 ### `__repr__`: representación para desarrolladores
@@ -32,8 +33,8 @@ Retorna una cadena que debería, idealmente, ser una expresión Python válida p
 
 ```python
 def __repr__(self) -> str:
-    return f"Producto({self.nombre!r}, ${self.precio:.2f})"
-# Nota: !r aplica repr() al string, agregando comillas → 'Laptop'
+    return f"Pieza({self.numero_serie!r}, {self.material!r})"
+# Nota: !r aplica repr() al string, agregando comillas → 'P-0001'
 ```
 
 ### `__str__`: representación para humanos
@@ -42,7 +43,7 @@ Retorna una cadena amigable para mostrar al usuario final. Es lo que usa `print(
 
 ```python
 def __str__(self) -> str:
-    return f"{self.nombre} — ${self.precio:.2f}"
+    return f"Pieza {self.numero_serie} — {self.material}, {self.peso:.2f} kg"
 ```
 
 **Regla práctica:** implementá siempre `__repr__`. Implementá `__str__` cuando la representación legible para humanos deba ser diferente de la representación de debug.
@@ -53,7 +54,7 @@ Permite llamar `len(objeto)` sobre tus clases contenedoras.
 
 ```python
 def __len__(self) -> int:
-    return len(self._items)
+    return len(self._estaciones)
 ```
 
 ### `__eq__` y `__hash__`: igualdad y uso en sets/dicts
@@ -66,10 +67,10 @@ def __len__(self) -> int:
 def __eq__(self, otro: object) -> bool:
     if not isinstance(otro, type(self)):
         return NotImplemented
-    return self.codigo == otro.codigo
+    return self.numero_serie == otro.numero_serie
 
 def __hash__(self) -> int:
-    return hash(self.codigo)
+    return hash(self.numero_serie)
 ```
 
 ### `__contains__`: soporte para el operador `in`
@@ -78,7 +79,7 @@ Permite escribir `item in objeto` de forma natural.
 
 ```python
 def __contains__(self, item: object) -> bool:
-    return item in self._items
+    return item in self._estaciones
 ```
 
 ### Operadores de comparación: `__lt__`, `__le__`, `__gt__`, `__ge__`
@@ -86,8 +87,8 @@ def __contains__(self, item: object) -> bool:
 Permiten usar los operadores `<`, `<=`, `>`, `>=` y por extensión, funciones como `sorted()` y `min()`/`max()`.
 
 ```python
-def __lt__(self, otro: "Producto") -> bool:
-    return self.precio < otro.precio
+def __lt__(self, otro: "Pieza") -> bool:
+    return self.peso < otro.peso
 ```
 
 ### Operadores aritméticos: `__add__`, `__mul__`
@@ -95,149 +96,193 @@ def __lt__(self, otro: "Producto") -> bool:
 Permiten usar `+` y `*` entre objetos de tu clase.
 
 ```python
-def __add__(self, otro: "Vector") -> "Vector":
-    return Vector(self.x + otro.x, self.y + otro.y)
+def __add__(self, otro: "LineaDeMontaje") -> "LineaDeMontaje":
+    nueva = LineaDeMontaje(f"{self._nombre}+{otro._nombre}")
+    for est in list(self._estaciones.values()) + list(otro._estaciones.values()):
+        nueva.agregar_estacion(est)
+    return nueva
 ```
 
-## Ejemplo completo: clase `Inventario`
+## Ejemplo completo: clases `Pieza` y `LineaDeMontaje`
 
 ```python
 from __future__ import annotations
 
 
-class Producto:
+class Pieza:
     """
-    Producto con código, nombre y precio.
+    Pieza industrial con número de serie, material y peso.
 
     Args:
-        codigo: Código único del producto.
-        nombre: Nombre del producto.
-        precio: Precio unitario.
+        numero_serie: Identificador único de la pieza.
+        material: Tipo de material (acero, aluminio, etc.).
+        peso: Peso en kilogramos.
     """
 
-    def __init__(self, codigo: str, nombre: str, precio: float) -> None:
-        self.codigo = codigo
-        self.nombre = nombre
-        self.precio = precio
+    def __init__(self, numero_serie: str, material: str, peso: float) -> None:
+        self.numero_serie = numero_serie
+        self.material = material
+        self.peso = peso
 
     def __repr__(self) -> str:
-        return f"Producto({self.codigo!r}, {self.nombre!r}, ${self.precio:.2f})"
+        return f"Pieza({self.numero_serie!r}, {self.material!r}, {self.peso:.2f}kg)"
 
     def __str__(self) -> str:
-        return f"[{self.codigo}] {self.nombre} — ${self.precio:.2f}"
+        return f"[{self.numero_serie}] {self.material} — {self.peso:.2f} kg"
 
     def __eq__(self, otro: object) -> bool:
-        if not isinstance(otro, Producto):
+        if not isinstance(otro, Pieza):
             return NotImplemented
-        return self.codigo == otro.codigo
+        return self.numero_serie == otro.numero_serie
 
     def __hash__(self) -> int:
-        return hash(self.codigo)
+        return hash(self.numero_serie)
 
-    def __lt__(self, otro: Producto) -> bool:
-        """Permite ordenar productos por precio."""
-        return self.precio < otro.precio
+    def __lt__(self, otro: Pieza) -> bool:
+        """Permite ordenar piezas por peso."""
+        return self.peso < otro.peso
 
 
-class Inventario:
+class EstacionTrabajo:
+    """Estación de trabajo básica."""
+
+    def __init__(self, nombre: str) -> None:
+        self.nombre = nombre
+
+    def __repr__(self) -> str:
+        return f"EstacionTrabajo({self.nombre!r})"
+
+
+class LineaDeMontaje:
     """
-    Colección de productos con comportamiento de contenedor.
+    Línea de montaje con comportamiento de contenedor.
 
-    Implementa los dunder methods necesarios para que el inventario
+    Implementa los dunder methods necesarios para que la línea
     se comporte como un contenedor de Python nativo.
     """
 
-    def __init__(self) -> None:
-        self._productos: list[Producto] = []
+    def __init__(self, nombre: str) -> None:
+        self._nombre = nombre
+        self._estaciones: list[EstacionTrabajo] = []
 
-    def agregar(self, producto: Producto) -> None:
-        """Agrega un producto al inventario."""
-        if producto in self:  # usa __contains__
-            raise ValueError(f"El producto {producto.codigo!r} ya existe en el inventario")
-        self._productos.append(producto)
+    def agregar_estacion(self, estacion: EstacionTrabajo) -> None:
+        """Agrega una estación a la línea."""
+        if estacion in self:  # usa __contains__
+            raise ValueError(f"La estación '{estacion.nombre}' ya está en la línea")
+        self._estaciones.append(estacion)
 
     # ── Dunder methods ────────────────────────────────────────────────────────
 
     def __repr__(self) -> str:
         """Representación técnica: útil en debuggers y logs."""
-        return f"Inventario({len(self)} productos)"
+        return f"LineaDeMontaje({self._nombre!r}, {len(self)} estaciones)"
 
     def __str__(self) -> str:
         """Representación legible: útil para mostrar al usuario."""
-        if not self._productos:
-            return "Inventario vacío"
-        lineas = [f"=== Inventario ({len(self)} productos) ==="]
-        lineas.extend(f"  {p}" for p in self._productos)
-        return "\n".join(lineas)
+        if not self._estaciones:
+            return f"Línea '{self._nombre}' (vacía)"
+        nombres = ", ".join(est.nombre for est in self._estaciones)
+        return f"Línea '{self._nombre}': {nombres}"
 
     def __len__(self) -> int:
-        """Permite: len(inventario)."""
-        return len(self._productos)
+        """Permite: len(linea)."""
+        return len(self._estaciones)
 
     def __contains__(self, item: object) -> bool:
-        """Permite: producto in inventario."""
-        if isinstance(item, Producto):
-            return any(p.codigo == item.codigo for p in self._productos)
-        if isinstance(item, str):  # también busca por código
-            return any(p.codigo == item for p in self._productos)
+        """Permite: estacion in linea."""
+        if isinstance(item, EstacionTrabajo):
+            return any(e.nombre == item.nombre for e in self._estaciones)
+        if isinstance(item, str):  # también busca por nombre
+            return any(e.nombre == item for e in self._estaciones)
         return False
 
     def __iter__(self):
-        """Permite iterar: for producto in inventario."""
-        return iter(self._productos)
+        """Permite iterar: for estacion in linea."""
+        return iter(self._estaciones)
 
-    def __getitem__(self, codigo: str) -> Producto:
-        """Permite: inventario['LAP001']."""
-        for p in self._productos:
-            if p.codigo == codigo:
-                return p
-        raise KeyError(f"Producto no encontrado: {codigo!r}")
+    def __getitem__(self, nombre: str) -> EstacionTrabajo:
+        """Permite: linea['CNC-01']."""
+        for est in self._estaciones:
+            if est.nombre == nombre:
+                return est
+        raise KeyError(f"Estación no encontrada: {nombre!r}")
+
+    def __add__(self, otra: LineaDeMontaje) -> LineaDeMontaje:
+        """Fusiona dos líneas en una nueva: linea_a + linea_b."""
+        nueva = LineaDeMontaje(f"{self._nombre}+{otra._nombre}")
+        for est in self._estaciones:
+            nueva.agregar_estacion(est)
+        for est in otra._estaciones:
+            if est not in nueva:
+                nueva.agregar_estacion(est)
+        return nueva
 
 
 # Demostración de todos los dunder methods
 
-inv = Inventario()
-laptop = Producto("LAP001", "Laptop", 1500.0)
-mouse = Producto("MOU001", "Mouse", 45.0)
-teclado = Producto("TEC001", "Teclado", 80.0)
+linea_a = LineaDeMontaje("Línea A")
+linea_b = LineaDeMontaje("Línea B")
 
-inv.agregar(laptop)
-inv.agregar(mouse)
-inv.agregar(teclado)
+cnc = EstacionTrabajo("CNC-01")
+mig = EstacionTrabajo("MIG-01")
+paint = EstacionTrabajo("PAINT-01")
+robot = EstacionTrabajo("ROBOT-01")
+
+linea_a.agregar_estacion(cnc)
+linea_a.agregar_estacion(mig)
+linea_b.agregar_estacion(paint)
+linea_b.agregar_estacion(robot)
 
 # __str__ y __repr__
-print(inv)        # muestra la versión legible (usa __str__)
-print(repr(inv))  # Inventario(3 productos)
+print(linea_a)        # Línea 'Línea A': CNC-01, MIG-01
+print(repr(linea_a))  # LineaDeMontaje('Línea A', 2 estaciones)
 
 # __len__
-print(f"Total de productos: {len(inv)}")  # 3
+print(f"Estaciones en A: {len(linea_a)}")  # 2
 
 # __contains__
-print(laptop in inv)    # True (busca por objeto, usa __eq__ de Producto)
-print("LAP001" in inv)  # True (busca por código)
-print("XXX999" in inv)  # False
+print(cnc in linea_a)       # True (busca por objeto)
+print("CNC-01" in linea_a)  # True (busca por nombre)
+print("ROBOT-01" in linea_a)  # False
 
 # __iter__
-productos_ordenados = sorted(inv)   # usa __lt__ de Producto para ordenar por precio
-for p in productos_ordenados:
-    print(p)
+for est in linea_a:
+    print(est)
 
 # __getitem__
-print(inv["LAP001"])  # [LAP001] Laptop — $1500.00
+print(linea_a["MIG-01"])  # EstacionTrabajo('MIG-01')
 
 try:
-    inv["XXX999"]
+    linea_a["LASER-99"]
 except KeyError as e:
-    print(f"Error: {e}")  # Error: 'Producto no encontrado: 'XXX999''
+    print(f"Error: {e}")  # Error: 'Estación no encontrada: 'LASER-99''
 
-# __eq__ en Producto: dos objetos con mismo código son iguales
-p1 = Producto("LAP001", "Laptop Pro", 2000.0)
-p2 = Producto("LAP001", "Laptop", 1500.0)
-print(p1 == p2)  # True — mismo código → misma identidad de negocio
+# __add__: fusionar líneas
+linea_completa = linea_a + linea_b
+print(linea_completa)   # Línea 'Línea A+Línea B': CNC-01, MIG-01, PAINT-01, ROBOT-01
+print(len(linea_completa))  # 4
+
+# Pieza: __eq__ y __hash__
+p1 = Pieza("P-0001", "acero", 2.3)
+p2 = Pieza("P-0001", "aluminio", 1.0)  # mismo número de serie
+print(p1 == p2)  # True — mismo número de serie → misma identidad de negocio
 
 # __hash__: se pueden usar en sets y como claves de dict
-catalogo = {laptop: "disponible", mouse: "agotado"}
-print(catalogo[laptop])  # "disponible"
+catalogo = {p1: "en proceso", Pieza("P-0002", "acero", 3.1): "completada"}
+print(catalogo[p1])  # "en proceso"
+
+# __lt__: ordenar piezas por peso
+piezas = [
+    Pieza("P-0003", "acero", 5.0),
+    Pieza("P-0001", "aluminio", 1.2),
+    Pieza("P-0002", "acero", 3.4),
+]
+piezas_ordenadas = sorted(piezas)  # usa __lt__ para ordenar por peso
+for p in piezas_ordenadas:
+    print(p)
+# [P-0001] aluminio — 1.20 kg
+# [P-0002] acero — 3.40 kg
+# [P-0003] acero — 5.00 kg
 ```
 
 > **En la práctica:** el error más frecuente con dunder methods es definir `__eq__` sin definir `__hash__`. Cuando Python detecta que definiste `__eq__`, automáticamente hace que el objeto no sea hasheable (para evitar inconsistencias). Si querés que el objeto sea usable en sets y como clave de dict, siempre definí ambos juntos. La regla: si dos objetos son iguales según `__eq__`, su `__hash__` debe retornar el mismo valor.

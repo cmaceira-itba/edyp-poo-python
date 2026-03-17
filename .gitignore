@@ -48,3 +48,6 @@ coverage.xml
 CLAUDE.md
 .agent
 .claude
+
+# Mkdoc product
+site/
