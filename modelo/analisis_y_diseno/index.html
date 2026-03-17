@@ -350,7 +350,7 @@
     
     
       <li class="md-tabs__item">
-        <a href="../../practicas/excepciones/" class="md-tabs__link">
+        <a href="../../practicas/enums/" class="md-tabs__link">
           
   
   
@@ -800,10 +800,10 @@
 </li>
         
           <li class="md-nav__item">
-  <a href="#ejemplo-completo-sistema-de-pedidos" class="md-nav__link">
+  <a href="#ejemplo-completo-sistema-de-planta-de-produccion" class="md-nav__link">
     <span class="md-ellipsis">
       
-        Ejemplo completo: sistema de pedidos
+        Ejemplo completo: sistema de planta de producción
       
     </span>
   </a>
@@ -1422,6 +1422,34 @@
   
   
     <li class="md-nav__item">
+      <a href="../../practicas/enums/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Enumeraciones (Enum)
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
       <a href="../../practicas/excepciones/" class="md-nav__link">
         
   
@@ -1537,19 +1565,19 @@
 <blockquote>
 <p><em>"Como [tipo de usuario], quiero [acción], para [objetivo o beneficio]."</em></p>
 </blockquote>
-<p>Por ejemplo: <em>"Como cliente, quiero agregar productos al carrito, para poder comprarlos juntos."</em></p>
+<p>Por ejemplo: <em>"Como supervisor de planta, quiero ver el estado de cada máquina en tiempo real, para detectar fallas antes de que paren la producción."</em></p>
 <p>A partir de esas historias, el <strong>User Story Mapping</strong> las organiza en un mapa bidimensional:</p>
 <ul>
-<li><strong>Eje horizontal (izquierda a derecha):</strong> el flujo de uso del sistema, ordenado como lo haría un usuario real. Primero busca productos, después los agrega al carrito, después paga, etc.</li>
+<li><strong>Eje horizontal (izquierda a derecha):</strong> el flujo de uso del sistema, ordenado como lo haría un usuario real. Primero carga piezas, después las procesa en cada estación, después verifica el resultado, etc.</li>
 <li><strong>Eje vertical (arriba a abajo):</strong> el nivel de detalle y prioridad. Las historias más importantes van arriba; las variantes y casos especiales, abajo.</li>
 </ul>
 <h3 id="pasos-para-construir-un-user-story-map">Pasos para construir un User Story Map</h3>
 <ol>
-<li><strong>Identificar a los actores:</strong> ¿Quiénes usan el sistema? (cliente, administrador, vendedor…). Cada actor tiene sus propias necesidades.</li>
-<li><strong>Describir las actividades principales:</strong> ¿Qué tareas grandes hace cada actor? Por ejemplo: <em>buscar</em>, <em>comprar</em>, <em>gestionar stock</em>. Estas van en la fila superior del mapa.</li>
-<li><strong>Desglosar en historias concretas:</strong> Para cada actividad, escribir las acciones específicas que la componen. <em>"Buscar por categoría"</em>, <em>"filtrar por precio"</em>, <em>"ver detalle del producto"</em> son historias que componen la actividad <em>buscar</em>.</li>
+<li><strong>Identificar a los actores:</strong> ¿Quiénes usan el sistema? (supervisor, operario, jefe de mantenimiento…). Cada actor tiene sus propias necesidades.</li>
+<li><strong>Describir las actividades principales:</strong> ¿Qué tareas grandes hace cada actor? Por ejemplo: <em>cargar pieza</em>, <em>procesar en estación</em>, <em>verificar resultado</em>, <em>registrar falla</em>. Estas van en la fila superior del mapa.</li>
+<li><strong>Desglosar en historias concretas:</strong> Para cada actividad, escribir las acciones específicas que la componen. <em>"Ver temperatura de la máquina"</em>, <em>"recibir alerta por falla"</em>, <em>"consultar historial de ciclos"</em> son historias que componen la actividad <em>monitorear</em>.</li>
 <li><strong>Priorizar:</strong> Marcar cuáles historias forman el flujo mínimo que necesitás para que el sistema funcione (el llamado <em>walking skeleton</em>). Esto define qué construir primero.</li>
-<li><strong>Identificar los objetos:</strong> Revisá todas las historias y subrayá los <strong>sustantivos</strong> (cliente, carrito, producto, pedido). Esos son los candidatos a clases de tu modelo.</li>
+<li><strong>Identificar los objetos:</strong> Revisá todas las historias y subrayá los <strong>sustantivos</strong> (máquina, pieza, estación, operario, sensor). Esos son los candidatos a clases de tu modelo.</li>
 </ol>
 <h3 id="por-que-usar-esta-tecnica">¿Por qué usar esta técnica?</h3>
 <p>Su valor en este contexto no radica en ser la técnica definitiva de análisis —en proyectos reales se usa de forma mucho más rigurosa—, sino en que brinda una vía concreta para pasar de <em>"tengo un problema"</em> a <em>"tengo una lista de objetos candidatos"</em> sin necesitar experiencia previa en diseño de software. En la práctica, hacer este ejercicio antes de escribir cualquier clase evita el error más común: modelar objetos que nadie usa o, peor, omitir los que realmente importan.</p>
@@ -1616,53 +1644,54 @@
 <td><strong>Asociación</strong></td>
 <td><code>A ──── B</code></td>
 <td>A usa o referencia a B</td>
-<td><code>Pedido</code> usa <code>Cliente</code></td>
+<td><code>EstacionTrabajo</code> usa <code>Operario</code></td>
 </tr>
 <tr>
 <td><strong>Composición</strong></td>
 <td><code>A ◆──── B</code></td>
 <td>A contiene B; B no existe sin A</td>
-<td><code>Auto</code> contiene <code>Motor</code></td>
+<td><code>Maquina</code> contiene <code>Sensor</code></td>
 </tr>
 <tr>
 <td><strong>Agregación</strong></td>
 <td><code>A ◇──── B</code></td>
 <td>A agrupa B; B puede existir solo</td>
-<td><code>Inventario</code> agrupa <code>Producto</code></td>
+<td><code>LineaDeMontaje</code> agrupa <code>EstacionTrabajo</code></td>
 </tr>
 <tr>
 <td><strong>Herencia</strong></td>
 <td><code>A ──▷ B</code></td>
 <td>A es un tipo de B</td>
-<td><code>Moto</code> es un <code>Vehículo</code></td>
+<td><code>EstacionCorte</code> es una <code>EstacionTrabajo</code></td>
 </tr>
 </tbody>
 </table>
 <blockquote>
 <p>La diferencia entre composición y agregación suele generar dudas. La regla práctica: si destruís el contenedor y el contenido pierde sentido por sí solo, es composición; si puede existir independientemente, es agregación. En la mayoría de los diseños que hacemos en la materia, la distinción no es crítica — lo que importa es que quede claro que una clase <em>contiene</em> a otra.</p>
 </blockquote>
-<h3 id="ejemplo-completo-sistema-de-pedidos">Ejemplo completo: sistema de pedidos</h3>
-<p>El siguiente diagrama modela las clases del ejemplo de acoplamiento visto antes:</p>
+<h3 id="ejemplo-completo-sistema-de-planta-de-produccion">Ejemplo completo: sistema de planta de producción</h3>
+<p>El siguiente diagrama modela las clases principales de nuestra planta:</p>
 <div class="language-text highlight"><pre><span></span><code><span id="__span-1-1"><a id="__codelineno-1-1" name="__codelineno-1-1" href="#__codelineno-1-1"></a>         ┌─────────────────────────┐
-</span><span id="__span-1-2"><a id="__codelineno-1-2" name="__codelineno-1-2" href="#__codelineno-1-2"></a>         │        Cliente          │
+</span><span id="__span-1-2"><a id="__codelineno-1-2" name="__codelineno-1-2" href="#__codelineno-1-2"></a>         │      LineaDeMontaje     │
 </span><span id="__span-1-3"><a id="__codelineno-1-3" name="__codelineno-1-3" href="#__codelineno-1-3"></a>         ├─────────────────────────┤
 </span><span id="__span-1-4"><a id="__codelineno-1-4" name="__codelineno-1-4" href="#__codelineno-1-4"></a>         │ - nombre: str           │
-</span><span id="__span-1-5"><a id="__codelineno-1-5" name="__codelineno-1-5" href="#__codelineno-1-5"></a>         │ - email: str            │
+</span><span id="__span-1-5"><a id="__codelineno-1-5" name="__codelineno-1-5" href="#__codelineno-1-5"></a>         │ - estaciones: list      │
 </span><span id="__span-1-6"><a id="__codelineno-1-6" name="__codelineno-1-6" href="#__codelineno-1-6"></a>         ├─────────────────────────┤
-</span><span id="__span-1-7"><a id="__codelineno-1-7" name="__codelineno-1-7" href="#__codelineno-1-7"></a>         │ + get_nombre(): str     │
-</span><span id="__span-1-8"><a id="__codelineno-1-8" name="__codelineno-1-8" href="#__codelineno-1-8"></a>         └────────────┬────────────┘
-</span><span id="__span-1-9"><a id="__codelineno-1-9" name="__codelineno-1-9" href="#__codelineno-1-9"></a>                      │ 1
-</span><span id="__span-1-10"><a id="__codelineno-1-10" name="__codelineno-1-10" href="#__codelineno-1-10"></a>                      │ asociación
-</span><span id="__span-1-11"><a id="__codelineno-1-11" name="__codelineno-1-11" href="#__codelineno-1-11"></a>                      │ *
-</span><span id="__span-1-12"><a id="__codelineno-1-12" name="__codelineno-1-12" href="#__codelineno-1-12"></a>         ┌────────────▼────────────┐         ┌─────────────────────────┐
-</span><span id="__span-1-13"><a id="__codelineno-1-13" name="__codelineno-1-13" href="#__codelineno-1-13"></a>         │         Pedido          │ ◆─────── │        Producto         │
-</span><span id="__span-1-14"><a id="__codelineno-1-14" name="__codelineno-1-14" href="#__codelineno-1-14"></a>         ├─────────────────────────┤  1    *  ├─────────────────────────┤
-</span><span id="__span-1-15"><a id="__codelineno-1-15" name="__codelineno-1-15" href="#__codelineno-1-15"></a>         │ - id: int               │          │ - nombre: str           │
-</span><span id="__span-1-16"><a id="__codelineno-1-16" name="__codelineno-1-16" href="#__codelineno-1-16"></a>         │ - items: list[Producto] │          │ - precio: float         │
-</span><span id="__span-1-17"><a id="__codelineno-1-17" name="__codelineno-1-17" href="#__codelineno-1-17"></a>         ├─────────────────────────┤          │ - stock: int            │
-</span><span id="__span-1-18"><a id="__codelineno-1-18" name="__codelineno-1-18" href="#__codelineno-1-18"></a>         │ + agregar(p: Producto)  │          ├─────────────────────────┤
-</span><span id="__span-1-19"><a id="__codelineno-1-19" name="__codelineno-1-19" href="#__codelineno-1-19"></a>         │ + calcular_total(): float│         │ + vender(cant: int)     │
-</span><span id="__span-1-20"><a id="__codelineno-1-20" name="__codelineno-1-20" href="#__codelineno-1-20"></a>         └─────────────────────────┘          └─────────────────────────┘
+</span><span id="__span-1-7"><a id="__codelineno-1-7" name="__codelineno-1-7" href="#__codelineno-1-7"></a>         │ + agregar_estacion()    │
+</span><span id="__span-1-8"><a id="__codelineno-1-8" name="__codelineno-1-8" href="#__codelineno-1-8"></a>         │ + procesar_pieza()      │
+</span><span id="__span-1-9"><a id="__codelineno-1-9" name="__codelineno-1-9" href="#__codelineno-1-9"></a>         └────────────┬────────────┘
+</span><span id="__span-1-10"><a id="__codelineno-1-10" name="__codelineno-1-10" href="#__codelineno-1-10"></a>                      │ ◇ 1
+</span><span id="__span-1-11"><a id="__codelineno-1-11" name="__codelineno-1-11" href="#__codelineno-1-11"></a>                      │ agregación
+</span><span id="__span-1-12"><a id="__codelineno-1-12" name="__codelineno-1-12" href="#__codelineno-1-12"></a>                      │ *
+</span><span id="__span-1-13"><a id="__codelineno-1-13" name="__codelineno-1-13" href="#__codelineno-1-13"></a>         ┌────────────▼────────────┐         ┌─────────────────────────┐
+</span><span id="__span-1-14"><a id="__codelineno-1-14" name="__codelineno-1-14" href="#__codelineno-1-14"></a>         │    EstacionTrabajo      │ ──────── │         Pieza           │
+</span><span id="__span-1-15"><a id="__codelineno-1-15" name="__codelineno-1-15" href="#__codelineno-1-15"></a>         ├─────────────────────────┤  procesa ├─────────────────────────┤
+</span><span id="__span-1-16"><a id="__codelineno-1-16" name="__codelineno-1-16" href="#__codelineno-1-16"></a>         │ - nombre: str           │  (0..*)  │ - numero_serie: str     │
+</span><span id="__span-1-17"><a id="__codelineno-1-17" name="__codelineno-1-17" href="#__codelineno-1-17"></a>         │ - tiempo_ciclo: float   │          │ - material: str         │
+</span><span id="__span-1-18"><a id="__codelineno-1-18" name="__codelineno-1-18" href="#__codelineno-1-18"></a>         ├─────────────────────────┤          │ - peso: float           │
+</span><span id="__span-1-19"><a id="__codelineno-1-19" name="__codelineno-1-19" href="#__codelineno-1-19"></a>         │ + procesar(p: Pieza)    │          ├─────────────────────────┤
+</span><span id="__span-1-20"><a id="__codelineno-1-20" name="__codelineno-1-20" href="#__codelineno-1-20"></a>         │ + obtener_reporte(): str│          │ + marcar_completada()   │
+</span><span id="__span-1-21"><a id="__codelineno-1-21" name="__codelineno-1-21" href="#__codelineno-1-21"></a>         └─────────────────────────┘          └─────────────────────────┘
 </span></code></pre></div>
 <p>Las multiplicidades (<code>1</code>, <code>*</code>, <code>0..1</code>) sobre las líneas indican cuántas instancias participan en cada lado de la relación:</p>
 <table>
@@ -1700,28 +1729,29 @@
 </ul>
 <p>El mismo diagrama del ejemplo anterior en sintaxis Mermaid se vería así:</p>
 <pre class="mermaid"><code>classDiagram
-    class Cliente {
+    class LineaDeMontaje {
         - nombre: str
-        - email: str
-        + get_nombre() str
+        - estaciones: list
+        + agregar_estacion(e: EstacionTrabajo)
+        + procesar_pieza(p: Pieza)
     }
 
-    class Pedido {
-        - id: int
-        - items: list
-        + agregar(p: Producto)
-        + calcular_total() float
-    }
-
-    class Producto {
+    class EstacionTrabajo {
         - nombre: str
-        - precio: float
-        - stock: int
-        + vender(cant: int)
+        - tiempo_ciclo: float
+        + procesar(p: Pieza)
+        + obtener_reporte() str
     }
 
-    Cliente "1" --&gt; "*" Pedido : realiza
-    Pedido "1" *-- "*" Producto : contiene</code></pre>
+    class Pieza {
+        - numero_serie: str
+        - material: str
+        - peso: float
+        + marcar_completada()
+    }
+
+    LineaDeMontaje "1" o-- "*" EstacionTrabajo : agrega
+    EstacionTrabajo "1" --&gt; "*" Pieza : procesa</code></pre>
 <hr />
 
 

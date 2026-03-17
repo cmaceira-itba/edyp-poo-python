@@ -350,7 +350,7 @@
     
     
       <li class="md-tabs__item">
-        <a href="../../practicas/excepciones/" class="md-tabs__link">
+        <a href="../../practicas/enums/" class="md-tabs__link">
           
   
   
@@ -1361,6 +1361,34 @@
   
   
     <li class="md-nav__item">
+      <a href="../../practicas/enums/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Enumeraciones (Enum)
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
       <a href="../../practicas/excepciones/" class="md-nav__link">
         
   
@@ -1489,67 +1517,75 @@
 <h2 id="modularidad">Modularidad</h2>
 <p>Todo diseño orientado a objetos enfrenta una tensión inherente: el deseo de encapsular abstracciones versus la necesidad de que ciertas abstracciones sean visibles para otros módulos. La modularidad resuelve esa tensión al descomponer el sistema en un conjunto de módulos <strong>cohesivos</strong> y <strong>débilmente acoplados</strong>.</p>
 <p>En Python, cada archivo <code>.py</code> es naturalmente un módulo. Dado que abstracción, encapsulación y modularidad son principios sinérgicos, la modularidad opera como el contenedor que los organiza y delimita.</p>
-<p>A continuación, el ejemplo muestra tres clases que en un sistema real vivirían en archivos separados (<code>productos.py</code>, <code>inventario.py</code>, <code>reporte.py</code>). Cada módulo tiene una única responsabilidad y sus dependencias son mínimas:</p>
-<div class="language-python highlight"><pre><span></span><code><span id="__span-0-1"><a id="__codelineno-0-1" name="__codelineno-0-1" href="#__codelineno-0-1"></a><span class="c1"># --- módulo: productos.py ---</span>
-</span><span id="__span-0-2"><a id="__codelineno-0-2" name="__codelineno-0-2" href="#__codelineno-0-2"></a><span class="k">class</span><span class="w"> </span><span class="nc">Producto</span><span class="p">:</span>
-</span><span id="__span-0-3"><a id="__codelineno-0-3" name="__codelineno-0-3" href="#__codelineno-0-3"></a><span class="w">    </span><span class="sd">&quot;&quot;&quot;Encapsula los datos y reglas de negocio de un producto.&quot;&quot;&quot;</span>
+<p>A continuación, el ejemplo muestra tres clases que en un sistema real vivirían en archivos separados (<code>maquina.py</code>, <code>linea_montaje.py</code>, <code>reporte.py</code>). Cada módulo tiene una única responsabilidad y sus dependencias son mínimas:</p>
+<div class="language-python highlight"><pre><span></span><code><span id="__span-0-1"><a id="__codelineno-0-1" name="__codelineno-0-1" href="#__codelineno-0-1"></a><span class="c1"># --- módulo: maquina.py ---</span>
+</span><span id="__span-0-2"><a id="__codelineno-0-2" name="__codelineno-0-2" href="#__codelineno-0-2"></a><span class="k">class</span><span class="w"> </span><span class="nc">Maquina</span><span class="p">:</span>
+</span><span id="__span-0-3"><a id="__codelineno-0-3" name="__codelineno-0-3" href="#__codelineno-0-3"></a><span class="w">    </span><span class="sd">&quot;&quot;&quot;Encapsula los datos y reglas de negocio de una máquina industrial.&quot;&quot;&quot;</span>
 </span><span id="__span-0-4"><a id="__codelineno-0-4" name="__codelineno-0-4" href="#__codelineno-0-4"></a>
-</span><span id="__span-0-5"><a id="__codelineno-0-5" name="__codelineno-0-5" href="#__codelineno-0-5"></a>    <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">nombre</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">precio</span><span class="p">:</span> <span class="nb">float</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
-</span><span id="__span-0-6"><a id="__codelineno-0-6" name="__codelineno-0-6" href="#__codelineno-0-6"></a>        <span class="k">if</span> <span class="n">precio</span> <span class="o">&lt;</span> <span class="mi">0</span><span class="p">:</span>
-</span><span id="__span-0-7"><a id="__codelineno-0-7" name="__codelineno-0-7" href="#__codelineno-0-7"></a>            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;El precio no puede ser negativo&quot;</span><span class="p">)</span>
+</span><span id="__span-0-5"><a id="__codelineno-0-5" name="__codelineno-0-5" href="#__codelineno-0-5"></a>    <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">nombre</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">capacidad</span><span class="p">:</span> <span class="nb">int</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+</span><span id="__span-0-6"><a id="__codelineno-0-6" name="__codelineno-0-6" href="#__codelineno-0-6"></a>        <span class="k">if</span> <span class="n">capacidad</span> <span class="o">&lt;=</span> <span class="mi">0</span><span class="p">:</span>
+</span><span id="__span-0-7"><a id="__codelineno-0-7" name="__codelineno-0-7" href="#__codelineno-0-7"></a>            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;La capacidad debe ser positiva&quot;</span><span class="p">)</span>
 </span><span id="__span-0-8"><a id="__codelineno-0-8" name="__codelineno-0-8" href="#__codelineno-0-8"></a>        <span class="bp">self</span><span class="o">.</span><span class="n">nombre</span> <span class="o">=</span> <span class="n">nombre</span>
-</span><span id="__span-0-9"><a id="__codelineno-0-9" name="__codelineno-0-9" href="#__codelineno-0-9"></a>        <span class="bp">self</span><span class="o">.</span><span class="n">_precio</span> <span class="o">=</span> <span class="n">precio</span>
-</span><span id="__span-0-10"><a id="__codelineno-0-10" name="__codelineno-0-10" href="#__codelineno-0-10"></a>
-</span><span id="__span-0-11"><a id="__codelineno-0-11" name="__codelineno-0-11" href="#__codelineno-0-11"></a>    <span class="nd">@property</span>
-</span><span id="__span-0-12"><a id="__codelineno-0-12" name="__codelineno-0-12" href="#__codelineno-0-12"></a>    <span class="k">def</span><span class="w"> </span><span class="nf">precio</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">float</span><span class="p">:</span>
-</span><span id="__span-0-13"><a id="__codelineno-0-13" name="__codelineno-0-13" href="#__codelineno-0-13"></a>        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_precio</span>
-</span><span id="__span-0-14"><a id="__codelineno-0-14" name="__codelineno-0-14" href="#__codelineno-0-14"></a>
-</span><span id="__span-0-15"><a id="__codelineno-0-15" name="__codelineno-0-15" href="#__codelineno-0-15"></a>    <span class="k">def</span><span class="w"> </span><span class="fm">__repr__</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
-</span><span id="__span-0-16"><a id="__codelineno-0-16" name="__codelineno-0-16" href="#__codelineno-0-16"></a>        <span class="k">return</span> <span class="sa">f</span><span class="s2">&quot;Producto(</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">nombre</span><span class="si">!r}</span><span class="s2">, $</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">_precio</span><span class="si">:</span><span class="s2">.2f</span><span class="si">}</span><span class="s2">)&quot;</span>
-</span><span id="__span-0-17"><a id="__codelineno-0-17" name="__codelineno-0-17" href="#__codelineno-0-17"></a>
-</span><span id="__span-0-18"><a id="__codelineno-0-18" name="__codelineno-0-18" href="#__codelineno-0-18"></a>
-</span><span id="__span-0-19"><a id="__codelineno-0-19" name="__codelineno-0-19" href="#__codelineno-0-19"></a><span class="c1"># --- módulo: inventario.py ---</span>
-</span><span id="__span-0-20"><a id="__codelineno-0-20" name="__codelineno-0-20" href="#__codelineno-0-20"></a><span class="k">class</span><span class="w"> </span><span class="nc">Inventario</span><span class="p">:</span>
-</span><span id="__span-0-21"><a id="__codelineno-0-21" name="__codelineno-0-21" href="#__codelineno-0-21"></a><span class="w">    </span><span class="sd">&quot;&quot;&quot;Gestiona una colección de productos. Solo depende de Producto.&quot;&quot;&quot;</span>
+</span><span id="__span-0-9"><a id="__codelineno-0-9" name="__codelineno-0-9" href="#__codelineno-0-9"></a>        <span class="bp">self</span><span class="o">.</span><span class="n">_capacidad</span> <span class="o">=</span> <span class="n">capacidad</span>
+</span><span id="__span-0-10"><a id="__codelineno-0-10" name="__codelineno-0-10" href="#__codelineno-0-10"></a>        <span class="bp">self</span><span class="o">.</span><span class="n">_estado</span> <span class="o">=</span> <span class="s2">&quot;inactiva&quot;</span>
+</span><span id="__span-0-11"><a id="__codelineno-0-11" name="__codelineno-0-11" href="#__codelineno-0-11"></a>
+</span><span id="__span-0-12"><a id="__codelineno-0-12" name="__codelineno-0-12" href="#__codelineno-0-12"></a>    <span class="nd">@property</span>
+</span><span id="__span-0-13"><a id="__codelineno-0-13" name="__codelineno-0-13" href="#__codelineno-0-13"></a>    <span class="k">def</span><span class="w"> </span><span class="nf">capacidad</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">int</span><span class="p">:</span>
+</span><span id="__span-0-14"><a id="__codelineno-0-14" name="__codelineno-0-14" href="#__codelineno-0-14"></a>        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_capacidad</span>
+</span><span id="__span-0-15"><a id="__codelineno-0-15" name="__codelineno-0-15" href="#__codelineno-0-15"></a>
+</span><span id="__span-0-16"><a id="__codelineno-0-16" name="__codelineno-0-16" href="#__codelineno-0-16"></a>    <span class="nd">@property</span>
+</span><span id="__span-0-17"><a id="__codelineno-0-17" name="__codelineno-0-17" href="#__codelineno-0-17"></a>    <span class="k">def</span><span class="w"> </span><span class="nf">estado</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
+</span><span id="__span-0-18"><a id="__codelineno-0-18" name="__codelineno-0-18" href="#__codelineno-0-18"></a>        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_estado</span>
+</span><span id="__span-0-19"><a id="__codelineno-0-19" name="__codelineno-0-19" href="#__codelineno-0-19"></a>
+</span><span id="__span-0-20"><a id="__codelineno-0-20" name="__codelineno-0-20" href="#__codelineno-0-20"></a>    <span class="k">def</span><span class="w"> </span><span class="nf">activar</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+</span><span id="__span-0-21"><a id="__codelineno-0-21" name="__codelineno-0-21" href="#__codelineno-0-21"></a>        <span class="bp">self</span><span class="o">.</span><span class="n">_estado</span> <span class="o">=</span> <span class="s2">&quot;activa&quot;</span>
 </span><span id="__span-0-22"><a id="__codelineno-0-22" name="__codelineno-0-22" href="#__codelineno-0-22"></a>
-</span><span id="__span-0-23"><a id="__codelineno-0-23" name="__codelineno-0-23" href="#__codelineno-0-23"></a>    <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
-</span><span id="__span-0-24"><a id="__codelineno-0-24" name="__codelineno-0-24" href="#__codelineno-0-24"></a>        <span class="bp">self</span><span class="o">.</span><span class="n">_items</span><span class="p">:</span> <span class="nb">list</span><span class="p">[</span><span class="n">Producto</span><span class="p">]</span> <span class="o">=</span> <span class="p">[]</span>
+</span><span id="__span-0-23"><a id="__codelineno-0-23" name="__codelineno-0-23" href="#__codelineno-0-23"></a>    <span class="k">def</span><span class="w"> </span><span class="fm">__repr__</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
+</span><span id="__span-0-24"><a id="__codelineno-0-24" name="__codelineno-0-24" href="#__codelineno-0-24"></a>        <span class="k">return</span> <span class="sa">f</span><span class="s2">&quot;Maquina(</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">nombre</span><span class="si">!r}</span><span class="s2">, estado=</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">_estado</span><span class="si">!r}</span><span class="s2">)&quot;</span>
 </span><span id="__span-0-25"><a id="__codelineno-0-25" name="__codelineno-0-25" href="#__codelineno-0-25"></a>
-</span><span id="__span-0-26"><a id="__codelineno-0-26" name="__codelineno-0-26" href="#__codelineno-0-26"></a>    <span class="k">def</span><span class="w"> </span><span class="nf">agregar</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">producto</span><span class="p">:</span> <span class="n">Producto</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
-</span><span id="__span-0-27"><a id="__codelineno-0-27" name="__codelineno-0-27" href="#__codelineno-0-27"></a>        <span class="bp">self</span><span class="o">.</span><span class="n">_items</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">producto</span><span class="p">)</span>
-</span><span id="__span-0-28"><a id="__codelineno-0-28" name="__codelineno-0-28" href="#__codelineno-0-28"></a>
-</span><span id="__span-0-29"><a id="__codelineno-0-29" name="__codelineno-0-29" href="#__codelineno-0-29"></a>    <span class="k">def</span><span class="w"> </span><span class="nf">buscar</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">nombre</span><span class="p">:</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Producto</span> <span class="o">|</span> <span class="kc">None</span><span class="p">:</span>
-</span><span id="__span-0-30"><a id="__codelineno-0-30" name="__codelineno-0-30" href="#__codelineno-0-30"></a>        <span class="k">return</span> <span class="nb">next</span><span class="p">((</span><span class="n">p</span> <span class="k">for</span> <span class="n">p</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">_items</span> <span class="k">if</span> <span class="n">p</span><span class="o">.</span><span class="n">nombre</span> <span class="o">==</span> <span class="n">nombre</span><span class="p">),</span> <span class="kc">None</span><span class="p">)</span>
-</span><span id="__span-0-31"><a id="__codelineno-0-31" name="__codelineno-0-31" href="#__codelineno-0-31"></a>
-</span><span id="__span-0-32"><a id="__codelineno-0-32" name="__codelineno-0-32" href="#__codelineno-0-32"></a>    <span class="k">def</span><span class="w"> </span><span class="nf">total_stock</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">int</span><span class="p">:</span>
-</span><span id="__span-0-33"><a id="__codelineno-0-33" name="__codelineno-0-33" href="#__codelineno-0-33"></a>        <span class="k">return</span> <span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_items</span><span class="p">)</span>
-</span><span id="__span-0-34"><a id="__codelineno-0-34" name="__codelineno-0-34" href="#__codelineno-0-34"></a>
-</span><span id="__span-0-35"><a id="__codelineno-0-35" name="__codelineno-0-35" href="#__codelineno-0-35"></a>
-</span><span id="__span-0-36"><a id="__codelineno-0-36" name="__codelineno-0-36" href="#__codelineno-0-36"></a><span class="c1"># --- módulo: reporte.py ---</span>
-</span><span id="__span-0-37"><a id="__codelineno-0-37" name="__codelineno-0-37" href="#__codelineno-0-37"></a><span class="k">class</span><span class="w"> </span><span class="nc">ReporteInventario</span><span class="p">:</span>
-</span><span id="__span-0-38"><a id="__codelineno-0-38" name="__codelineno-0-38" href="#__codelineno-0-38"></a><span class="w">    </span><span class="sd">&quot;&quot;&quot;Genera reportes. Cohesivo: solo sabe de reportes, nada más.&quot;&quot;&quot;</span>
+</span><span id="__span-0-26"><a id="__codelineno-0-26" name="__codelineno-0-26" href="#__codelineno-0-26"></a>
+</span><span id="__span-0-27"><a id="__codelineno-0-27" name="__codelineno-0-27" href="#__codelineno-0-27"></a><span class="c1"># --- módulo: linea_montaje.py ---</span>
+</span><span id="__span-0-28"><a id="__codelineno-0-28" name="__codelineno-0-28" href="#__codelineno-0-28"></a><span class="k">class</span><span class="w"> </span><span class="nc">LineaDeMontaje</span><span class="p">:</span>
+</span><span id="__span-0-29"><a id="__codelineno-0-29" name="__codelineno-0-29" href="#__codelineno-0-29"></a><span class="w">    </span><span class="sd">&quot;&quot;&quot;Gestiona una colección de máquinas. Solo depende de Maquina.&quot;&quot;&quot;</span>
+</span><span id="__span-0-30"><a id="__codelineno-0-30" name="__codelineno-0-30" href="#__codelineno-0-30"></a>
+</span><span id="__span-0-31"><a id="__codelineno-0-31" name="__codelineno-0-31" href="#__codelineno-0-31"></a>    <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+</span><span id="__span-0-32"><a id="__codelineno-0-32" name="__codelineno-0-32" href="#__codelineno-0-32"></a>        <span class="bp">self</span><span class="o">.</span><span class="n">_maquinas</span><span class="p">:</span> <span class="nb">list</span><span class="p">[</span><span class="n">Maquina</span><span class="p">]</span> <span class="o">=</span> <span class="p">[]</span>
+</span><span id="__span-0-33"><a id="__codelineno-0-33" name="__codelineno-0-33" href="#__codelineno-0-33"></a>
+</span><span id="__span-0-34"><a id="__codelineno-0-34" name="__codelineno-0-34" href="#__codelineno-0-34"></a>    <span class="k">def</span><span class="w"> </span><span class="nf">agregar</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">maquina</span><span class="p">:</span> <span class="n">Maquina</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+</span><span id="__span-0-35"><a id="__codelineno-0-35" name="__codelineno-0-35" href="#__codelineno-0-35"></a>        <span class="bp">self</span><span class="o">.</span><span class="n">_maquinas</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">maquina</span><span class="p">)</span>
+</span><span id="__span-0-36"><a id="__codelineno-0-36" name="__codelineno-0-36" href="#__codelineno-0-36"></a>
+</span><span id="__span-0-37"><a id="__codelineno-0-37" name="__codelineno-0-37" href="#__codelineno-0-37"></a>    <span class="k">def</span><span class="w"> </span><span class="nf">buscar</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">nombre</span><span class="p">:</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Maquina</span> <span class="o">|</span> <span class="kc">None</span><span class="p">:</span>
+</span><span id="__span-0-38"><a id="__codelineno-0-38" name="__codelineno-0-38" href="#__codelineno-0-38"></a>        <span class="k">return</span> <span class="nb">next</span><span class="p">((</span><span class="n">m</span> <span class="k">for</span> <span class="n">m</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">_maquinas</span> <span class="k">if</span> <span class="n">m</span><span class="o">.</span><span class="n">nombre</span> <span class="o">==</span> <span class="n">nombre</span><span class="p">),</span> <span class="kc">None</span><span class="p">)</span>
 </span><span id="__span-0-39"><a id="__codelineno-0-39" name="__codelineno-0-39" href="#__codelineno-0-39"></a>
-</span><span id="__span-0-40"><a id="__codelineno-0-40" name="__codelineno-0-40" href="#__codelineno-0-40"></a>    <span class="k">def</span><span class="w"> </span><span class="nf">generar</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">inventario</span><span class="p">:</span> <span class="n">Inventario</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
-</span><span id="__span-0-41"><a id="__codelineno-0-41" name="__codelineno-0-41" href="#__codelineno-0-41"></a>        <span class="n">lineas</span> <span class="o">=</span> <span class="p">[</span>
-</span><span id="__span-0-42"><a id="__codelineno-0-42" name="__codelineno-0-42" href="#__codelineno-0-42"></a>            <span class="s2">&quot;=== Reporte de Inventario ===&quot;</span><span class="p">,</span>
-</span><span id="__span-0-43"><a id="__codelineno-0-43" name="__codelineno-0-43" href="#__codelineno-0-43"></a>            <span class="sa">f</span><span class="s2">&quot;Total de productos: </span><span class="si">{</span><span class="n">inventario</span><span class="o">.</span><span class="n">total_stock</span><span class="p">()</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">,</span>
-</span><span id="__span-0-44"><a id="__codelineno-0-44" name="__codelineno-0-44" href="#__codelineno-0-44"></a>        <span class="p">]</span>
-</span><span id="__span-0-45"><a id="__codelineno-0-45" name="__codelineno-0-45" href="#__codelineno-0-45"></a>        <span class="k">return</span> <span class="s2">&quot;</span><span class="se">\n</span><span class="s2">&quot;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">lineas</span><span class="p">)</span>
-</span><span id="__span-0-46"><a id="__codelineno-0-46" name="__codelineno-0-46" href="#__codelineno-0-46"></a>
+</span><span id="__span-0-40"><a id="__codelineno-0-40" name="__codelineno-0-40" href="#__codelineno-0-40"></a>    <span class="k">def</span><span class="w"> </span><span class="nf">total_maquinas</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">int</span><span class="p">:</span>
+</span><span id="__span-0-41"><a id="__codelineno-0-41" name="__codelineno-0-41" href="#__codelineno-0-41"></a>        <span class="k">return</span> <span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_maquinas</span><span class="p">)</span>
+</span><span id="__span-0-42"><a id="__codelineno-0-42" name="__codelineno-0-42" href="#__codelineno-0-42"></a>
+</span><span id="__span-0-43"><a id="__codelineno-0-43" name="__codelineno-0-43" href="#__codelineno-0-43"></a>
+</span><span id="__span-0-44"><a id="__codelineno-0-44" name="__codelineno-0-44" href="#__codelineno-0-44"></a><span class="c1"># --- módulo: reporte.py ---</span>
+</span><span id="__span-0-45"><a id="__codelineno-0-45" name="__codelineno-0-45" href="#__codelineno-0-45"></a><span class="k">class</span><span class="w"> </span><span class="nc">ReportePlanta</span><span class="p">:</span>
+</span><span id="__span-0-46"><a id="__codelineno-0-46" name="__codelineno-0-46" href="#__codelineno-0-46"></a><span class="w">    </span><span class="sd">&quot;&quot;&quot;Genera reportes. Cohesivo: solo sabe de reportes, nada más.&quot;&quot;&quot;</span>
 </span><span id="__span-0-47"><a id="__codelineno-0-47" name="__codelineno-0-47" href="#__codelineno-0-47"></a>
-</span><span id="__span-0-48"><a id="__codelineno-0-48" name="__codelineno-0-48" href="#__codelineno-0-48"></a><span class="c1"># Uso</span>
-</span><span id="__span-0-49"><a id="__codelineno-0-49" name="__codelineno-0-49" href="#__codelineno-0-49"></a><span class="n">inv</span> <span class="o">=</span> <span class="n">Inventario</span><span class="p">()</span>
-</span><span id="__span-0-50"><a id="__codelineno-0-50" name="__codelineno-0-50" href="#__codelineno-0-50"></a><span class="n">inv</span><span class="o">.</span><span class="n">agregar</span><span class="p">(</span><span class="n">Producto</span><span class="p">(</span><span class="s2">&quot;Laptop&quot;</span><span class="p">,</span> <span class="mi">1500</span><span class="p">))</span>
-</span><span id="__span-0-51"><a id="__codelineno-0-51" name="__codelineno-0-51" href="#__codelineno-0-51"></a><span class="n">inv</span><span class="o">.</span><span class="n">agregar</span><span class="p">(</span><span class="n">Producto</span><span class="p">(</span><span class="s2">&quot;Monitor&quot;</span><span class="p">,</span> <span class="mi">400</span><span class="p">))</span>
-</span><span id="__span-0-52"><a id="__codelineno-0-52" name="__codelineno-0-52" href="#__codelineno-0-52"></a>
-</span><span id="__span-0-53"><a id="__codelineno-0-53" name="__codelineno-0-53" href="#__codelineno-0-53"></a><span class="n">reporte</span> <span class="o">=</span> <span class="n">ReporteInventario</span><span class="p">()</span>
-</span><span id="__span-0-54"><a id="__codelineno-0-54" name="__codelineno-0-54" href="#__codelineno-0-54"></a><span class="nb">print</span><span class="p">(</span><span class="n">reporte</span><span class="o">.</span><span class="n">generar</span><span class="p">(</span><span class="n">inv</span><span class="p">))</span>
+</span><span id="__span-0-48"><a id="__codelineno-0-48" name="__codelineno-0-48" href="#__codelineno-0-48"></a>    <span class="k">def</span><span class="w"> </span><span class="nf">generar</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">linea</span><span class="p">:</span> <span class="n">LineaDeMontaje</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
+</span><span id="__span-0-49"><a id="__codelineno-0-49" name="__codelineno-0-49" href="#__codelineno-0-49"></a>        <span class="n">lineas</span> <span class="o">=</span> <span class="p">[</span>
+</span><span id="__span-0-50"><a id="__codelineno-0-50" name="__codelineno-0-50" href="#__codelineno-0-50"></a>            <span class="s2">&quot;=== Reporte de Planta ===&quot;</span><span class="p">,</span>
+</span><span id="__span-0-51"><a id="__codelineno-0-51" name="__codelineno-0-51" href="#__codelineno-0-51"></a>            <span class="sa">f</span><span class="s2">&quot;Total de máquinas: </span><span class="si">{</span><span class="n">linea</span><span class="o">.</span><span class="n">total_maquinas</span><span class="p">()</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">,</span>
+</span><span id="__span-0-52"><a id="__codelineno-0-52" name="__codelineno-0-52" href="#__codelineno-0-52"></a>        <span class="p">]</span>
+</span><span id="__span-0-53"><a id="__codelineno-0-53" name="__codelineno-0-53" href="#__codelineno-0-53"></a>        <span class="k">return</span> <span class="s2">&quot;</span><span class="se">\n</span><span class="s2">&quot;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">lineas</span><span class="p">)</span>
+</span><span id="__span-0-54"><a id="__codelineno-0-54" name="__codelineno-0-54" href="#__codelineno-0-54"></a>
+</span><span id="__span-0-55"><a id="__codelineno-0-55" name="__codelineno-0-55" href="#__codelineno-0-55"></a>
+</span><span id="__span-0-56"><a id="__codelineno-0-56" name="__codelineno-0-56" href="#__codelineno-0-56"></a><span class="c1"># Uso</span>
+</span><span id="__span-0-57"><a id="__codelineno-0-57" name="__codelineno-0-57" href="#__codelineno-0-57"></a><span class="n">linea</span> <span class="o">=</span> <span class="n">LineaDeMontaje</span><span class="p">()</span>
+</span><span id="__span-0-58"><a id="__codelineno-0-58" name="__codelineno-0-58" href="#__codelineno-0-58"></a><span class="n">linea</span><span class="o">.</span><span class="n">agregar</span><span class="p">(</span><span class="n">Maquina</span><span class="p">(</span><span class="s2">&quot;CNC-01&quot;</span><span class="p">,</span> <span class="n">capacidad</span><span class="o">=</span><span class="mi">100</span><span class="p">))</span>
+</span><span id="__span-0-59"><a id="__codelineno-0-59" name="__codelineno-0-59" href="#__codelineno-0-59"></a><span class="n">linea</span><span class="o">.</span><span class="n">agregar</span><span class="p">(</span><span class="n">Maquina</span><span class="p">(</span><span class="s2">&quot;Soldadora-02&quot;</span><span class="p">,</span> <span class="n">capacidad</span><span class="o">=</span><span class="mi">50</span><span class="p">))</span>
+</span><span id="__span-0-60"><a id="__codelineno-0-60" name="__codelineno-0-60" href="#__codelineno-0-60"></a>
+</span><span id="__span-0-61"><a id="__codelineno-0-61" name="__codelineno-0-61" href="#__codelineno-0-61"></a><span class="n">reporte</span> <span class="o">=</span> <span class="n">ReportePlanta</span><span class="p">()</span>
+</span><span id="__span-0-62"><a id="__codelineno-0-62" name="__codelineno-0-62" href="#__codelineno-0-62"></a><span class="nb">print</span><span class="p">(</span><span class="n">reporte</span><span class="o">.</span><span class="n">generar</span><span class="p">(</span><span class="n">linea</span><span class="p">))</span>
 </span></code></pre></div>
 <h3 id="cohesion-y-acoplamiento">Cohesión y acoplamiento</h3>
 <p>Dos métricas guían el diseño modular:</p>
 <ul>
-<li><strong>Cohesión</strong> (alta es buena): un módulo es cohesivo cuando todas sus partes trabajan juntas hacia un único propósito. <code>ReporteInventario</code> solo genera reportes — no agrega productos, no valida precios. Eso es alta cohesión.</li>
-<li><strong>Acoplamiento</strong> (bajo es bueno): un módulo tiene bajo acoplamiento cuando depende de pocos módulos externos y solo de sus interfaces públicas. Si <code>ReporteInventario</code> solo necesita saber que <code>Inventario</code> tiene <code>total_stock()</code>, no importa cómo lo implementa internamente.</li>
+<li><strong>Cohesión</strong> (alta es buena): un módulo es cohesivo cuando todas sus partes trabajan juntas hacia un único propósito. <code>ReportePlanta</code> solo genera reportes — no agrega máquinas, no valida capacidades. Eso es alta cohesión.</li>
+<li><strong>Acoplamiento</strong> (bajo es bueno): un módulo tiene bajo acoplamiento cuando depende de pocos módulos externos y solo de sus interfaces públicas. Si <code>ReportePlanta</code> solo necesita saber que <code>LineaDeMontaje</code> tiene <code>total_maquinas()</code>, no importa cómo lo implementa internamente.</li>
 </ul>
 <blockquote>
 <p>En la práctica, cuando un cambio en una parte del sistema irradia modificaciones hacia muchos otros archivos, es una señal clara de alto acoplamiento. La solución casi siempre implica identificar qué responsabilidades están mal asignadas y redistribuirlas en módulos más cohesivos.</p>
@@ -1557,8 +1593,8 @@
 <h2 id="jerarquia">Jerarquía</h2>
 <p>Cualquier sistema real involucra decenas de abstracciones que necesitan relacionarse entre sí. La jerarquía organiza esas relaciones de manera que el sistema siga siendo comprensible. Las dos formas fundamentales son:</p>
 <ul>
-<li><strong>Jerarquía "es-un"</strong> (herencia): una subclase <em>es un</em> tipo específico de su clase padre. <code>Auto</code> es un <code>Vehiculo</code>.</li>
-<li><strong>Jerarquía "tiene-un"</strong> (composición): un objeto <em>contiene</em> o <em>usa</em> a otro. <code>Auto</code> tiene un <code>Motor</code>.</li>
+<li><strong>Jerarquía "es-un"</strong> (herencia): una subclase <em>es un</em> tipo específico de su clase padre. <code>EstacionCorte</code> es una <code>EstacionTrabajo</code>.</li>
+<li><strong>Jerarquía "tiene-un"</strong> (composición): un objeto <em>contiene</em> o <em>usa</em> a otro. <code>Maquina</code> tiene un <code>Sensor</code>.</li>
 </ul>
 <p>Elegir entre estas dos es una de las decisiones de diseño más frecuentes y más importantes. La regla práctica: si podés decir con naturalidad que A <em>es un</em> B en todos los contextos, usá herencia. Si la relación es que A <em>tiene un</em> B o A <em>usa un</em> B, usá composición. En la práctica, el abuso de herencia genera jerarquías rígidas y difíciles de cambiar — la composición suele ser la opción más flexible.</p>
 <blockquote>

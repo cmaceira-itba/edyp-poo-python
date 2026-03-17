@@ -350,7 +350,7 @@
     
     
       <li class="md-tabs__item">
-        <a href="../../practicas/excepciones/" class="md-tabs__link">
+        <a href="../../practicas/enums/" class="md-tabs__link">
           
   
   
@@ -1344,6 +1344,34 @@
   
   
     <li class="md-nav__item">
+      <a href="../../practicas/enums/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Enumeraciones (Enum)
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
       <a href="../../practicas/excepciones/" class="md-nav__link">
         
   
@@ -1452,70 +1480,89 @@
 <p>Aprender la sintaxis de las clases en Python es la parte fácil. El verdadero desafío al aprender POO es otro: cambiar la manera en que pensás un problema antes de escribir una sola línea de código.</p>
 <h2 id="de-verbos-a-sustantivos">De verbos a sustantivos</h2>
 <p>En programación estructurada, el diseño empieza con una pregunta: <strong>¿qué pasos necesito para resolver esto?</strong> La respuesta son funciones (verbos: calcular, guardar, mostrar, procesar).</p>
-<p>En POO, la pregunta inicial es diferente: <strong>¿qué entidades existen en este dominio y cómo se relacionan entre sí?</strong> La respuesta son objetos (sustantivos: cliente, pedido, producto, factura).</p>
+<p>En POO, la pregunta inicial es diferente: <strong>¿qué entidades existen en este dominio y cómo se relacionan entre sí?</strong> La respuesta son objetos (sustantivos: pieza, estación de trabajo, línea de montaje, operario).</p>
 <p>Este cambio de verbos a sustantivos como unidad de diseño fue descripto por Alan Kay —inventor de Smalltalk y uno de los padres de la POO— quien enfatizaba que los objetos son entidades que <em>reciben mensajes</em> y <em>responden</em> a ellos. Las acciones existen, pero son responsabilidad de los objetos que las llevan a cabo.</p>
 <h2 id="el-error-mas-comun-codigo-procedural-dentro-de-clases">El error más común: código procedural dentro de clases</h2>
 <p>Cuando alguien aprende POO por primera vez y viene del paradigma procedural, es muy frecuente escribir algo así:</p>
 <div class="language-python highlight"><pre><span></span><code><span id="__span-0-1"><a id="__codelineno-0-1" name="__codelineno-0-1" href="#__codelineno-0-1"></a><span class="c1"># ❌ Esto NO es POO — es código procedural disfrazado de clase</span>
-</span><span id="__span-0-2"><a id="__codelineno-0-2" name="__codelineno-0-2" href="#__codelineno-0-2"></a><span class="k">class</span><span class="w"> </span><span class="nc">GestorDePedidos</span><span class="p">:</span>
-</span><span id="__span-0-3"><a id="__codelineno-0-3" name="__codelineno-0-3" href="#__codelineno-0-3"></a>    <span class="k">def</span><span class="w"> </span><span class="nf">procesar</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">cliente_nombre</span><span class="p">,</span> <span class="n">cliente_email</span><span class="p">,</span> <span class="n">productos</span><span class="p">,</span> <span class="n">cantidades</span><span class="p">,</span> <span class="n">direccion</span><span class="p">):</span>
+</span><span id="__span-0-2"><a id="__codelineno-0-2" name="__codelineno-0-2" href="#__codelineno-0-2"></a><span class="k">class</span><span class="w"> </span><span class="nc">ControladorLinea</span><span class="p">:</span>
+</span><span id="__span-0-3"><a id="__codelineno-0-3" name="__codelineno-0-3" href="#__codelineno-0-3"></a>    <span class="k">def</span><span class="w"> </span><span class="nf">procesar_linea</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">materiales</span><span class="p">,</span> <span class="n">estaciones</span><span class="p">,</span> <span class="n">operarios</span><span class="p">,</span> <span class="n">cantidad</span><span class="p">):</span>
 </span><span id="__span-0-4"><a id="__codelineno-0-4" name="__codelineno-0-4" href="#__codelineno-0-4"></a>        <span class="c1"># 80 líneas de lógica mezclada...</span>
-</span><span id="__span-0-5"><a id="__codelineno-0-5" name="__codelineno-0-5" href="#__codelineno-0-5"></a>        <span class="n">total</span> <span class="o">=</span> <span class="mi">0</span>
-</span><span id="__span-0-6"><a id="__codelineno-0-6" name="__codelineno-0-6" href="#__codelineno-0-6"></a>        <span class="k">for</span> <span class="n">i</span><span class="p">,</span> <span class="n">producto</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="n">productos</span><span class="p">):</span>
-</span><span id="__span-0-7"><a id="__codelineno-0-7" name="__codelineno-0-7" href="#__codelineno-0-7"></a>            <span class="n">total</span> <span class="o">+=</span> <span class="n">producto</span><span class="p">[</span><span class="s2">&quot;precio&quot;</span><span class="p">]</span> <span class="o">*</span> <span class="n">cantidades</span><span class="p">[</span><span class="n">i</span><span class="p">]</span>
-</span><span id="__span-0-8"><a id="__codelineno-0-8" name="__codelineno-0-8" href="#__codelineno-0-8"></a>        <span class="c1"># validar stock, calcular envío, enviar email, guardar en BD...</span>
-</span><span id="__span-0-9"><a id="__codelineno-0-9" name="__codelineno-0-9" href="#__codelineno-0-9"></a>        <span class="k">return</span> <span class="n">total</span>
+</span><span id="__span-0-5"><a id="__codelineno-0-5" name="__codelineno-0-5" href="#__codelineno-0-5"></a>        <span class="n">piezas_ok</span> <span class="o">=</span> <span class="mi">0</span>
+</span><span id="__span-0-6"><a id="__codelineno-0-6" name="__codelineno-0-6" href="#__codelineno-0-6"></a>        <span class="k">for</span> <span class="n">material</span> <span class="ow">in</span> <span class="n">materiales</span><span class="p">:</span>
+</span><span id="__span-0-7"><a id="__codelineno-0-7" name="__codelineno-0-7" href="#__codelineno-0-7"></a>            <span class="k">if</span> <span class="n">material</span><span class="p">[</span><span class="s2">&quot;disponible&quot;</span><span class="p">]</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="p">:</span>
+</span><span id="__span-0-8"><a id="__codelineno-0-8" name="__codelineno-0-8" href="#__codelineno-0-8"></a>                <span class="k">for</span> <span class="n">estacion</span> <span class="ow">in</span> <span class="n">estaciones</span><span class="p">:</span>
+</span><span id="__span-0-9"><a id="__codelineno-0-9" name="__codelineno-0-9" href="#__codelineno-0-9"></a>                    <span class="k">if</span> <span class="n">estacion</span><span class="p">[</span><span class="s2">&quot;activa&quot;</span><span class="p">]:</span>
+</span><span id="__span-0-10"><a id="__codelineno-0-10" name="__codelineno-0-10" href="#__codelineno-0-10"></a>                        <span class="n">piezas_ok</span> <span class="o">+=</span> <span class="mi">1</span>
+</span><span id="__span-0-11"><a id="__codelineno-0-11" name="__codelineno-0-11" href="#__codelineno-0-11"></a>        <span class="c1"># validar temperaturas, registrar fallas, calcular eficiencia...</span>
+</span><span id="__span-0-12"><a id="__codelineno-0-12" name="__codelineno-0-12" href="#__codelineno-0-12"></a>        <span class="k">return</span> <span class="n">piezas_ok</span>
 </span></code></pre></div>
 <p>Este código tiene una clase, pero no tiene <em>objetos</em>. Es una función grande con un nombre de clase como disfraz. No hay estado encapsulado, no hay responsabilidades distribuidas, no hay abstracción real.</p>
 <p>El diseño orientado a objetos correcto distribuye responsabilidades entre múltiples objetos, cada uno con un propósito claro:</p>
 <div class="language-python highlight"><pre><span></span><code><span id="__span-1-1"><a id="__codelineno-1-1" name="__codelineno-1-1" href="#__codelineno-1-1"></a><span class="c1"># ✅ Esto SÍ es POO — responsabilidades distribuidas entre objetos</span>
-</span><span id="__span-1-2"><a id="__codelineno-1-2" name="__codelineno-1-2" href="#__codelineno-1-2"></a><span class="k">class</span><span class="w"> </span><span class="nc">Cliente</span><span class="p">:</span>
-</span><span id="__span-1-3"><a id="__codelineno-1-3" name="__codelineno-1-3" href="#__codelineno-1-3"></a><span class="w">    </span><span class="sd">&quot;&quot;&quot;Conoce sus propios datos de contacto.&quot;&quot;&quot;</span>
+</span><span id="__span-1-2"><a id="__codelineno-1-2" name="__codelineno-1-2" href="#__codelineno-1-2"></a><span class="kn">from</span><span class="w"> </span><span class="nn">enum</span><span class="w"> </span><span class="kn">import</span> <span class="n">Enum</span>
+</span><span id="__span-1-3"><a id="__codelineno-1-3" name="__codelineno-1-3" href="#__codelineno-1-3"></a>
 </span><span id="__span-1-4"><a id="__codelineno-1-4" name="__codelineno-1-4" href="#__codelineno-1-4"></a>
-</span><span id="__span-1-5"><a id="__codelineno-1-5" name="__codelineno-1-5" href="#__codelineno-1-5"></a>    <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">nombre</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">email</span><span class="p">:</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
-</span><span id="__span-1-6"><a id="__codelineno-1-6" name="__codelineno-1-6" href="#__codelineno-1-6"></a>        <span class="bp">self</span><span class="o">.</span><span class="n">nombre</span> <span class="o">=</span> <span class="n">nombre</span>
-</span><span id="__span-1-7"><a id="__codelineno-1-7" name="__codelineno-1-7" href="#__codelineno-1-7"></a>        <span class="bp">self</span><span class="o">.</span><span class="n">email</span> <span class="o">=</span> <span class="n">email</span>
-</span><span id="__span-1-8"><a id="__codelineno-1-8" name="__codelineno-1-8" href="#__codelineno-1-8"></a>
-</span><span id="__span-1-9"><a id="__codelineno-1-9" name="__codelineno-1-9" href="#__codelineno-1-9"></a>
-</span><span id="__span-1-10"><a id="__codelineno-1-10" name="__codelineno-1-10" href="#__codelineno-1-10"></a><span class="k">class</span><span class="w"> </span><span class="nc">Producto</span><span class="p">:</span>
-</span><span id="__span-1-11"><a id="__codelineno-1-11" name="__codelineno-1-11" href="#__codelineno-1-11"></a><span class="w">    </span><span class="sd">&quot;&quot;&quot;Conoce su precio y gestiona su propio stock.&quot;&quot;&quot;</span>
-</span><span id="__span-1-12"><a id="__codelineno-1-12" name="__codelineno-1-12" href="#__codelineno-1-12"></a>
-</span><span id="__span-1-13"><a id="__codelineno-1-13" name="__codelineno-1-13" href="#__codelineno-1-13"></a>    <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">nombre</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">precio</span><span class="p">:</span> <span class="nb">float</span><span class="p">,</span> <span class="n">stock</span><span class="p">:</span> <span class="nb">int</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
-</span><span id="__span-1-14"><a id="__codelineno-1-14" name="__codelineno-1-14" href="#__codelineno-1-14"></a>        <span class="bp">self</span><span class="o">.</span><span class="n">nombre</span> <span class="o">=</span> <span class="n">nombre</span>
-</span><span id="__span-1-15"><a id="__codelineno-1-15" name="__codelineno-1-15" href="#__codelineno-1-15"></a>        <span class="bp">self</span><span class="o">.</span><span class="n">_precio</span> <span class="o">=</span> <span class="n">precio</span>
-</span><span id="__span-1-16"><a id="__codelineno-1-16" name="__codelineno-1-16" href="#__codelineno-1-16"></a>        <span class="bp">self</span><span class="o">.</span><span class="n">_stock</span> <span class="o">=</span> <span class="n">stock</span>
-</span><span id="__span-1-17"><a id="__codelineno-1-17" name="__codelineno-1-17" href="#__codelineno-1-17"></a>
-</span><span id="__span-1-18"><a id="__codelineno-1-18" name="__codelineno-1-18" href="#__codelineno-1-18"></a>    <span class="nd">@property</span>
-</span><span id="__span-1-19"><a id="__codelineno-1-19" name="__codelineno-1-19" href="#__codelineno-1-19"></a>    <span class="k">def</span><span class="w"> </span><span class="nf">precio</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">float</span><span class="p">:</span>
-</span><span id="__span-1-20"><a id="__codelineno-1-20" name="__codelineno-1-20" href="#__codelineno-1-20"></a>        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_precio</span>
-</span><span id="__span-1-21"><a id="__codelineno-1-21" name="__codelineno-1-21" href="#__codelineno-1-21"></a>
-</span><span id="__span-1-22"><a id="__codelineno-1-22" name="__codelineno-1-22" href="#__codelineno-1-22"></a>    <span class="k">def</span><span class="w"> </span><span class="nf">tiene_stock</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">cantidad</span><span class="p">:</span> <span class="nb">int</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">bool</span><span class="p">:</span>
-</span><span id="__span-1-23"><a id="__codelineno-1-23" name="__codelineno-1-23" href="#__codelineno-1-23"></a>        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_stock</span> <span class="o">&gt;=</span> <span class="n">cantidad</span>
+</span><span id="__span-1-5"><a id="__codelineno-1-5" name="__codelineno-1-5" href="#__codelineno-1-5"></a><span class="k">class</span><span class="w"> </span><span class="nc">EstadoPieza</span><span class="p">(</span><span class="n">Enum</span><span class="p">):</span>
+</span><span id="__span-1-6"><a id="__codelineno-1-6" name="__codelineno-1-6" href="#__codelineno-1-6"></a>    <span class="n">EN_ESPERA</span> <span class="o">=</span> <span class="s2">&quot;en_espera&quot;</span>
+</span><span id="__span-1-7"><a id="__codelineno-1-7" name="__codelineno-1-7" href="#__codelineno-1-7"></a>    <span class="n">EN_PROCESO</span> <span class="o">=</span> <span class="s2">&quot;en_proceso&quot;</span>
+</span><span id="__span-1-8"><a id="__codelineno-1-8" name="__codelineno-1-8" href="#__codelineno-1-8"></a>    <span class="n">COMPLETADA</span> <span class="o">=</span> <span class="s2">&quot;completada&quot;</span>
+</span><span id="__span-1-9"><a id="__codelineno-1-9" name="__codelineno-1-9" href="#__codelineno-1-9"></a>    <span class="n">RECHAZADA</span> <span class="o">=</span> <span class="s2">&quot;rechazada&quot;</span>
+</span><span id="__span-1-10"><a id="__codelineno-1-10" name="__codelineno-1-10" href="#__codelineno-1-10"></a>
+</span><span id="__span-1-11"><a id="__codelineno-1-11" name="__codelineno-1-11" href="#__codelineno-1-11"></a>
+</span><span id="__span-1-12"><a id="__codelineno-1-12" name="__codelineno-1-12" href="#__codelineno-1-12"></a><span class="k">class</span><span class="w"> </span><span class="nc">Pieza</span><span class="p">:</span>
+</span><span id="__span-1-13"><a id="__codelineno-1-13" name="__codelineno-1-13" href="#__codelineno-1-13"></a><span class="w">    </span><span class="sd">&quot;&quot;&quot;Conoce su propio material, peso y estado en la línea.&quot;&quot;&quot;</span>
+</span><span id="__span-1-14"><a id="__codelineno-1-14" name="__codelineno-1-14" href="#__codelineno-1-14"></a>
+</span><span id="__span-1-15"><a id="__codelineno-1-15" name="__codelineno-1-15" href="#__codelineno-1-15"></a>    <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">numero_serie</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">material</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">peso</span><span class="p">:</span> <span class="nb">float</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+</span><span id="__span-1-16"><a id="__codelineno-1-16" name="__codelineno-1-16" href="#__codelineno-1-16"></a>        <span class="bp">self</span><span class="o">.</span><span class="n">numero_serie</span> <span class="o">=</span> <span class="n">numero_serie</span>
+</span><span id="__span-1-17"><a id="__codelineno-1-17" name="__codelineno-1-17" href="#__codelineno-1-17"></a>        <span class="bp">self</span><span class="o">.</span><span class="n">material</span> <span class="o">=</span> <span class="n">material</span>
+</span><span id="__span-1-18"><a id="__codelineno-1-18" name="__codelineno-1-18" href="#__codelineno-1-18"></a>        <span class="bp">self</span><span class="o">.</span><span class="n">peso</span> <span class="o">=</span> <span class="n">peso</span>
+</span><span id="__span-1-19"><a id="__codelineno-1-19" name="__codelineno-1-19" href="#__codelineno-1-19"></a>        <span class="bp">self</span><span class="o">.</span><span class="n">_estado</span> <span class="o">=</span> <span class="n">EstadoPieza</span><span class="o">.</span><span class="n">EN_ESPERA</span>
+</span><span id="__span-1-20"><a id="__codelineno-1-20" name="__codelineno-1-20" href="#__codelineno-1-20"></a>
+</span><span id="__span-1-21"><a id="__codelineno-1-21" name="__codelineno-1-21" href="#__codelineno-1-21"></a>    <span class="nd">@property</span>
+</span><span id="__span-1-22"><a id="__codelineno-1-22" name="__codelineno-1-22" href="#__codelineno-1-22"></a>    <span class="k">def</span><span class="w"> </span><span class="nf">estado</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">EstadoPieza</span><span class="p">:</span>
+</span><span id="__span-1-23"><a id="__codelineno-1-23" name="__codelineno-1-23" href="#__codelineno-1-23"></a>        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_estado</span>
 </span><span id="__span-1-24"><a id="__codelineno-1-24" name="__codelineno-1-24" href="#__codelineno-1-24"></a>
-</span><span id="__span-1-25"><a id="__codelineno-1-25" name="__codelineno-1-25" href="#__codelineno-1-25"></a>
-</span><span id="__span-1-26"><a id="__codelineno-1-26" name="__codelineno-1-26" href="#__codelineno-1-26"></a><span class="k">class</span><span class="w"> </span><span class="nc">LineaDePedido</span><span class="p">:</span>
-</span><span id="__span-1-27"><a id="__codelineno-1-27" name="__codelineno-1-27" href="#__codelineno-1-27"></a><span class="w">    </span><span class="sd">&quot;&quot;&quot;Representa un producto con su cantidad dentro de un pedido.&quot;&quot;&quot;</span>
-</span><span id="__span-1-28"><a id="__codelineno-1-28" name="__codelineno-1-28" href="#__codelineno-1-28"></a>
-</span><span id="__span-1-29"><a id="__codelineno-1-29" name="__codelineno-1-29" href="#__codelineno-1-29"></a>    <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">producto</span><span class="p">:</span> <span class="n">Producto</span><span class="p">,</span> <span class="n">cantidad</span><span class="p">:</span> <span class="nb">int</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
-</span><span id="__span-1-30"><a id="__codelineno-1-30" name="__codelineno-1-30" href="#__codelineno-1-30"></a>        <span class="bp">self</span><span class="o">.</span><span class="n">_producto</span> <span class="o">=</span> <span class="n">producto</span>
-</span><span id="__span-1-31"><a id="__codelineno-1-31" name="__codelineno-1-31" href="#__codelineno-1-31"></a>        <span class="bp">self</span><span class="o">.</span><span class="n">_cantidad</span> <span class="o">=</span> <span class="n">cantidad</span>
-</span><span id="__span-1-32"><a id="__codelineno-1-32" name="__codelineno-1-32" href="#__codelineno-1-32"></a>
-</span><span id="__span-1-33"><a id="__codelineno-1-33" name="__codelineno-1-33" href="#__codelineno-1-33"></a>    <span class="k">def</span><span class="w"> </span><span class="nf">subtotal</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">float</span><span class="p">:</span>
-</span><span id="__span-1-34"><a id="__codelineno-1-34" name="__codelineno-1-34" href="#__codelineno-1-34"></a>        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_producto</span><span class="o">.</span><span class="n">precio</span> <span class="o">*</span> <span class="bp">self</span><span class="o">.</span><span class="n">_cantidad</span>
-</span><span id="__span-1-35"><a id="__codelineno-1-35" name="__codelineno-1-35" href="#__codelineno-1-35"></a>
-</span><span id="__span-1-36"><a id="__codelineno-1-36" name="__codelineno-1-36" href="#__codelineno-1-36"></a>
-</span><span id="__span-1-37"><a id="__codelineno-1-37" name="__codelineno-1-37" href="#__codelineno-1-37"></a><span class="k">class</span><span class="w"> </span><span class="nc">Pedido</span><span class="p">:</span>
-</span><span id="__span-1-38"><a id="__codelineno-1-38" name="__codelineno-1-38" href="#__codelineno-1-38"></a><span class="w">    </span><span class="sd">&quot;&quot;&quot;Agrupa líneas de pedido y calcula el total. No sabe de clientes ni de BD.&quot;&quot;&quot;</span>
-</span><span id="__span-1-39"><a id="__codelineno-1-39" name="__codelineno-1-39" href="#__codelineno-1-39"></a>
-</span><span id="__span-1-40"><a id="__codelineno-1-40" name="__codelineno-1-40" href="#__codelineno-1-40"></a>    <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">cliente</span><span class="p">:</span> <span class="n">Cliente</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
-</span><span id="__span-1-41"><a id="__codelineno-1-41" name="__codelineno-1-41" href="#__codelineno-1-41"></a>        <span class="bp">self</span><span class="o">.</span><span class="n">_cliente</span> <span class="o">=</span> <span class="n">cliente</span>
-</span><span id="__span-1-42"><a id="__codelineno-1-42" name="__codelineno-1-42" href="#__codelineno-1-42"></a>        <span class="bp">self</span><span class="o">.</span><span class="n">_lineas</span><span class="p">:</span> <span class="nb">list</span><span class="p">[</span><span class="n">LineaDePedido</span><span class="p">]</span> <span class="o">=</span> <span class="p">[]</span>
-</span><span id="__span-1-43"><a id="__codelineno-1-43" name="__codelineno-1-43" href="#__codelineno-1-43"></a>
-</span><span id="__span-1-44"><a id="__codelineno-1-44" name="__codelineno-1-44" href="#__codelineno-1-44"></a>    <span class="k">def</span><span class="w"> </span><span class="nf">agregar</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">linea</span><span class="p">:</span> <span class="n">LineaDePedido</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
-</span><span id="__span-1-45"><a id="__codelineno-1-45" name="__codelineno-1-45" href="#__codelineno-1-45"></a>        <span class="bp">self</span><span class="o">.</span><span class="n">_lineas</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">linea</span><span class="p">)</span>
-</span><span id="__span-1-46"><a id="__codelineno-1-46" name="__codelineno-1-46" href="#__codelineno-1-46"></a>
-</span><span id="__span-1-47"><a id="__codelineno-1-47" name="__codelineno-1-47" href="#__codelineno-1-47"></a>    <span class="k">def</span><span class="w"> </span><span class="nf">total</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">float</span><span class="p">:</span>
-</span><span id="__span-1-48"><a id="__codelineno-1-48" name="__codelineno-1-48" href="#__codelineno-1-48"></a>        <span class="k">return</span> <span class="nb">sum</span><span class="p">(</span><span class="n">linea</span><span class="o">.</span><span class="n">subtotal</span><span class="p">()</span> <span class="k">for</span> <span class="n">linea</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">_lineas</span><span class="p">)</span>
+</span><span id="__span-1-25"><a id="__codelineno-1-25" name="__codelineno-1-25" href="#__codelineno-1-25"></a>    <span class="k">def</span><span class="w"> </span><span class="nf">marcar_en_proceso</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+</span><span id="__span-1-26"><a id="__codelineno-1-26" name="__codelineno-1-26" href="#__codelineno-1-26"></a>        <span class="bp">self</span><span class="o">.</span><span class="n">_estado</span> <span class="o">=</span> <span class="n">EstadoPieza</span><span class="o">.</span><span class="n">EN_PROCESO</span>
+</span><span id="__span-1-27"><a id="__codelineno-1-27" name="__codelineno-1-27" href="#__codelineno-1-27"></a>
+</span><span id="__span-1-28"><a id="__codelineno-1-28" name="__codelineno-1-28" href="#__codelineno-1-28"></a>    <span class="k">def</span><span class="w"> </span><span class="nf">marcar_completada</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+</span><span id="__span-1-29"><a id="__codelineno-1-29" name="__codelineno-1-29" href="#__codelineno-1-29"></a>        <span class="bp">self</span><span class="o">.</span><span class="n">_estado</span> <span class="o">=</span> <span class="n">EstadoPieza</span><span class="o">.</span><span class="n">COMPLETADA</span>
+</span><span id="__span-1-30"><a id="__codelineno-1-30" name="__codelineno-1-30" href="#__codelineno-1-30"></a>
+</span><span id="__span-1-31"><a id="__codelineno-1-31" name="__codelineno-1-31" href="#__codelineno-1-31"></a>    <span class="k">def</span><span class="w"> </span><span class="nf">marcar_rechazada</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+</span><span id="__span-1-32"><a id="__codelineno-1-32" name="__codelineno-1-32" href="#__codelineno-1-32"></a>        <span class="bp">self</span><span class="o">.</span><span class="n">_estado</span> <span class="o">=</span> <span class="n">EstadoPieza</span><span class="o">.</span><span class="n">RECHAZADA</span>
+</span><span id="__span-1-33"><a id="__codelineno-1-33" name="__codelineno-1-33" href="#__codelineno-1-33"></a>
+</span><span id="__span-1-34"><a id="__codelineno-1-34" name="__codelineno-1-34" href="#__codelineno-1-34"></a>
+</span><span id="__span-1-35"><a id="__codelineno-1-35" name="__codelineno-1-35" href="#__codelineno-1-35"></a><span class="k">class</span><span class="w"> </span><span class="nc">EstacionTrabajo</span><span class="p">:</span>
+</span><span id="__span-1-36"><a id="__codelineno-1-36" name="__codelineno-1-36" href="#__codelineno-1-36"></a><span class="w">    </span><span class="sd">&quot;&quot;&quot;Procesa piezas. No sabe de operarios ni de reportes.&quot;&quot;&quot;</span>
+</span><span id="__span-1-37"><a id="__codelineno-1-37" name="__codelineno-1-37" href="#__codelineno-1-37"></a>
+</span><span id="__span-1-38"><a id="__codelineno-1-38" name="__codelineno-1-38" href="#__codelineno-1-38"></a>    <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">nombre</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">tiempo_ciclo</span><span class="p">:</span> <span class="nb">float</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+</span><span id="__span-1-39"><a id="__codelineno-1-39" name="__codelineno-1-39" href="#__codelineno-1-39"></a>        <span class="bp">self</span><span class="o">.</span><span class="n">nombre</span> <span class="o">=</span> <span class="n">nombre</span>
+</span><span id="__span-1-40"><a id="__codelineno-1-40" name="__codelineno-1-40" href="#__codelineno-1-40"></a>        <span class="bp">self</span><span class="o">.</span><span class="n">tiempo_ciclo</span> <span class="o">=</span> <span class="n">tiempo_ciclo</span>
+</span><span id="__span-1-41"><a id="__codelineno-1-41" name="__codelineno-1-41" href="#__codelineno-1-41"></a>        <span class="bp">self</span><span class="o">.</span><span class="n">_piezas_procesadas</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">0</span>
+</span><span id="__span-1-42"><a id="__codelineno-1-42" name="__codelineno-1-42" href="#__codelineno-1-42"></a>
+</span><span id="__span-1-43"><a id="__codelineno-1-43" name="__codelineno-1-43" href="#__codelineno-1-43"></a>    <span class="k">def</span><span class="w"> </span><span class="nf">procesar</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">pieza</span><span class="p">:</span> <span class="n">Pieza</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+</span><span id="__span-1-44"><a id="__codelineno-1-44" name="__codelineno-1-44" href="#__codelineno-1-44"></a>        <span class="n">pieza</span><span class="o">.</span><span class="n">marcar_en_proceso</span><span class="p">()</span>
+</span><span id="__span-1-45"><a id="__codelineno-1-45" name="__codelineno-1-45" href="#__codelineno-1-45"></a>        <span class="bp">self</span><span class="o">.</span><span class="n">_piezas_procesadas</span> <span class="o">+=</span> <span class="mi">1</span>
+</span><span id="__span-1-46"><a id="__codelineno-1-46" name="__codelineno-1-46" href="#__codelineno-1-46"></a>        <span class="n">pieza</span><span class="o">.</span><span class="n">marcar_completada</span><span class="p">()</span>
+</span><span id="__span-1-47"><a id="__codelineno-1-47" name="__codelineno-1-47" href="#__codelineno-1-47"></a>
+</span><span id="__span-1-48"><a id="__codelineno-1-48" name="__codelineno-1-48" href="#__codelineno-1-48"></a>    <span class="k">def</span><span class="w"> </span><span class="nf">piezas_procesadas</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">int</span><span class="p">:</span>
+</span><span id="__span-1-49"><a id="__codelineno-1-49" name="__codelineno-1-49" href="#__codelineno-1-49"></a>        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_piezas_procesadas</span>
+</span><span id="__span-1-50"><a id="__codelineno-1-50" name="__codelineno-1-50" href="#__codelineno-1-50"></a>
+</span><span id="__span-1-51"><a id="__codelineno-1-51" name="__codelineno-1-51" href="#__codelineno-1-51"></a>
+</span><span id="__span-1-52"><a id="__codelineno-1-52" name="__codelineno-1-52" href="#__codelineno-1-52"></a><span class="k">class</span><span class="w"> </span><span class="nc">LineaDeMontaje</span><span class="p">:</span>
+</span><span id="__span-1-53"><a id="__codelineno-1-53" name="__codelineno-1-53" href="#__codelineno-1-53"></a><span class="w">    </span><span class="sd">&quot;&quot;&quot;Orquesta estaciones. No sabe de materiales ni de operarios.&quot;&quot;&quot;</span>
+</span><span id="__span-1-54"><a id="__codelineno-1-54" name="__codelineno-1-54" href="#__codelineno-1-54"></a>
+</span><span id="__span-1-55"><a id="__codelineno-1-55" name="__codelineno-1-55" href="#__codelineno-1-55"></a>    <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">nombre</span><span class="p">:</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+</span><span id="__span-1-56"><a id="__codelineno-1-56" name="__codelineno-1-56" href="#__codelineno-1-56"></a>        <span class="bp">self</span><span class="o">.</span><span class="n">nombre</span> <span class="o">=</span> <span class="n">nombre</span>
+</span><span id="__span-1-57"><a id="__codelineno-1-57" name="__codelineno-1-57" href="#__codelineno-1-57"></a>        <span class="bp">self</span><span class="o">.</span><span class="n">_estaciones</span><span class="p">:</span> <span class="nb">list</span><span class="p">[</span><span class="n">EstacionTrabajo</span><span class="p">]</span> <span class="o">=</span> <span class="p">[]</span>
+</span><span id="__span-1-58"><a id="__codelineno-1-58" name="__codelineno-1-58" href="#__codelineno-1-58"></a>
+</span><span id="__span-1-59"><a id="__codelineno-1-59" name="__codelineno-1-59" href="#__codelineno-1-59"></a>    <span class="k">def</span><span class="w"> </span><span class="nf">agregar_estacion</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">estacion</span><span class="p">:</span> <span class="n">EstacionTrabajo</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+</span><span id="__span-1-60"><a id="__codelineno-1-60" name="__codelineno-1-60" href="#__codelineno-1-60"></a>        <span class="bp">self</span><span class="o">.</span><span class="n">_estaciones</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">estacion</span><span class="p">)</span>
+</span><span id="__span-1-61"><a id="__codelineno-1-61" name="__codelineno-1-61" href="#__codelineno-1-61"></a>
+</span><span id="__span-1-62"><a id="__codelineno-1-62" name="__codelineno-1-62" href="#__codelineno-1-62"></a>    <span class="k">def</span><span class="w"> </span><span class="nf">procesar_pieza</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">pieza</span><span class="p">:</span> <span class="n">Pieza</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+</span><span id="__span-1-63"><a id="__codelineno-1-63" name="__codelineno-1-63" href="#__codelineno-1-63"></a>        <span class="k">for</span> <span class="n">estacion</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">_estaciones</span><span class="p">:</span>
+</span><span id="__span-1-64"><a id="__codelineno-1-64" name="__codelineno-1-64" href="#__codelineno-1-64"></a>            <span class="n">estacion</span><span class="o">.</span><span class="n">procesar</span><span class="p">(</span><span class="n">pieza</span><span class="p">)</span>
 </span></code></pre></div>
 <blockquote>
 <p><strong>En la práctica:</strong> cuando revisamos trabajos prácticos, el síntoma más frecuente de "mentalidad procedural" es una única clase con un único método enorme que hace todo. Si ese método tiene más de 20 líneas, casi siempre hay objetos que todavía no fueron identificados.</p>
@@ -1524,7 +1571,7 @@
 <p>Una técnica práctica para diseñar un sistema orientado a objetos desde una descripción en lenguaje natural es subrayar los <strong>sustantivos</strong> (candidatos a clases o atributos) y los <strong>verbos</strong> (candidatos a métodos).</p>
 <p>Tomemos este enunciado:</p>
 <blockquote>
-<p><em>"Un cliente realiza un pedido que contiene productos. Cada producto tiene un nombre, un precio y un stock disponible. El pedido calcula su total y puede ser confirmado o cancelado."</em></p>
+<p><em>"Una línea de montaje contiene estaciones de trabajo. Cada estación procesa piezas que llegan con un material y un peso. Una pieza puede ser completada o rechazada según el resultado del proceso."</em></p>
 </blockquote>
 <p>Aplicando la técnica:</p>
 <table>
@@ -1537,155 +1584,158 @@
 </thead>
 <tbody>
 <tr>
-<td><strong>cliente</strong></td>
+<td><strong>línea de montaje</strong></td>
 <td>Sustantivo</td>
-<td>Clase <code>Cliente</code></td>
+<td>Clase <code>LineaDeMontaje</code></td>
 </tr>
 <tr>
-<td><strong>pedido</strong></td>
+<td><strong>estación de trabajo</strong></td>
 <td>Sustantivo</td>
-<td>Clase <code>Pedido</code></td>
+<td>Clase <code>EstacionTrabajo</code></td>
 </tr>
 <tr>
-<td><strong>producto</strong></td>
+<td><strong>pieza</strong></td>
 <td>Sustantivo</td>
-<td>Clase <code>Producto</code></td>
+<td>Clase <code>Pieza</code></td>
 </tr>
 <tr>
-<td>nombre, precio, stock</td>
+<td>material, peso</td>
 <td>Sustantivos (datos)</td>
-<td>Atributos de <code>Producto</code></td>
-</tr>
-<tr>
-<td><strong>realiza</strong></td>
-<td>Verbo</td>
-<td>Relación entre <code>Cliente</code> y <code>Pedido</code></td>
+<td>Atributos de <code>Pieza</code></td>
 </tr>
 <tr>
 <td><strong>contiene</strong></td>
 <td>Verbo</td>
-<td><code>Pedido</code> tiene una lista de <code>Producto</code></td>
+<td><code>LineaDeMontaje</code> tiene una lista de <code>EstacionTrabajo</code></td>
 </tr>
 <tr>
-<td><strong>calcula su total</strong></td>
+<td><strong>procesa</strong></td>
 <td>Verbo</td>
-<td>Método <code>total()</code> en <code>Pedido</code></td>
+<td>Método <code>procesar(pieza)</code> en <code>EstacionTrabajo</code></td>
 </tr>
 <tr>
-<td><strong>confirmar / cancelar</strong></td>
+<td><strong>completada / rechazada</strong></td>
 <td>Verbos</td>
-<td>Métodos <code>confirmar()</code> y <code>cancelar()</code> en <code>Pedido</code></td>
+<td>Estados en <code>EstadoPieza</code> y métodos en <code>Pieza</code></td>
 </tr>
 </tbody>
 </table>
 <p>El diagrama de clases resultante sería:</p>
-<div class="language-text highlight"><pre><span></span><code><span id="__span-2-1"><a id="__codelineno-2-1" name="__codelineno-2-1" href="#__codelineno-2-1"></a>Cliente  ──────────────────&gt;  Pedido  ─────────────────&gt;  Producto
-</span><span id="__span-2-2"><a id="__codelineno-2-2" name="__codelineno-2-2" href="#__codelineno-2-2"></a>         realiza (1..*)              contiene (1..*)
+<div class="language-text highlight"><pre><span></span><code><span id="__span-2-1"><a id="__codelineno-2-1" name="__codelineno-2-1" href="#__codelineno-2-1"></a>LineaDeMontaje  ──────────────&gt;  EstacionTrabajo  ──────────────&gt;  Pieza
+</span><span id="__span-2-2"><a id="__codelineno-2-2" name="__codelineno-2-2" href="#__codelineno-2-2"></a>               contiene (1..*)                    procesa (1..*)
 </span></code></pre></div>
 <div class="language-python highlight"><pre><span></span><code><span id="__span-3-1"><a id="__codelineno-3-1" name="__codelineno-3-1" href="#__codelineno-3-1"></a><span class="kn">from</span><span class="w"> </span><span class="nn">enum</span><span class="w"> </span><span class="kn">import</span> <span class="n">Enum</span>
 </span><span id="__span-3-2"><a id="__codelineno-3-2" name="__codelineno-3-2" href="#__codelineno-3-2"></a>
 </span><span id="__span-3-3"><a id="__codelineno-3-3" name="__codelineno-3-3" href="#__codelineno-3-3"></a>
-</span><span id="__span-3-4"><a id="__codelineno-3-4" name="__codelineno-3-4" href="#__codelineno-3-4"></a><span class="k">class</span><span class="w"> </span><span class="nc">EstadoPedido</span><span class="p">(</span><span class="n">Enum</span><span class="p">):</span>
-</span><span id="__span-3-5"><a id="__codelineno-3-5" name="__codelineno-3-5" href="#__codelineno-3-5"></a>    <span class="n">PENDIENTE</span> <span class="o">=</span> <span class="s2">&quot;pendiente&quot;</span>
-</span><span id="__span-3-6"><a id="__codelineno-3-6" name="__codelineno-3-6" href="#__codelineno-3-6"></a>    <span class="n">CONFIRMADO</span> <span class="o">=</span> <span class="s2">&quot;confirmado&quot;</span>
-</span><span id="__span-3-7"><a id="__codelineno-3-7" name="__codelineno-3-7" href="#__codelineno-3-7"></a>    <span class="n">CANCELADO</span> <span class="o">=</span> <span class="s2">&quot;cancelado&quot;</span>
-</span><span id="__span-3-8"><a id="__codelineno-3-8" name="__codelineno-3-8" href="#__codelineno-3-8"></a>
+</span><span id="__span-3-4"><a id="__codelineno-3-4" name="__codelineno-3-4" href="#__codelineno-3-4"></a><span class="k">class</span><span class="w"> </span><span class="nc">EstadoPieza</span><span class="p">(</span><span class="n">Enum</span><span class="p">):</span>
+</span><span id="__span-3-5"><a id="__codelineno-3-5" name="__codelineno-3-5" href="#__codelineno-3-5"></a>    <span class="n">EN_ESPERA</span> <span class="o">=</span> <span class="s2">&quot;en_espera&quot;</span>
+</span><span id="__span-3-6"><a id="__codelineno-3-6" name="__codelineno-3-6" href="#__codelineno-3-6"></a>    <span class="n">EN_PROCESO</span> <span class="o">=</span> <span class="s2">&quot;en_proceso&quot;</span>
+</span><span id="__span-3-7"><a id="__codelineno-3-7" name="__codelineno-3-7" href="#__codelineno-3-7"></a>    <span class="n">COMPLETADA</span> <span class="o">=</span> <span class="s2">&quot;completada&quot;</span>
+</span><span id="__span-3-8"><a id="__codelineno-3-8" name="__codelineno-3-8" href="#__codelineno-3-8"></a>    <span class="n">RECHAZADA</span> <span class="o">=</span> <span class="s2">&quot;rechazada&quot;</span>
 </span><span id="__span-3-9"><a id="__codelineno-3-9" name="__codelineno-3-9" href="#__codelineno-3-9"></a>
-</span><span id="__span-3-10"><a id="__codelineno-3-10" name="__codelineno-3-10" href="#__codelineno-3-10"></a><span class="k">class</span><span class="w"> </span><span class="nc">Producto</span><span class="p">:</span>
-</span><span id="__span-3-11"><a id="__codelineno-3-11" name="__codelineno-3-11" href="#__codelineno-3-11"></a><span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
-</span><span id="__span-3-12"><a id="__codelineno-3-12" name="__codelineno-3-12" href="#__codelineno-3-12"></a><span class="sd">    Producto con nombre, precio y stock.</span>
-</span><span id="__span-3-13"><a id="__codelineno-3-13" name="__codelineno-3-13" href="#__codelineno-3-13"></a>
-</span><span id="__span-3-14"><a id="__codelineno-3-14" name="__codelineno-3-14" href="#__codelineno-3-14"></a><span class="sd">    Args:</span>
-</span><span id="__span-3-15"><a id="__codelineno-3-15" name="__codelineno-3-15" href="#__codelineno-3-15"></a><span class="sd">        nombre: Nombre del producto.</span>
-</span><span id="__span-3-16"><a id="__codelineno-3-16" name="__codelineno-3-16" href="#__codelineno-3-16"></a><span class="sd">        precio: Precio unitario (debe ser positivo).</span>
-</span><span id="__span-3-17"><a id="__codelineno-3-17" name="__codelineno-3-17" href="#__codelineno-3-17"></a><span class="sd">        stock: Unidades disponibles.</span>
-</span><span id="__span-3-18"><a id="__codelineno-3-18" name="__codelineno-3-18" href="#__codelineno-3-18"></a><span class="sd">    &quot;&quot;&quot;</span>
-</span><span id="__span-3-19"><a id="__codelineno-3-19" name="__codelineno-3-19" href="#__codelineno-3-19"></a>
-</span><span id="__span-3-20"><a id="__codelineno-3-20" name="__codelineno-3-20" href="#__codelineno-3-20"></a>    <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">nombre</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">precio</span><span class="p">:</span> <span class="nb">float</span><span class="p">,</span> <span class="n">stock</span><span class="p">:</span> <span class="nb">int</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
-</span><span id="__span-3-21"><a id="__codelineno-3-21" name="__codelineno-3-21" href="#__codelineno-3-21"></a>        <span class="bp">self</span><span class="o">.</span><span class="n">nombre</span> <span class="o">=</span> <span class="n">nombre</span>
-</span><span id="__span-3-22"><a id="__codelineno-3-22" name="__codelineno-3-22" href="#__codelineno-3-22"></a>        <span class="bp">self</span><span class="o">.</span><span class="n">_precio</span> <span class="o">=</span> <span class="n">precio</span>
-</span><span id="__span-3-23"><a id="__codelineno-3-23" name="__codelineno-3-23" href="#__codelineno-3-23"></a>        <span class="bp">self</span><span class="o">.</span><span class="n">_stock</span> <span class="o">=</span> <span class="n">stock</span>
-</span><span id="__span-3-24"><a id="__codelineno-3-24" name="__codelineno-3-24" href="#__codelineno-3-24"></a>
-</span><span id="__span-3-25"><a id="__codelineno-3-25" name="__codelineno-3-25" href="#__codelineno-3-25"></a>    <span class="nd">@property</span>
-</span><span id="__span-3-26"><a id="__codelineno-3-26" name="__codelineno-3-26" href="#__codelineno-3-26"></a>    <span class="k">def</span><span class="w"> </span><span class="nf">precio</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">float</span><span class="p">:</span>
-</span><span id="__span-3-27"><a id="__codelineno-3-27" name="__codelineno-3-27" href="#__codelineno-3-27"></a>        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_precio</span>
+</span><span id="__span-3-10"><a id="__codelineno-3-10" name="__codelineno-3-10" href="#__codelineno-3-10"></a>
+</span><span id="__span-3-11"><a id="__codelineno-3-11" name="__codelineno-3-11" href="#__codelineno-3-11"></a><span class="k">class</span><span class="w"> </span><span class="nc">Pieza</span><span class="p">:</span>
+</span><span id="__span-3-12"><a id="__codelineno-3-12" name="__codelineno-3-12" href="#__codelineno-3-12"></a><span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+</span><span id="__span-3-13"><a id="__codelineno-3-13" name="__codelineno-3-13" href="#__codelineno-3-13"></a><span class="sd">    Pieza industrial con número de serie, material y peso.</span>
+</span><span id="__span-3-14"><a id="__codelineno-3-14" name="__codelineno-3-14" href="#__codelineno-3-14"></a>
+</span><span id="__span-3-15"><a id="__codelineno-3-15" name="__codelineno-3-15" href="#__codelineno-3-15"></a><span class="sd">    Args:</span>
+</span><span id="__span-3-16"><a id="__codelineno-3-16" name="__codelineno-3-16" href="#__codelineno-3-16"></a><span class="sd">        numero_serie: Identificador único de la pieza.</span>
+</span><span id="__span-3-17"><a id="__codelineno-3-17" name="__codelineno-3-17" href="#__codelineno-3-17"></a><span class="sd">        material: Tipo de material (acero, aluminio, etc.).</span>
+</span><span id="__span-3-18"><a id="__codelineno-3-18" name="__codelineno-3-18" href="#__codelineno-3-18"></a><span class="sd">        peso: Peso en kilogramos.</span>
+</span><span id="__span-3-19"><a id="__codelineno-3-19" name="__codelineno-3-19" href="#__codelineno-3-19"></a><span class="sd">    &quot;&quot;&quot;</span>
+</span><span id="__span-3-20"><a id="__codelineno-3-20" name="__codelineno-3-20" href="#__codelineno-3-20"></a>
+</span><span id="__span-3-21"><a id="__codelineno-3-21" name="__codelineno-3-21" href="#__codelineno-3-21"></a>    <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">numero_serie</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">material</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">peso</span><span class="p">:</span> <span class="nb">float</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+</span><span id="__span-3-22"><a id="__codelineno-3-22" name="__codelineno-3-22" href="#__codelineno-3-22"></a>        <span class="k">if</span> <span class="n">peso</span> <span class="o">&lt;=</span> <span class="mi">0</span><span class="p">:</span>
+</span><span id="__span-3-23"><a id="__codelineno-3-23" name="__codelineno-3-23" href="#__codelineno-3-23"></a>            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;El peso debe ser positivo&quot;</span><span class="p">)</span>
+</span><span id="__span-3-24"><a id="__codelineno-3-24" name="__codelineno-3-24" href="#__codelineno-3-24"></a>        <span class="bp">self</span><span class="o">.</span><span class="n">numero_serie</span> <span class="o">=</span> <span class="n">numero_serie</span>
+</span><span id="__span-3-25"><a id="__codelineno-3-25" name="__codelineno-3-25" href="#__codelineno-3-25"></a>        <span class="bp">self</span><span class="o">.</span><span class="n">material</span> <span class="o">=</span> <span class="n">material</span>
+</span><span id="__span-3-26"><a id="__codelineno-3-26" name="__codelineno-3-26" href="#__codelineno-3-26"></a>        <span class="bp">self</span><span class="o">.</span><span class="n">peso</span> <span class="o">=</span> <span class="n">peso</span>
+</span><span id="__span-3-27"><a id="__codelineno-3-27" name="__codelineno-3-27" href="#__codelineno-3-27"></a>        <span class="bp">self</span><span class="o">.</span><span class="n">_estado</span> <span class="o">=</span> <span class="n">EstadoPieza</span><span class="o">.</span><span class="n">EN_ESPERA</span>
 </span><span id="__span-3-28"><a id="__codelineno-3-28" name="__codelineno-3-28" href="#__codelineno-3-28"></a>
-</span><span id="__span-3-29"><a id="__codelineno-3-29" name="__codelineno-3-29" href="#__codelineno-3-29"></a>    <span class="k">def</span><span class="w"> </span><span class="nf">tiene_stock</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">cantidad</span><span class="p">:</span> <span class="nb">int</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">bool</span><span class="p">:</span>
-</span><span id="__span-3-30"><a id="__codelineno-3-30" name="__codelineno-3-30" href="#__codelineno-3-30"></a><span class="w">        </span><span class="sd">&quot;&quot;&quot;Verifica si hay stock suficiente.&quot;&quot;&quot;</span>
-</span><span id="__span-3-31"><a id="__codelineno-3-31" name="__codelineno-3-31" href="#__codelineno-3-31"></a>        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_stock</span> <span class="o">&gt;=</span> <span class="n">cantidad</span>
+</span><span id="__span-3-29"><a id="__codelineno-3-29" name="__codelineno-3-29" href="#__codelineno-3-29"></a>    <span class="nd">@property</span>
+</span><span id="__span-3-30"><a id="__codelineno-3-30" name="__codelineno-3-30" href="#__codelineno-3-30"></a>    <span class="k">def</span><span class="w"> </span><span class="nf">estado</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">EstadoPieza</span><span class="p">:</span>
+</span><span id="__span-3-31"><a id="__codelineno-3-31" name="__codelineno-3-31" href="#__codelineno-3-31"></a>        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_estado</span>
 </span><span id="__span-3-32"><a id="__codelineno-3-32" name="__codelineno-3-32" href="#__codelineno-3-32"></a>
-</span><span id="__span-3-33"><a id="__codelineno-3-33" name="__codelineno-3-33" href="#__codelineno-3-33"></a>    <span class="k">def</span><span class="w"> </span><span class="fm">__repr__</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
-</span><span id="__span-3-34"><a id="__codelineno-3-34" name="__codelineno-3-34" href="#__codelineno-3-34"></a>        <span class="k">return</span> <span class="sa">f</span><span class="s2">&quot;Producto(</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">nombre</span><span class="si">!r}</span><span class="s2">, $</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">_precio</span><span class="si">:</span><span class="s2">.2f</span><span class="si">}</span><span class="s2">)&quot;</span>
-</span><span id="__span-3-35"><a id="__codelineno-3-35" name="__codelineno-3-35" href="#__codelineno-3-35"></a>
-</span><span id="__span-3-36"><a id="__codelineno-3-36" name="__codelineno-3-36" href="#__codelineno-3-36"></a>
-</span><span id="__span-3-37"><a id="__codelineno-3-37" name="__codelineno-3-37" href="#__codelineno-3-37"></a><span class="k">class</span><span class="w"> </span><span class="nc">Cliente</span><span class="p">:</span>
-</span><span id="__span-3-38"><a id="__codelineno-3-38" name="__codelineno-3-38" href="#__codelineno-3-38"></a><span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
-</span><span id="__span-3-39"><a id="__codelineno-3-39" name="__codelineno-3-39" href="#__codelineno-3-39"></a><span class="sd">    Cliente con nombre y email.</span>
+</span><span id="__span-3-33"><a id="__codelineno-3-33" name="__codelineno-3-33" href="#__codelineno-3-33"></a>    <span class="k">def</span><span class="w"> </span><span class="nf">marcar_en_proceso</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+</span><span id="__span-3-34"><a id="__codelineno-3-34" name="__codelineno-3-34" href="#__codelineno-3-34"></a>        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_estado</span> <span class="o">!=</span> <span class="n">EstadoPieza</span><span class="o">.</span><span class="n">EN_ESPERA</span><span class="p">:</span>
+</span><span id="__span-3-35"><a id="__codelineno-3-35" name="__codelineno-3-35" href="#__codelineno-3-35"></a>            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;No se puede iniciar: pieza en estado </span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">_estado</span><span class="o">.</span><span class="n">value</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+</span><span id="__span-3-36"><a id="__codelineno-3-36" name="__codelineno-3-36" href="#__codelineno-3-36"></a>        <span class="bp">self</span><span class="o">.</span><span class="n">_estado</span> <span class="o">=</span> <span class="n">EstadoPieza</span><span class="o">.</span><span class="n">EN_PROCESO</span>
+</span><span id="__span-3-37"><a id="__codelineno-3-37" name="__codelineno-3-37" href="#__codelineno-3-37"></a>
+</span><span id="__span-3-38"><a id="__codelineno-3-38" name="__codelineno-3-38" href="#__codelineno-3-38"></a>    <span class="k">def</span><span class="w"> </span><span class="nf">marcar_completada</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+</span><span id="__span-3-39"><a id="__codelineno-3-39" name="__codelineno-3-39" href="#__codelineno-3-39"></a>        <span class="bp">self</span><span class="o">.</span><span class="n">_estado</span> <span class="o">=</span> <span class="n">EstadoPieza</span><span class="o">.</span><span class="n">COMPLETADA</span>
 </span><span id="__span-3-40"><a id="__codelineno-3-40" name="__codelineno-3-40" href="#__codelineno-3-40"></a>
-</span><span id="__span-3-41"><a id="__codelineno-3-41" name="__codelineno-3-41" href="#__codelineno-3-41"></a><span class="sd">    Args:</span>
-</span><span id="__span-3-42"><a id="__codelineno-3-42" name="__codelineno-3-42" href="#__codelineno-3-42"></a><span class="sd">        nombre: Nombre completo del cliente.</span>
-</span><span id="__span-3-43"><a id="__codelineno-3-43" name="__codelineno-3-43" href="#__codelineno-3-43"></a><span class="sd">        email: Dirección de correo electrónico.</span>
-</span><span id="__span-3-44"><a id="__codelineno-3-44" name="__codelineno-3-44" href="#__codelineno-3-44"></a><span class="sd">    &quot;&quot;&quot;</span>
-</span><span id="__span-3-45"><a id="__codelineno-3-45" name="__codelineno-3-45" href="#__codelineno-3-45"></a>
-</span><span id="__span-3-46"><a id="__codelineno-3-46" name="__codelineno-3-46" href="#__codelineno-3-46"></a>    <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">nombre</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">email</span><span class="p">:</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
-</span><span id="__span-3-47"><a id="__codelineno-3-47" name="__codelineno-3-47" href="#__codelineno-3-47"></a>        <span class="bp">self</span><span class="o">.</span><span class="n">nombre</span> <span class="o">=</span> <span class="n">nombre</span>
-</span><span id="__span-3-48"><a id="__codelineno-3-48" name="__codelineno-3-48" href="#__codelineno-3-48"></a>        <span class="bp">self</span><span class="o">.</span><span class="n">email</span> <span class="o">=</span> <span class="n">email</span>
-</span><span id="__span-3-49"><a id="__codelineno-3-49" name="__codelineno-3-49" href="#__codelineno-3-49"></a>
-</span><span id="__span-3-50"><a id="__codelineno-3-50" name="__codelineno-3-50" href="#__codelineno-3-50"></a>    <span class="k">def</span><span class="w"> </span><span class="fm">__repr__</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
-</span><span id="__span-3-51"><a id="__codelineno-3-51" name="__codelineno-3-51" href="#__codelineno-3-51"></a>        <span class="k">return</span> <span class="sa">f</span><span class="s2">&quot;Cliente(</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">nombre</span><span class="si">!r}</span><span class="s2">)&quot;</span>
-</span><span id="__span-3-52"><a id="__codelineno-3-52" name="__codelineno-3-52" href="#__codelineno-3-52"></a>
-</span><span id="__span-3-53"><a id="__codelineno-3-53" name="__codelineno-3-53" href="#__codelineno-3-53"></a>
-</span><span id="__span-3-54"><a id="__codelineno-3-54" name="__codelineno-3-54" href="#__codelineno-3-54"></a><span class="k">class</span><span class="w"> </span><span class="nc">Pedido</span><span class="p">:</span>
-</span><span id="__span-3-55"><a id="__codelineno-3-55" name="__codelineno-3-55" href="#__codelineno-3-55"></a><span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
-</span><span id="__span-3-56"><a id="__codelineno-3-56" name="__codelineno-3-56" href="#__codelineno-3-56"></a><span class="sd">    Pedido de un cliente con una o más líneas de producto.</span>
-</span><span id="__span-3-57"><a id="__codelineno-3-57" name="__codelineno-3-57" href="#__codelineno-3-57"></a>
-</span><span id="__span-3-58"><a id="__codelineno-3-58" name="__codelineno-3-58" href="#__codelineno-3-58"></a><span class="sd">    Args:</span>
-</span><span id="__span-3-59"><a id="__codelineno-3-59" name="__codelineno-3-59" href="#__codelineno-3-59"></a><span class="sd">        cliente: El cliente que realiza el pedido.</span>
-</span><span id="__span-3-60"><a id="__codelineno-3-60" name="__codelineno-3-60" href="#__codelineno-3-60"></a><span class="sd">    &quot;&quot;&quot;</span>
+</span><span id="__span-3-41"><a id="__codelineno-3-41" name="__codelineno-3-41" href="#__codelineno-3-41"></a>    <span class="k">def</span><span class="w"> </span><span class="nf">marcar_rechazada</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+</span><span id="__span-3-42"><a id="__codelineno-3-42" name="__codelineno-3-42" href="#__codelineno-3-42"></a>        <span class="bp">self</span><span class="o">.</span><span class="n">_estado</span> <span class="o">=</span> <span class="n">EstadoPieza</span><span class="o">.</span><span class="n">RECHAZADA</span>
+</span><span id="__span-3-43"><a id="__codelineno-3-43" name="__codelineno-3-43" href="#__codelineno-3-43"></a>
+</span><span id="__span-3-44"><a id="__codelineno-3-44" name="__codelineno-3-44" href="#__codelineno-3-44"></a>    <span class="k">def</span><span class="w"> </span><span class="fm">__repr__</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
+</span><span id="__span-3-45"><a id="__codelineno-3-45" name="__codelineno-3-45" href="#__codelineno-3-45"></a>        <span class="k">return</span> <span class="sa">f</span><span class="s2">&quot;Pieza(</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">numero_serie</span><span class="si">!r}</span><span class="s2">, </span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">material</span><span class="si">!r}</span><span class="s2">, estado=</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">_estado</span><span class="o">.</span><span class="n">value</span><span class="si">}</span><span class="s2">)&quot;</span>
+</span><span id="__span-3-46"><a id="__codelineno-3-46" name="__codelineno-3-46" href="#__codelineno-3-46"></a>
+</span><span id="__span-3-47"><a id="__codelineno-3-47" name="__codelineno-3-47" href="#__codelineno-3-47"></a>
+</span><span id="__span-3-48"><a id="__codelineno-3-48" name="__codelineno-3-48" href="#__codelineno-3-48"></a><span class="k">class</span><span class="w"> </span><span class="nc">EstacionTrabajo</span><span class="p">:</span>
+</span><span id="__span-3-49"><a id="__codelineno-3-49" name="__codelineno-3-49" href="#__codelineno-3-49"></a><span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+</span><span id="__span-3-50"><a id="__codelineno-3-50" name="__codelineno-3-50" href="#__codelineno-3-50"></a><span class="sd">    Estación que procesa piezas en la línea de montaje.</span>
+</span><span id="__span-3-51"><a id="__codelineno-3-51" name="__codelineno-3-51" href="#__codelineno-3-51"></a>
+</span><span id="__span-3-52"><a id="__codelineno-3-52" name="__codelineno-3-52" href="#__codelineno-3-52"></a><span class="sd">    Args:</span>
+</span><span id="__span-3-53"><a id="__codelineno-3-53" name="__codelineno-3-53" href="#__codelineno-3-53"></a><span class="sd">        nombre: Nombre identificador de la estación.</span>
+</span><span id="__span-3-54"><a id="__codelineno-3-54" name="__codelineno-3-54" href="#__codelineno-3-54"></a><span class="sd">        tiempo_ciclo: Tiempo de ciclo en segundos.</span>
+</span><span id="__span-3-55"><a id="__codelineno-3-55" name="__codelineno-3-55" href="#__codelineno-3-55"></a><span class="sd">    &quot;&quot;&quot;</span>
+</span><span id="__span-3-56"><a id="__codelineno-3-56" name="__codelineno-3-56" href="#__codelineno-3-56"></a>
+</span><span id="__span-3-57"><a id="__codelineno-3-57" name="__codelineno-3-57" href="#__codelineno-3-57"></a>    <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">nombre</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">tiempo_ciclo</span><span class="p">:</span> <span class="nb">float</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+</span><span id="__span-3-58"><a id="__codelineno-3-58" name="__codelineno-3-58" href="#__codelineno-3-58"></a>        <span class="bp">self</span><span class="o">.</span><span class="n">nombre</span> <span class="o">=</span> <span class="n">nombre</span>
+</span><span id="__span-3-59"><a id="__codelineno-3-59" name="__codelineno-3-59" href="#__codelineno-3-59"></a>        <span class="bp">self</span><span class="o">.</span><span class="n">tiempo_ciclo</span> <span class="o">=</span> <span class="n">tiempo_ciclo</span>
+</span><span id="__span-3-60"><a id="__codelineno-3-60" name="__codelineno-3-60" href="#__codelineno-3-60"></a>        <span class="bp">self</span><span class="o">.</span><span class="n">_piezas_procesadas</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">0</span>
 </span><span id="__span-3-61"><a id="__codelineno-3-61" name="__codelineno-3-61" href="#__codelineno-3-61"></a>
-</span><span id="__span-3-62"><a id="__codelineno-3-62" name="__codelineno-3-62" href="#__codelineno-3-62"></a>    <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">cliente</span><span class="p">:</span> <span class="n">Cliente</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
-</span><span id="__span-3-63"><a id="__codelineno-3-63" name="__codelineno-3-63" href="#__codelineno-3-63"></a>        <span class="bp">self</span><span class="o">.</span><span class="n">_cliente</span> <span class="o">=</span> <span class="n">cliente</span>
-</span><span id="__span-3-64"><a id="__codelineno-3-64" name="__codelineno-3-64" href="#__codelineno-3-64"></a>        <span class="bp">self</span><span class="o">.</span><span class="n">_productos</span><span class="p">:</span> <span class="nb">list</span><span class="p">[</span><span class="nb">tuple</span><span class="p">[</span><span class="n">Producto</span><span class="p">,</span> <span class="nb">int</span><span class="p">]]</span> <span class="o">=</span> <span class="p">[]</span>
-</span><span id="__span-3-65"><a id="__codelineno-3-65" name="__codelineno-3-65" href="#__codelineno-3-65"></a>        <span class="bp">self</span><span class="o">.</span><span class="n">_estado</span> <span class="o">=</span> <span class="n">EstadoPedido</span><span class="o">.</span><span class="n">PENDIENTE</span>
-</span><span id="__span-3-66"><a id="__codelineno-3-66" name="__codelineno-3-66" href="#__codelineno-3-66"></a>
-</span><span id="__span-3-67"><a id="__codelineno-3-67" name="__codelineno-3-67" href="#__codelineno-3-67"></a>    <span class="k">def</span><span class="w"> </span><span class="nf">agregar_producto</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">producto</span><span class="p">:</span> <span class="n">Producto</span><span class="p">,</span> <span class="n">cantidad</span><span class="p">:</span> <span class="nb">int</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
-</span><span id="__span-3-68"><a id="__codelineno-3-68" name="__codelineno-3-68" href="#__codelineno-3-68"></a><span class="w">        </span><span class="sd">&quot;&quot;&quot;Agrega un producto al pedido.&quot;&quot;&quot;</span>
-</span><span id="__span-3-69"><a id="__codelineno-3-69" name="__codelineno-3-69" href="#__codelineno-3-69"></a>        <span class="k">if</span> <span class="n">cantidad</span> <span class="o">&lt;=</span> <span class="mi">0</span><span class="p">:</span>
-</span><span id="__span-3-70"><a id="__codelineno-3-70" name="__codelineno-3-70" href="#__codelineno-3-70"></a>            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;La cantidad debe ser positiva&quot;</span><span class="p">)</span>
-</span><span id="__span-3-71"><a id="__codelineno-3-71" name="__codelineno-3-71" href="#__codelineno-3-71"></a>        <span class="bp">self</span><span class="o">.</span><span class="n">_productos</span><span class="o">.</span><span class="n">append</span><span class="p">((</span><span class="n">producto</span><span class="p">,</span> <span class="n">cantidad</span><span class="p">))</span>
-</span><span id="__span-3-72"><a id="__codelineno-3-72" name="__codelineno-3-72" href="#__codelineno-3-72"></a>
-</span><span id="__span-3-73"><a id="__codelineno-3-73" name="__codelineno-3-73" href="#__codelineno-3-73"></a>    <span class="k">def</span><span class="w"> </span><span class="nf">total</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">float</span><span class="p">:</span>
-</span><span id="__span-3-74"><a id="__codelineno-3-74" name="__codelineno-3-74" href="#__codelineno-3-74"></a><span class="w">        </span><span class="sd">&quot;&quot;&quot;Calcula el total del pedido.&quot;&quot;&quot;</span>
-</span><span id="__span-3-75"><a id="__codelineno-3-75" name="__codelineno-3-75" href="#__codelineno-3-75"></a>        <span class="k">return</span> <span class="nb">sum</span><span class="p">(</span><span class="n">p</span><span class="o">.</span><span class="n">precio</span> <span class="o">*</span> <span class="n">cantidad</span> <span class="k">for</span> <span class="n">p</span><span class="p">,</span> <span class="n">cantidad</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">_productos</span><span class="p">)</span>
-</span><span id="__span-3-76"><a id="__codelineno-3-76" name="__codelineno-3-76" href="#__codelineno-3-76"></a>
-</span><span id="__span-3-77"><a id="__codelineno-3-77" name="__codelineno-3-77" href="#__codelineno-3-77"></a>    <span class="k">def</span><span class="w"> </span><span class="nf">confirmar</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
-</span><span id="__span-3-78"><a id="__codelineno-3-78" name="__codelineno-3-78" href="#__codelineno-3-78"></a><span class="w">        </span><span class="sd">&quot;&quot;&quot;Confirma el pedido si está en estado PENDIENTE.&quot;&quot;&quot;</span>
-</span><span id="__span-3-79"><a id="__codelineno-3-79" name="__codelineno-3-79" href="#__codelineno-3-79"></a>        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_estado</span> <span class="o">!=</span> <span class="n">EstadoPedido</span><span class="o">.</span><span class="n">PENDIENTE</span><span class="p">:</span>
-</span><span id="__span-3-80"><a id="__codelineno-3-80" name="__codelineno-3-80" href="#__codelineno-3-80"></a>            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;No se puede confirmar un pedido </span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">_estado</span><span class="o">.</span><span class="n">value</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
-</span><span id="__span-3-81"><a id="__codelineno-3-81" name="__codelineno-3-81" href="#__codelineno-3-81"></a>        <span class="bp">self</span><span class="o">.</span><span class="n">_estado</span> <span class="o">=</span> <span class="n">EstadoPedido</span><span class="o">.</span><span class="n">CONFIRMADO</span>
+</span><span id="__span-3-62"><a id="__codelineno-3-62" name="__codelineno-3-62" href="#__codelineno-3-62"></a>    <span class="k">def</span><span class="w"> </span><span class="nf">procesar</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">pieza</span><span class="p">:</span> <span class="n">Pieza</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+</span><span id="__span-3-63"><a id="__codelineno-3-63" name="__codelineno-3-63" href="#__codelineno-3-63"></a><span class="w">        </span><span class="sd">&quot;&quot;&quot;Procesa una pieza actualizando su estado.&quot;&quot;&quot;</span>
+</span><span id="__span-3-64"><a id="__codelineno-3-64" name="__codelineno-3-64" href="#__codelineno-3-64"></a>        <span class="n">pieza</span><span class="o">.</span><span class="n">marcar_en_proceso</span><span class="p">()</span>
+</span><span id="__span-3-65"><a id="__codelineno-3-65" name="__codelineno-3-65" href="#__codelineno-3-65"></a>        <span class="bp">self</span><span class="o">.</span><span class="n">_piezas_procesadas</span> <span class="o">+=</span> <span class="mi">1</span>
+</span><span id="__span-3-66"><a id="__codelineno-3-66" name="__codelineno-3-66" href="#__codelineno-3-66"></a>        <span class="n">pieza</span><span class="o">.</span><span class="n">marcar_completada</span><span class="p">()</span>
+</span><span id="__span-3-67"><a id="__codelineno-3-67" name="__codelineno-3-67" href="#__codelineno-3-67"></a>
+</span><span id="__span-3-68"><a id="__codelineno-3-68" name="__codelineno-3-68" href="#__codelineno-3-68"></a>    <span class="k">def</span><span class="w"> </span><span class="nf">piezas_procesadas</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">int</span><span class="p">:</span>
+</span><span id="__span-3-69"><a id="__codelineno-3-69" name="__codelineno-3-69" href="#__codelineno-3-69"></a>        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_piezas_procesadas</span>
+</span><span id="__span-3-70"><a id="__codelineno-3-70" name="__codelineno-3-70" href="#__codelineno-3-70"></a>
+</span><span id="__span-3-71"><a id="__codelineno-3-71" name="__codelineno-3-71" href="#__codelineno-3-71"></a>    <span class="k">def</span><span class="w"> </span><span class="fm">__repr__</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
+</span><span id="__span-3-72"><a id="__codelineno-3-72" name="__codelineno-3-72" href="#__codelineno-3-72"></a>        <span class="k">return</span> <span class="sa">f</span><span class="s2">&quot;EstacionTrabajo(</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">nombre</span><span class="si">!r}</span><span class="s2">)&quot;</span>
+</span><span id="__span-3-73"><a id="__codelineno-3-73" name="__codelineno-3-73" href="#__codelineno-3-73"></a>
+</span><span id="__span-3-74"><a id="__codelineno-3-74" name="__codelineno-3-74" href="#__codelineno-3-74"></a>
+</span><span id="__span-3-75"><a id="__codelineno-3-75" name="__codelineno-3-75" href="#__codelineno-3-75"></a><span class="k">class</span><span class="w"> </span><span class="nc">LineaDeMontaje</span><span class="p">:</span>
+</span><span id="__span-3-76"><a id="__codelineno-3-76" name="__codelineno-3-76" href="#__codelineno-3-76"></a><span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+</span><span id="__span-3-77"><a id="__codelineno-3-77" name="__codelineno-3-77" href="#__codelineno-3-77"></a><span class="sd">    Línea de montaje que agrupa estaciones de trabajo.</span>
+</span><span id="__span-3-78"><a id="__codelineno-3-78" name="__codelineno-3-78" href="#__codelineno-3-78"></a>
+</span><span id="__span-3-79"><a id="__codelineno-3-79" name="__codelineno-3-79" href="#__codelineno-3-79"></a><span class="sd">    Args:</span>
+</span><span id="__span-3-80"><a id="__codelineno-3-80" name="__codelineno-3-80" href="#__codelineno-3-80"></a><span class="sd">        nombre: Nombre de la línea.</span>
+</span><span id="__span-3-81"><a id="__codelineno-3-81" name="__codelineno-3-81" href="#__codelineno-3-81"></a><span class="sd">    &quot;&quot;&quot;</span>
 </span><span id="__span-3-82"><a id="__codelineno-3-82" name="__codelineno-3-82" href="#__codelineno-3-82"></a>
-</span><span id="__span-3-83"><a id="__codelineno-3-83" name="__codelineno-3-83" href="#__codelineno-3-83"></a>    <span class="k">def</span><span class="w"> </span><span class="nf">cancelar</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
-</span><span id="__span-3-84"><a id="__codelineno-3-84" name="__codelineno-3-84" href="#__codelineno-3-84"></a><span class="w">        </span><span class="sd">&quot;&quot;&quot;Cancela el pedido si no fue ya confirmado.&quot;&quot;&quot;</span>
-</span><span id="__span-3-85"><a id="__codelineno-3-85" name="__codelineno-3-85" href="#__codelineno-3-85"></a>        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_estado</span> <span class="o">==</span> <span class="n">EstadoPedido</span><span class="o">.</span><span class="n">CONFIRMADO</span><span class="p">:</span>
-</span><span id="__span-3-86"><a id="__codelineno-3-86" name="__codelineno-3-86" href="#__codelineno-3-86"></a>            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;No se puede cancelar un pedido ya confirmado&quot;</span><span class="p">)</span>
-</span><span id="__span-3-87"><a id="__codelineno-3-87" name="__codelineno-3-87" href="#__codelineno-3-87"></a>        <span class="bp">self</span><span class="o">.</span><span class="n">_estado</span> <span class="o">=</span> <span class="n">EstadoPedido</span><span class="o">.</span><span class="n">CANCELADO</span>
-</span><span id="__span-3-88"><a id="__codelineno-3-88" name="__codelineno-3-88" href="#__codelineno-3-88"></a>
-</span><span id="__span-3-89"><a id="__codelineno-3-89" name="__codelineno-3-89" href="#__codelineno-3-89"></a>    <span class="k">def</span><span class="w"> </span><span class="fm">__repr__</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
-</span><span id="__span-3-90"><a id="__codelineno-3-90" name="__codelineno-3-90" href="#__codelineno-3-90"></a>        <span class="k">return</span> <span class="sa">f</span><span class="s2">&quot;Pedido(</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">_cliente</span><span class="si">!r}</span><span class="s2">, total=$</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">total</span><span class="p">()</span><span class="si">:</span><span class="s2">.2f</span><span class="si">}</span><span class="s2">, </span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">_estado</span><span class="o">.</span><span class="n">value</span><span class="si">}</span><span class="s2">)&quot;</span>
-</span><span id="__span-3-91"><a id="__codelineno-3-91" name="__codelineno-3-91" href="#__codelineno-3-91"></a>
-</span><span id="__span-3-92"><a id="__codelineno-3-92" name="__codelineno-3-92" href="#__codelineno-3-92"></a>
-</span><span id="__span-3-93"><a id="__codelineno-3-93" name="__codelineno-3-93" href="#__codelineno-3-93"></a><span class="c1"># Demostración</span>
-</span><span id="__span-3-94"><a id="__codelineno-3-94" name="__codelineno-3-94" href="#__codelineno-3-94"></a><span class="n">laptop</span> <span class="o">=</span> <span class="n">Producto</span><span class="p">(</span><span class="s2">&quot;Laptop&quot;</span><span class="p">,</span> <span class="mf">1500.0</span><span class="p">,</span> <span class="mi">10</span><span class="p">)</span>
-</span><span id="__span-3-95"><a id="__codelineno-3-95" name="__codelineno-3-95" href="#__codelineno-3-95"></a><span class="n">mouse</span> <span class="o">=</span> <span class="n">Producto</span><span class="p">(</span><span class="s2">&quot;Mouse&quot;</span><span class="p">,</span> <span class="mf">45.0</span><span class="p">,</span> <span class="mi">50</span><span class="p">)</span>
-</span><span id="__span-3-96"><a id="__codelineno-3-96" name="__codelineno-3-96" href="#__codelineno-3-96"></a><span class="n">cliente</span> <span class="o">=</span> <span class="n">Cliente</span><span class="p">(</span><span class="s2">&quot;Carlos López&quot;</span><span class="p">,</span> <span class="s2">&quot;carlos@ejemplo.com&quot;</span><span class="p">)</span>
-</span><span id="__span-3-97"><a id="__codelineno-3-97" name="__codelineno-3-97" href="#__codelineno-3-97"></a>
-</span><span id="__span-3-98"><a id="__codelineno-3-98" name="__codelineno-3-98" href="#__codelineno-3-98"></a><span class="n">pedido</span> <span class="o">=</span> <span class="n">Pedido</span><span class="p">(</span><span class="n">cliente</span><span class="p">)</span>
-</span><span id="__span-3-99"><a id="__codelineno-3-99" name="__codelineno-3-99" href="#__codelineno-3-99"></a><span class="n">pedido</span><span class="o">.</span><span class="n">agregar_producto</span><span class="p">(</span><span class="n">laptop</span><span class="p">,</span> <span class="mi">2</span><span class="p">)</span>
-</span><span id="__span-3-100"><a id="__codelineno-3-100" name="__codelineno-3-100" href="#__codelineno-3-100"></a><span class="n">pedido</span><span class="o">.</span><span class="n">agregar_producto</span><span class="p">(</span><span class="n">mouse</span><span class="p">,</span> <span class="mi">3</span><span class="p">)</span>
-</span><span id="__span-3-101"><a id="__codelineno-3-101" name="__codelineno-3-101" href="#__codelineno-3-101"></a><span class="n">pedido</span><span class="o">.</span><span class="n">confirmar</span><span class="p">()</span>
-</span><span id="__span-3-102"><a id="__codelineno-3-102" name="__codelineno-3-102" href="#__codelineno-3-102"></a>
-</span><span id="__span-3-103"><a id="__codelineno-3-103" name="__codelineno-3-103" href="#__codelineno-3-103"></a><span class="nb">print</span><span class="p">(</span><span class="n">pedido</span><span class="p">)</span>         <span class="c1"># Pedido(Cliente(&#39;Carlos López&#39;), total=$3135.00, confirmado)</span>
-</span><span id="__span-3-104"><a id="__codelineno-3-104" name="__codelineno-3-104" href="#__codelineno-3-104"></a><span class="nb">print</span><span class="p">(</span><span class="n">pedido</span><span class="o">.</span><span class="n">total</span><span class="p">())</span> <span class="c1"># 3135.0</span>
+</span><span id="__span-3-83"><a id="__codelineno-3-83" name="__codelineno-3-83" href="#__codelineno-3-83"></a>    <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">nombre</span><span class="p">:</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+</span><span id="__span-3-84"><a id="__codelineno-3-84" name="__codelineno-3-84" href="#__codelineno-3-84"></a>        <span class="bp">self</span><span class="o">.</span><span class="n">nombre</span> <span class="o">=</span> <span class="n">nombre</span>
+</span><span id="__span-3-85"><a id="__codelineno-3-85" name="__codelineno-3-85" href="#__codelineno-3-85"></a>        <span class="bp">self</span><span class="o">.</span><span class="n">_estaciones</span><span class="p">:</span> <span class="nb">list</span><span class="p">[</span><span class="n">EstacionTrabajo</span><span class="p">]</span> <span class="o">=</span> <span class="p">[]</span>
+</span><span id="__span-3-86"><a id="__codelineno-3-86" name="__codelineno-3-86" href="#__codelineno-3-86"></a>
+</span><span id="__span-3-87"><a id="__codelineno-3-87" name="__codelineno-3-87" href="#__codelineno-3-87"></a>    <span class="k">def</span><span class="w"> </span><span class="nf">agregar_estacion</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">estacion</span><span class="p">:</span> <span class="n">EstacionTrabajo</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+</span><span id="__span-3-88"><a id="__codelineno-3-88" name="__codelineno-3-88" href="#__codelineno-3-88"></a><span class="w">        </span><span class="sd">&quot;&quot;&quot;Agrega una estación al final de la línea.&quot;&quot;&quot;</span>
+</span><span id="__span-3-89"><a id="__codelineno-3-89" name="__codelineno-3-89" href="#__codelineno-3-89"></a>        <span class="bp">self</span><span class="o">.</span><span class="n">_estaciones</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">estacion</span><span class="p">)</span>
+</span><span id="__span-3-90"><a id="__codelineno-3-90" name="__codelineno-3-90" href="#__codelineno-3-90"></a>
+</span><span id="__span-3-91"><a id="__codelineno-3-91" name="__codelineno-3-91" href="#__codelineno-3-91"></a>    <span class="k">def</span><span class="w"> </span><span class="nf">procesar_pieza</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">pieza</span><span class="p">:</span> <span class="n">Pieza</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+</span><span id="__span-3-92"><a id="__codelineno-3-92" name="__codelineno-3-92" href="#__codelineno-3-92"></a><span class="w">        </span><span class="sd">&quot;&quot;&quot;Pasa la pieza por todas las estaciones en orden.&quot;&quot;&quot;</span>
+</span><span id="__span-3-93"><a id="__codelineno-3-93" name="__codelineno-3-93" href="#__codelineno-3-93"></a>        <span class="k">for</span> <span class="n">estacion</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">_estaciones</span><span class="p">:</span>
+</span><span id="__span-3-94"><a id="__codelineno-3-94" name="__codelineno-3-94" href="#__codelineno-3-94"></a>            <span class="n">estacion</span><span class="o">.</span><span class="n">procesar</span><span class="p">(</span><span class="n">pieza</span><span class="p">)</span>
+</span><span id="__span-3-95"><a id="__codelineno-3-95" name="__codelineno-3-95" href="#__codelineno-3-95"></a>
+</span><span id="__span-3-96"><a id="__codelineno-3-96" name="__codelineno-3-96" href="#__codelineno-3-96"></a>    <span class="k">def</span><span class="w"> </span><span class="fm">__repr__</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
+</span><span id="__span-3-97"><a id="__codelineno-3-97" name="__codelineno-3-97" href="#__codelineno-3-97"></a>        <span class="k">return</span> <span class="sa">f</span><span class="s2">&quot;LineaDeMontaje(</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">nombre</span><span class="si">!r}</span><span class="s2">, estaciones=</span><span class="si">{</span><span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_estaciones</span><span class="p">)</span><span class="si">}</span><span class="s2">)&quot;</span>
+</span><span id="__span-3-98"><a id="__codelineno-3-98" name="__codelineno-3-98" href="#__codelineno-3-98"></a>
+</span><span id="__span-3-99"><a id="__codelineno-3-99" name="__codelineno-3-99" href="#__codelineno-3-99"></a>
+</span><span id="__span-3-100"><a id="__codelineno-3-100" name="__codelineno-3-100" href="#__codelineno-3-100"></a><span class="c1"># Demostración</span>
+</span><span id="__span-3-101"><a id="__codelineno-3-101" name="__codelineno-3-101" href="#__codelineno-3-101"></a><span class="n">corte</span> <span class="o">=</span> <span class="n">EstacionTrabajo</span><span class="p">(</span><span class="s2">&quot;Corte CNC&quot;</span><span class="p">,</span> <span class="n">tiempo_ciclo</span><span class="o">=</span><span class="mf">12.5</span><span class="p">)</span>
+</span><span id="__span-3-102"><a id="__codelineno-3-102" name="__codelineno-3-102" href="#__codelineno-3-102"></a><span class="n">soldadura</span> <span class="o">=</span> <span class="n">EstacionTrabajo</span><span class="p">(</span><span class="s2">&quot;Soldadura MIG&quot;</span><span class="p">,</span> <span class="n">tiempo_ciclo</span><span class="o">=</span><span class="mf">30.0</span><span class="p">)</span>
+</span><span id="__span-3-103"><a id="__codelineno-3-103" name="__codelineno-3-103" href="#__codelineno-3-103"></a>
+</span><span id="__span-3-104"><a id="__codelineno-3-104" name="__codelineno-3-104" href="#__codelineno-3-104"></a><span class="n">linea</span> <span class="o">=</span> <span class="n">LineaDeMontaje</span><span class="p">(</span><span class="s2">&quot;Línea A&quot;</span><span class="p">)</span>
+</span><span id="__span-3-105"><a id="__codelineno-3-105" name="__codelineno-3-105" href="#__codelineno-3-105"></a><span class="n">linea</span><span class="o">.</span><span class="n">agregar_estacion</span><span class="p">(</span><span class="n">corte</span><span class="p">)</span>
+</span><span id="__span-3-106"><a id="__codelineno-3-106" name="__codelineno-3-106" href="#__codelineno-3-106"></a><span class="n">linea</span><span class="o">.</span><span class="n">agregar_estacion</span><span class="p">(</span><span class="n">soldadura</span><span class="p">)</span>
+</span><span id="__span-3-107"><a id="__codelineno-3-107" name="__codelineno-3-107" href="#__codelineno-3-107"></a>
+</span><span id="__span-3-108"><a id="__codelineno-3-108" name="__codelineno-3-108" href="#__codelineno-3-108"></a><span class="n">pieza</span> <span class="o">=</span> <span class="n">Pieza</span><span class="p">(</span><span class="s2">&quot;P-0001&quot;</span><span class="p">,</span> <span class="s2">&quot;acero&quot;</span><span class="p">,</span> <span class="mf">2.3</span><span class="p">)</span>
+</span><span id="__span-3-109"><a id="__codelineno-3-109" name="__codelineno-3-109" href="#__codelineno-3-109"></a><span class="n">linea</span><span class="o">.</span><span class="n">procesar_pieza</span><span class="p">(</span><span class="n">pieza</span><span class="p">)</span>
+</span><span id="__span-3-110"><a id="__codelineno-3-110" name="__codelineno-3-110" href="#__codelineno-3-110"></a>
+</span><span id="__span-3-111"><a id="__codelineno-3-111" name="__codelineno-3-111" href="#__codelineno-3-111"></a><span class="nb">print</span><span class="p">(</span><span class="n">pieza</span><span class="p">)</span>         <span class="c1"># Pieza(&#39;P-0001&#39;, &#39;acero&#39;, estado=completada)</span>
+</span><span id="__span-3-112"><a id="__codelineno-3-112" name="__codelineno-3-112" href="#__codelineno-3-112"></a><span class="nb">print</span><span class="p">(</span><span class="n">linea</span><span class="p">)</span>         <span class="c1"># LineaDeMontaje(&#39;Línea A&#39;, estaciones=2)</span>
 </span></code></pre></div>
 <h2 id="el-cambio-lleva-tiempo">El cambio lleva tiempo</h2>
 <p>No te preocupés si al principio seguís pensando en "pasos". Es completamente normal. La mentalidad procedural está profundamente arraigada y el cambio al diseño orientado a objetos lleva semanas de práctica deliberada.</p>
