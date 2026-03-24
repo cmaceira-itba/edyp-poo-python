@@ -124,6 +124,7 @@ nav:
       - Checklist y Fuentes: buenas_practicas/checklist.md
   - Para Ir Más Lejos:
       - Principios SOLID: buenas_practicas/solid.md
+      - Herencia Múltiple: buenas_practicas/herencia_multiple.md
 
 extra:
   social:
